@@ -1,0 +1,59 @@
+.cnrisk-demo {
+  --cnr-black: #000000;
+  --cnr-red: #9b1111;
+  --cnr-cream: #f7f3ea;
+  --cnr-soft: #fbfaf6;
+  --cnr-border: #d9d2c4;
+  --cnr-text: #171717;
+  --cnr-muted: #555555;
+  font-family: inherit;
+  color: var(--cnr-text);
+  background: var(--cnr-soft);
+  border-top: 6px solid var(--cnr-black);
+}
+.cnrisk-demo * { box-sizing: border-box; }
+.cnrisk-demo__head { padding: 24px; border-bottom: 1px solid var(--cnr-border); background: #fff; }
+.cnrisk-demo__eyebrow { margin: 0 0 8px; color: var(--cnr-red); text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; font-weight: 800; }
+.cnrisk-demo h3 { margin: 0 0 10px; font-size: clamp(1.5rem, 3vw, 2.1rem); letter-spacing: -.03em; }
+.cnrisk-demo p { line-height: 1.6; }
+.cnrisk-demo__head p:last-child { margin-bottom: 0; color: var(--cnr-muted); }
+.cnrisk-demo__grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); gap: 0; }
+.cnrisk-demo__form, .cnrisk-demo__result { padding: 24px; }
+.cnrisk-demo__form { border-right: 1px solid var(--cnr-border); }
+.cnrisk-demo label { display: grid; gap: 7px; margin-bottom: 16px; font-weight: 800; }
+.cnrisk-demo label span { font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; color: #333; }
+.cnrisk-demo input, .cnrisk-demo select, .cnrisk-demo textarea {
+  width: 100%; border: 1px solid var(--cnr-border); background: #fff; color: var(--cnr-text); padding: 11px 12px; font: inherit; border-radius: 0;
+}
+.cnrisk-demo textarea { resize: vertical; }
+.cnrisk-demo__two { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.cnrisk-demo__three { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.cnrisk-demo__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.cnrisk-demo button {
+  border: 1px solid var(--cnr-black); background: #fff; color: var(--cnr-black); padding: 11px 14px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; cursor: pointer;
+}
+.cnrisk-demo button:hover { background: var(--cnr-black); color: #fff; }
+.cnrisk-demo__result { background: var(--cnr-cream); }
+.cnrisk-demo__scorebox { background: #fff; border: 1px solid var(--cnr-border); padding: 18px; margin-bottom: 16px; }
+.cnrisk-demo__label { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .11em; color: var(--cnr-red); font-weight: 900; }
+.cnrisk-demo__scorebox strong { display: block; font-size: 3rem; line-height: 1; margin: 10px 0 4px; }
+.cnrisk-demo__scorebox em { color: var(--cnr-muted); font-style: normal; font-weight: 800; }
+.cnrisk-demo__meter { height: 10px; border: 1px solid var(--cnr-border); background: #f1eee7; margin-top: 14px; }
+.cnrisk-demo__meter span { display: block; height: 100%; width: 0%; background: var(--cnr-red); transition: width .2s ease; }
+.cnrisk-demo__bars { display: grid; gap: 8px; margin-bottom: 16px; }
+.cnrisk-demo__bar { background: #fff; border: 1px solid var(--cnr-border); padding: 10px; }
+.cnrisk-demo__bar header { display: flex; justify-content: space-between; gap: 12px; font-size: .82rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+.cnrisk-demo__bar div { height: 7px; background: #f1eee7; margin-top: 7px; }
+.cnrisk-demo__bar div span { display: block; height: 7px; background: var(--cnr-black); }
+.cnrisk-demo__block { background: #fff; border: 1px solid var(--cnr-border); padding: 16px; margin-bottom: 14px; }
+.cnrisk-demo__block h4 { margin: 0 0 8px; font-size: 1rem; }
+.cnrisk-demo__block ul { margin: 0; padding-left: 20px; }
+.cnrisk-demo__block li { margin: 5px 0; }
+.cnrisk-demo__json { border-top: 1px solid var(--cnr-border); background: #fff; padding: 18px 24px; }
+.cnrisk-demo__json summary { cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+.cnrisk-demo__json pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #111; color: #f7f3ea; padding: 16px; margin-top: 12px; font-size: .86rem; }
+.cnrisk-demo__fineprint { margin: 0; padding: 16px 24px 22px; border-top: 1px solid var(--cnr-border); color: var(--cnr-muted); font-size: .92rem; }
+@media (max-width: 900px) {
+  .cnrisk-demo__grid, .cnrisk-demo__two, .cnrisk-demo__three { grid-template-columns: 1fr; }
+  .cnrisk-demo__form { border-right: 0; border-bottom: 1px solid var(--cnr-border); }
+}

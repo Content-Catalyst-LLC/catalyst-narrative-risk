@@ -1,0 +1,47 @@
+{
+  "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
+  "risk_score": 80,
+  "risk_level": "High",
+  "components": {
+    "source_type": 8,
+    "evidence_strength": 20,
+    "uncertainty": 18,
+    "narrative_volatility": 10,
+    "stakeholder_pressure": 18,
+    "time_sensitivity": 10,
+    "consequences": 18,
+    "review_status": 8,
+    "source_count": 8
+  },
+  "flags": [
+    "Evidence does not yet support confident use",
+    "High uncertainty should be stated explicitly",
+    "Stakeholder pressure may be influencing interpretation",
+    "High-consequence claim needs stricter review"
+  ],
+  "review_actions": [
+    "Add at least one independent source or primary reference.",
+    "Rewrite claim with narrower language until evidence improves.",
+    "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+    "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+    "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+    "Record a reviewer, date, and decision before treating the claim as approved."
+  ],
+  "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language.",
+  "inputs": {
+    "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
+    "source_type": "reputable_secondary",
+    "evidence_strength": "limited",
+    "uncertainty": "high",
+    "narrative_volatility": "medium",
+    "stakeholder_pressure": "high",
+    "time_sensitivity": "medium",
+    "consequences": "high",
+    "review_status": "partly_reviewed",
+    "source_count": 2,
+    "method_notes": "Claim needs a narrower scope, stronger baseline evidence, and a review date before publication."
+  },
+  "record_type": "catalyst_narrative_risk_record",
+  "generated_at": "2026-07-01T19:08:20.193602+00:00",
+  "method": "transparent heuristic scoring; not truth verification"
+}

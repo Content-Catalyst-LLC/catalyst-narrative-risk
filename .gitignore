@@ -207,3 +207,12 @@ marimo/_lsp/
 __marimo__/
 
 .env
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Catalyst Narrative Risk generated plugin archives
+/dist/*.zip
+catalyst-narrative-risk-demo.zip

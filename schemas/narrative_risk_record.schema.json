@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thecontentcatalyst.net/schemas/narrative_risk_record.schema.json",
+  "title": "Catalyst Narrative Risk Record",
+  "type": "object",
+  "required": ["record_type", "claim", "risk_score", "risk_level", "flags", "review_actions", "decision_note", "inputs"],
+  "properties": {
+    "record_type": {"const": "catalyst_narrative_risk_record"},
+    "generated_at": {"type": "string"},
+    "claim": {"type": "string"},
+    "risk_score": {"type": "integer", "minimum": 0, "maximum": 100},
+    "risk_level": {"enum": ["Low", "Medium", "High"]},
+    "method": {"type": "string"},
+    "components": {"type": "object", "additionalProperties": {"type": "integer"}},
+    "flags": {"type": "array", "items": {"type": "string"}},
+    "review_actions": {"type": "array", "items": {"type": "string"}},
+    "decision_note": {"type": "string"},
+    "inputs": {"type": "object"}
+  }
+}
