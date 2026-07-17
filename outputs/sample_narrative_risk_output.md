@@ -4,6 +4,8 @@
 
 **Risk score:** 80 / 100
 **Risk level:** High
+**Method version:** 1.0.1
+**Schema version:** 1.0.1
 
 ## Decision note
 

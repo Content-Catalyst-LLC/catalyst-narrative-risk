@@ -1,0 +1,366 @@
+{
+  "contract_version": "1.0.1",
+  "valid": [
+    {
+      "name": "zero_weight_low",
+      "payload": {
+        "claim": "A narrowly scoped claim is supported by current primary evidence.",
+        "source_type": "official_or_primary",
+        "evidence_strength": "strong",
+        "uncertainty": "low",
+        "narrative_volatility": "low",
+        "stakeholder_pressure": "low",
+        "time_sensitivity": "low",
+        "consequences": "low",
+        "review_status": "reviewed",
+        "source_count": 5,
+        "method_notes": "Reviewed against the primary record."
+      },
+      "expected": {
+        "claim": "A narrowly scoped claim is supported by current primary evidence.",
+        "risk_score": 10,
+        "risk_level": "Low",
+        "components": {
+          "source_type": 0,
+          "evidence_strength": 0,
+          "uncertainty": 3,
+          "narrative_volatility": 3,
+          "stakeholder_pressure": 3,
+          "time_sensitivity": 3,
+          "consequences": 3,
+          "review_status": 0,
+          "source_count": 0
+        },
+        "flags": [
+          "No major heuristic risk flags"
+        ],
+        "review_actions": [
+          "Maintain source links, method notes, and review date for future audit."
+        ],
+        "decision_note": "Risk appears lower by heuristic review, but source links and review date should still be preserved.",
+        "inputs": {
+          "claim": "A narrowly scoped claim is supported by current primary evidence.",
+          "source_type": "official_or_primary",
+          "evidence_strength": "strong",
+          "uncertainty": "low",
+          "narrative_volatility": "low",
+          "stakeholder_pressure": "low",
+          "time_sensitivity": "low",
+          "consequences": "low",
+          "review_status": "reviewed",
+          "source_count": 5,
+          "method_notes": "Reviewed against the primary record."
+        }
+      }
+    },
+    {
+      "name": "default_medium",
+      "payload": {
+        "claim": "A default-input claim requires ordinary review."
+      },
+      "expected": {
+        "claim": "A default-input claim requires ordinary review.",
+        "risk_score": 57,
+        "risk_level": "Medium",
+        "components": {
+          "source_type": 8,
+          "evidence_strength": 10,
+          "uncertainty": 10,
+          "narrative_volatility": 10,
+          "stakeholder_pressure": 10,
+          "time_sensitivity": 10,
+          "consequences": 10,
+          "review_status": 8,
+          "source_count": 8
+        },
+        "flags": [],
+        "review_actions": [
+          "Add at least one independent source or primary reference.",
+          "Record a reviewer, date, and decision before treating the claim as approved."
+        ],
+        "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
+        "inputs": {
+          "claim": "A default-input claim requires ordinary review.",
+          "source_type": "reputable_secondary",
+          "evidence_strength": "moderate",
+          "uncertainty": "medium",
+          "narrative_volatility": "medium",
+          "stakeholder_pressure": "medium",
+          "time_sensitivity": "medium",
+          "consequences": "moderate",
+          "review_status": "partly_reviewed",
+          "source_count": 2,
+          "method_notes": ""
+        }
+      }
+    },
+    {
+      "name": "high_risk",
+      "payload": {
+        "claim": "A consequential unsupported claim is ready for immediate public use.",
+        "source_type": "unknown",
+        "evidence_strength": "weak",
+        "uncertainty": "high",
+        "narrative_volatility": "high",
+        "stakeholder_pressure": "high",
+        "time_sensitivity": "high",
+        "consequences": "critical",
+        "review_status": "not_reviewed",
+        "source_count": 0,
+        "method_notes": ""
+      },
+      "expected": {
+        "claim": "A consequential unsupported claim is ready for immediate public use.",
+        "risk_score": 100,
+        "risk_level": "High",
+        "components": {
+          "source_type": 28,
+          "evidence_strength": 30,
+          "uncertainty": 18,
+          "narrative_volatility": 18,
+          "stakeholder_pressure": 18,
+          "time_sensitivity": 18,
+          "consequences": 24,
+          "review_status": 18,
+          "source_count": 22
+        },
+        "flags": [
+          "Single-source or under-sourced claim",
+          "Evidence does not yet support confident use",
+          "High uncertainty should be stated explicitly",
+          "Narrative may be changing quickly",
+          "Stakeholder pressure may be influencing interpretation",
+          "Time-sensitive claim requires recent source check",
+          "High-consequence claim needs stricter review",
+          "Claim has not completed review"
+        ],
+        "review_actions": [
+          "Add at least one independent source or primary reference.",
+          "Rewrite claim with narrower language until evidence improves.",
+          "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+          "Re-check source freshness before publication or decision use.",
+          "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+          "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+          "Record a reviewer, date, and decision before treating the claim as approved."
+        ],
+        "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language.",
+        "inputs": {
+          "claim": "A consequential unsupported claim is ready for immediate public use.",
+          "source_type": "unknown",
+          "evidence_strength": "weak",
+          "uncertainty": "high",
+          "narrative_volatility": "high",
+          "stakeholder_pressure": "high",
+          "time_sensitivity": "high",
+          "consequences": "critical",
+          "review_status": "not_reviewed",
+          "source_count": 0,
+          "method_notes": ""
+        }
+      }
+    },
+    {
+      "name": "low_boundary_39",
+      "payload": {
+        "claim": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+        "source_type": "official_or_primary",
+        "evidence_strength": "strong",
+        "uncertainty": "low",
+        "narrative_volatility": "low",
+        "stakeholder_pressure": "low",
+        "time_sensitivity": "low",
+        "consequences": "critical",
+        "review_status": "reviewed",
+        "source_count": 0,
+        "method_notes": "Boundary fixture."
+      },
+      "expected": {
+        "claim": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+        "risk_score": 39,
+        "risk_level": "Low",
+        "components": {
+          "source_type": 0,
+          "evidence_strength": 0,
+          "uncertainty": 3,
+          "narrative_volatility": 3,
+          "stakeholder_pressure": 3,
+          "time_sensitivity": 3,
+          "consequences": 24,
+          "review_status": 0,
+          "source_count": 22
+        },
+        "flags": [
+          "Single-source or under-sourced claim",
+          "High-consequence claim needs stricter review"
+        ],
+        "review_actions": [
+          "Add at least one independent source or primary reference.",
+          "Escalate to domain, legal, compliance, or editorial review as appropriate."
+        ],
+        "decision_note": "Risk appears lower by heuristic review, but source links and review date should still be preserved.",
+        "inputs": {
+          "claim": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+          "source_type": "official_or_primary",
+          "evidence_strength": "strong",
+          "uncertainty": "low",
+          "narrative_volatility": "low",
+          "stakeholder_pressure": "low",
+          "time_sensitivity": "low",
+          "consequences": "critical",
+          "review_status": "reviewed",
+          "source_count": 0,
+          "method_notes": "Boundary fixture."
+        }
+      }
+    },
+    {
+      "name": "medium_boundary_40",
+      "payload": {
+        "claim": "A time-sensitive under-sourced claim reaches the medium threshold.",
+        "source_type": "official_or_primary",
+        "evidence_strength": "strong",
+        "uncertainty": "low",
+        "narrative_volatility": "low",
+        "stakeholder_pressure": "low",
+        "time_sensitivity": "medium",
+        "consequences": "moderate",
+        "review_status": "partly_reviewed",
+        "source_count": 0,
+        "method_notes": "Boundary fixture."
+      },
+      "expected": {
+        "claim": "A time-sensitive under-sourced claim reaches the medium threshold.",
+        "risk_score": 40,
+        "risk_level": "Medium",
+        "components": {
+          "source_type": 0,
+          "evidence_strength": 0,
+          "uncertainty": 3,
+          "narrative_volatility": 3,
+          "stakeholder_pressure": 3,
+          "time_sensitivity": 10,
+          "consequences": 10,
+          "review_status": 8,
+          "source_count": 22
+        },
+        "flags": [
+          "Single-source or under-sourced claim"
+        ],
+        "review_actions": [
+          "Add at least one independent source or primary reference.",
+          "Record a reviewer, date, and decision before treating the claim as approved."
+        ],
+        "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
+        "inputs": {
+          "claim": "A time-sensitive under-sourced claim reaches the medium threshold.",
+          "source_type": "official_or_primary",
+          "evidence_strength": "strong",
+          "uncertainty": "low",
+          "narrative_volatility": "low",
+          "stakeholder_pressure": "low",
+          "time_sensitivity": "medium",
+          "consequences": "moderate",
+          "review_status": "partly_reviewed",
+          "source_count": 0,
+          "method_notes": "Boundary fixture."
+        }
+      }
+    },
+    {
+      "name": "normalization_fallbacks",
+      "payload": {
+        "claim": "  Normalized claim text.  ",
+        "source_type": "NOT_A_SOURCE",
+        "evidence_strength": null,
+        "uncertainty": "MEDIUM",
+        "narrative_volatility": " medium ",
+        "stakeholder_pressure": 7,
+        "time_sensitivity": "unsupported",
+        "consequences": "MODERATE",
+        "review_status": "unsupported",
+        "source_count": "2",
+        "method_notes": "  normalized notes  "
+      },
+      "expected": {
+        "claim": "Normalized claim text.",
+        "risk_score": 57,
+        "risk_level": "Medium",
+        "components": {
+          "source_type": 8,
+          "evidence_strength": 10,
+          "uncertainty": 10,
+          "narrative_volatility": 10,
+          "stakeholder_pressure": 10,
+          "time_sensitivity": 10,
+          "consequences": 10,
+          "review_status": 8,
+          "source_count": 8
+        },
+        "flags": [],
+        "review_actions": [
+          "Add at least one independent source or primary reference.",
+          "Record a reviewer, date, and decision before treating the claim as approved."
+        ],
+        "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
+        "inputs": {
+          "claim": "Normalized claim text.",
+          "source_type": "reputable_secondary",
+          "evidence_strength": "moderate",
+          "uncertainty": "medium",
+          "narrative_volatility": "medium",
+          "stakeholder_pressure": "medium",
+          "time_sensitivity": "medium",
+          "consequences": "moderate",
+          "review_status": "partly_reviewed",
+          "source_count": 2,
+          "method_notes": "normalized notes"
+        }
+      }
+    }
+  ],
+  "invalid": [
+    {
+      "name": "missing_claim",
+      "payload": {},
+      "message": "claim is required"
+    },
+    {
+      "name": "blank_claim",
+      "payload": {
+        "claim": "   "
+      },
+      "message": "claim is required"
+    },
+    {
+      "name": "non_string_claim",
+      "payload": {
+        "claim": 42
+      },
+      "message": "claim must be a string"
+    },
+    {
+      "name": "negative_source_count",
+      "payload": {
+        "claim": "x",
+        "source_count": -1
+      },
+      "message": "source_count must be a non-negative integer"
+    },
+    {
+      "name": "fractional_source_count",
+      "payload": {
+        "claim": "x",
+        "source_count": 1.5
+      },
+      "message": "source_count must be a non-negative integer"
+    },
+    {
+      "name": "unknown_field",
+      "payload": {
+        "claim": "x",
+        "unexpected": true
+      },
+      "message": "unsupported input field(s): unexpected"
+    }
+  ]
+}

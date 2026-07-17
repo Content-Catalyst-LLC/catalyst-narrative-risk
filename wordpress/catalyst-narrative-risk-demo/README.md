@@ -1,9 +1,11 @@
-# Catalyst Narrative Risk Demo
+# Catalyst Narrative Risk Demo v1.0.1
 
-Shortcode:
+Install this directory as a WordPress plugin and activate it.
+
+Use the shortcode:
 
 ```text
 [catalyst_narrative_risk_demo]
 ```
 
-This WordPress plugin renders a client-side narrative-risk demo. It does not submit visitor inputs to Sustainable Catalyst.
+The demo runs entirely in the visitor's browser. v1.0.1 loads the canonical `narrative-risk-engine.js` before the interface script and preserves zero-weight values consistently with the Python engine.

@@ -42,6 +42,8 @@
     "method_notes": "Claim needs a narrower scope, stronger baseline evidence, and a review date before publication."
   },
   "record_type": "catalyst_narrative_risk_record",
-  "generated_at": "2026-07-01T19:08:20.193602+00:00",
-  "method": "transparent heuristic scoring; not truth verification"
+  "generated_at": "2026-07-17T16:54:54.551659+00:00",
+  "method": "transparent heuristic scoring; not truth verification",
+  "method_version": "1.0.1",
+  "schema_version": "1.0.1"
 }

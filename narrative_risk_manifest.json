@@ -1,6 +1,9 @@
 {
   "name": "Catalyst Narrative Risk",
   "slug": "catalyst-narrative-risk",
+  "version": "1.0.1",
+  "method_version": "1.0.1",
+  "schema_version": "1.0.1",
   "shortcode": "[catalyst_narrative_risk_demo]",
   "repository": "https://github.com/Content-Catalyst-LLC/catalyst-narrative-risk",
   "platform_role": "claims, evidence, uncertainty, and narrative review layer",
@@ -8,6 +11,11 @@
     "json",
     "markdown",
     "wordpress-demo"
+  ],
+  "runtime_contracts": [
+    "python",
+    "browser-javascript",
+    "wordpress-php"
   ],
   "method_boundary": "heuristic review support, not truth verification"
 }

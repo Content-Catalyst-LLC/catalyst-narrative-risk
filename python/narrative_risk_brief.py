@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Catalyst Narrative Risk JSON and Markdown briefs."""
+"""Generate validated Catalyst Narrative Risk JSON and Markdown briefs."""
 
 from __future__ import annotations
 
@@ -12,7 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from narrative_risk.service import build_narrative_risk_record
+from narrative_risk.service import (
+    NarrativeRiskValidationError,
+    build_narrative_risk_record,
+    validate_narrative_risk_record,
+)
 
 
 def markdown_brief(record: dict) -> str:
@@ -23,6 +27,8 @@ def markdown_brief(record: dict) -> str:
         "",
         f"**Risk score:** {record['risk_score']} / 100",
         f"**Risk level:** {record['risk_level']}",
+        f"**Method version:** {record['method_version']}",
+        f"**Schema version:** {record['schema_version']}",
         "",
         "## Decision note",
         "",
@@ -47,8 +53,13 @@ def main() -> int:
     parser.add_argument("--markdown-out", required=False, help="Output Markdown file")
     args = parser.parse_args()
 
-    payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
-    record = build_narrative_risk_record(payload)
+    try:
+        payload = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        record = build_narrative_risk_record(payload)
+        validate_narrative_risk_record(record)
+    except (OSError, json.JSONDecodeError, NarrativeRiskValidationError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
 
     json_path = Path(args.json_out)
     json_path.parent.mkdir(parents=True, exist_ok=True)

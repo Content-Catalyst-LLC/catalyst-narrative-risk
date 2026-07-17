@@ -1,17 +1,21 @@
-# Narrative Risk Methodology
+# Methodology
 
-Narrative risk is the risk that a claim, interpretation, message, report, or public story moves faster than the evidence supporting it.
+Catalyst Narrative Risk uses a transparent additive heuristic. Each normalized input maps to an inspectable component weight. The component total is multiplied by `0.68`, rounded to the nearest integer, and clamped to 0–100.
 
-Catalyst Narrative Risk treats a claim as a reviewable object. The module asks:
+Risk levels are:
 
-- What is being claimed?
-- What kind of source supports it?
-- How strong is the evidence?
-- How uncertain is the interpretation?
-- How volatile is the narrative environment?
-- Is stakeholder pressure shaping the claim?
-- Is the claim time-sensitive?
-- What are the consequences if the claim is wrong or overstated?
-- Has the claim been reviewed?
+- Low: 0–39
+- Medium: 40–69
+- High: 70–100
 
-The score is a heuristic review signal, not a truth score. A high score means the claim needs more review, narrower wording, stronger sourcing, or clearer uncertainty language.
+Valid zero-weight values are intentional and must remain zero:
+
+- `official_or_primary` source type;
+- `strong` evidence strength;
+- `reviewed` review status.
+
+The source-count penalty declines as independent support increases. Flags and actions are deterministic consequences of normalized inputs, not generated opinions.
+
+Unsupported choice values fall back to documented defaults. Missing claims, malformed source counts, unsupported fields, and non-object payloads are rejected.
+
+This method structures review. It does not verify truth, infer intent, certify evidence, approve communications, or replace domain, legal, scientific, compliance, or editorial judgment.

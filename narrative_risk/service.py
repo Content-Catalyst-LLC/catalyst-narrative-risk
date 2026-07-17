@@ -1,15 +1,21 @@
-"""Core scoring logic for Catalyst Narrative Risk.
+"""Canonical scoring engine for Catalyst Narrative Risk.
 
-The module uses transparent heuristics. It does not verify truth, certify evidence,
-or replace human review. It helps make narrative-risk review more structured.
+The engine uses transparent heuristics. It does not verify truth, certify evidence,
+or replace human review. Python and browser runtimes share the same normalized
+inputs, component weights, thresholds, flags, actions, and decision notes.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Mapping
 
+VERSION = "1.0.1"
+RECORD_TYPE = "catalyst_narrative_risk_record"
+METHOD = "transparent heuristic scoring; not truth verification"
+SCHEMA_VERSION = "1.0.1"
 
 SOURCE_WEIGHTS = {
     "official_or_primary": 0,
@@ -29,27 +35,30 @@ EVIDENCE_WEIGHTS = {
     "unclear": 24,
 }
 
-SCALE_WEIGHTS = {
-    "low": 3,
-    "medium": 10,
-    "high": 18,
+SCALE_WEIGHTS = {"low": 3, "medium": 10, "high": 18}
+CONSEQUENCE_WEIGHTS = {"low": 3, "moderate": 10, "high": 18, "critical": 24}
+REVIEW_STATUS_WEIGHTS = {"reviewed": 0, "partly_reviewed": 8, "not_reviewed": 18}
+
+INPUT_FIELDS = {
+    "claim",
+    "source_type",
+    "evidence_strength",
+    "uncertainty",
+    "narrative_volatility",
+    "stakeholder_pressure",
+    "time_sensitivity",
+    "consequences",
+    "review_status",
+    "source_count",
+    "method_notes",
 }
 
-CONSEQUENCE_WEIGHTS = {
-    "low": 3,
-    "moderate": 10,
-    "high": 18,
-    "critical": 24,
-}
 
-REVIEW_STATUS_WEIGHTS = {
-    "reviewed": 0,
-    "partly_reviewed": 8,
-    "not_reviewed": 18,
-}
+class NarrativeRiskValidationError(ValueError):
+    """Raised when a narrative-risk payload cannot be normalized safely."""
 
 
-@dataclass
+@dataclass(frozen=True)
 class NarrativeRiskInput:
     claim: str
     source_type: str = "reputable_secondary"
@@ -64,12 +73,69 @@ class NarrativeRiskInput:
     method_notes: str = ""
 
 
-def _clean_choice(value: str, allowed: Dict[str, int], default: str) -> str:
-    value = (value or "").strip().lower()
-    return value if value in allowed else default
+def _clean_choice(value: Any, allowed: Mapping[str, int], default: str) -> str:
+    if not isinstance(value, str):
+        return default
+    cleaned = value.strip().lower()
+    return cleaned if cleaned in allowed else default
 
 
-def _clamp(value: int, low: int = 0, high: int = 100) -> int:
+def _clean_text(value: Any, field: str, *, required: bool = False) -> str:
+    if value is None:
+        value = ""
+    if not isinstance(value, str):
+        raise NarrativeRiskValidationError(f"{field} must be a string")
+    cleaned = value.strip()
+    if required and not cleaned:
+        raise NarrativeRiskValidationError(f"{field} is required")
+    return cleaned
+
+
+def _clean_source_count(value: Any) -> int:
+    if value is None or value == "":
+        return 0
+    if isinstance(value, bool):
+        raise NarrativeRiskValidationError("source_count must be a non-negative integer")
+    if isinstance(value, int):
+        parsed = value
+    elif isinstance(value, float) and value.is_integer():
+        parsed = int(value)
+    elif isinstance(value, str):
+        cleaned = value.strip()
+        if not cleaned or not cleaned.isdigit():
+            raise NarrativeRiskValidationError("source_count must be a non-negative integer")
+        parsed = int(cleaned)
+    else:
+        raise NarrativeRiskValidationError("source_count must be a non-negative integer")
+    if parsed < 0:
+        raise NarrativeRiskValidationError("source_count must be a non-negative integer")
+    return parsed
+
+
+def normalize_narrative_risk_input(payload: Mapping[str, Any]) -> NarrativeRiskInput:
+    """Normalize a mapping into the canonical v1.0.1 input contract."""
+    if not isinstance(payload, Mapping):
+        raise NarrativeRiskValidationError("payload must be a JSON object")
+    unknown = sorted(set(payload) - INPUT_FIELDS)
+    if unknown:
+        raise NarrativeRiskValidationError(f"unsupported input field(s): {', '.join(unknown)}")
+
+    return NarrativeRiskInput(
+        claim=_clean_text(payload.get("claim"), "claim", required=True),
+        source_type=_clean_choice(payload.get("source_type", "reputable_secondary"), SOURCE_WEIGHTS, "reputable_secondary"),
+        evidence_strength=_clean_choice(payload.get("evidence_strength", "moderate"), EVIDENCE_WEIGHTS, "moderate"),
+        uncertainty=_clean_choice(payload.get("uncertainty", "medium"), SCALE_WEIGHTS, "medium"),
+        narrative_volatility=_clean_choice(payload.get("narrative_volatility", "medium"), SCALE_WEIGHTS, "medium"),
+        stakeholder_pressure=_clean_choice(payload.get("stakeholder_pressure", "medium"), SCALE_WEIGHTS, "medium"),
+        time_sensitivity=_clean_choice(payload.get("time_sensitivity", "medium"), SCALE_WEIGHTS, "medium"),
+        consequences=_clean_choice(payload.get("consequences", "moderate"), CONSEQUENCE_WEIGHTS, "moderate"),
+        review_status=_clean_choice(payload.get("review_status", "partly_reviewed"), REVIEW_STATUS_WEIGHTS, "partly_reviewed"),
+        source_count=_clean_source_count(payload.get("source_count", 2)),
+        method_notes=_clean_text(payload.get("method_notes", ""), "method_notes"),
+    )
+
+
+def _clamp(value: float, low: int = 0, high: int = 100) -> int:
     return max(low, min(high, int(round(value))))
 
 
@@ -116,7 +182,7 @@ def _flags(inp: NarrativeRiskInput, score: int) -> List[str]:
     return flags
 
 
-def _review_actions(inp: NarrativeRiskInput, score: int) -> List[str]:
+def _review_actions(inp: NarrativeRiskInput) -> List[str]:
     actions: List[str] = []
     if inp.source_count <= 2:
         actions.append("Add at least one independent source or primary reference.")
@@ -137,34 +203,9 @@ def _review_actions(inp: NarrativeRiskInput, score: int) -> List[str]:
     return actions
 
 
-def score_narrative_risk(
-    claim: str,
-    source_type: str = "reputable_secondary",
-    evidence_strength: str = "moderate",
-    uncertainty: str = "medium",
-    narrative_volatility: str = "medium",
-    stakeholder_pressure: str = "medium",
-    time_sensitivity: str = "medium",
-    consequences: str = "moderate",
-    review_status: str = "partly_reviewed",
-    source_count: int = 2,
-    method_notes: str = "",
-) -> Dict[str, Any]:
-    """Score a narrative-risk record using transparent heuristics."""
-    inp = NarrativeRiskInput(
-        claim=(claim or "").strip(),
-        source_type=_clean_choice(source_type, SOURCE_WEIGHTS, "reputable_secondary"),
-        evidence_strength=_clean_choice(evidence_strength, EVIDENCE_WEIGHTS, "moderate"),
-        uncertainty=_clean_choice(uncertainty, SCALE_WEIGHTS, "medium"),
-        narrative_volatility=_clean_choice(narrative_volatility, SCALE_WEIGHTS, "medium"),
-        stakeholder_pressure=_clean_choice(stakeholder_pressure, SCALE_WEIGHTS, "medium"),
-        time_sensitivity=_clean_choice(time_sensitivity, SCALE_WEIGHTS, "medium"),
-        consequences=_clean_choice(consequences, CONSEQUENCE_WEIGHTS, "moderate"),
-        review_status=_clean_choice(review_status, REVIEW_STATUS_WEIGHTS, "partly_reviewed"),
-        source_count=max(0, int(source_count or 0)),
-        method_notes=(method_notes or "").strip(),
-    )
-
+def score_narrative_risk(**payload: Any) -> Dict[str, Any]:
+    """Score a narrative-risk payload using the canonical v1.0.1 heuristics."""
+    inp = normalize_narrative_risk_input(payload)
     components = {
         "source_type": SOURCE_WEIGHTS[inp.source_type],
         "evidence_strength": EVIDENCE_WEIGHTS[inp.evidence_strength],
@@ -176,17 +217,12 @@ def score_narrative_risk(
         "review_status": REVIEW_STATUS_WEIGHTS[inp.review_status],
         "source_count": _source_count_penalty(inp.source_count),
     }
+    score = _clamp(sum(components.values()) * 0.68)
+    risk_level = _level(score)
 
-    raw = sum(components.values())
-    # Scale a broad additive range into a stable 0-100 score.
-    score = _clamp(raw * 0.68)
-    level = _level(score)
-    flags = _flags(inp, score)
-    actions = _review_actions(inp, score)
-
-    if level == "High":
+    if risk_level == "High":
         decision_note = "Do not use as a confident public claim without additional review, source support, and narrowed language."
-    elif level == "Medium":
+    elif risk_level == "Medium":
         decision_note = "Use cautiously with visible uncertainty, source links, and review notes."
     else:
         decision_note = "Risk appears lower by heuristic review, but source links and review date should still be preserved."
@@ -194,50 +230,40 @@ def score_narrative_risk(
     return {
         "claim": inp.claim,
         "risk_score": score,
-        "risk_level": level,
+        "risk_level": risk_level,
         "components": components,
-        "flags": flags,
-        "review_actions": actions,
+        "flags": _flags(inp, score),
+        "review_actions": _review_actions(inp),
         "decision_note": decision_note,
         "inputs": asdict(inp),
     }
 
 
-def build_narrative_risk_record(payload: Dict[str, Any]) -> Dict[str, Any]:
-    result = score_narrative_risk(**payload)
-    result["record_type"] = "catalyst_narrative_risk_record"
-    result["generated_at"] = datetime.now(timezone.utc).isoformat()
-    result["method"] = "transparent heuristic scoring; not truth verification"
+def build_narrative_risk_record(payload: Mapping[str, Any], *, generated_at: str | None = None) -> Dict[str, Any]:
+    """Build a complete export record from a canonical payload."""
+    if not isinstance(payload, Mapping):
+        raise NarrativeRiskValidationError("payload must be a JSON object")
+    result = score_narrative_risk(**dict(payload))
+    result.update(
+        {
+            "record_type": RECORD_TYPE,
+            "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
+            "method": METHOD,
+            "method_version": VERSION,
+            "schema_version": SCHEMA_VERSION,
+        }
+    )
     return result
 
 
-# Backward-compatible shim for the older repository's test/demo shape.
-def score_simple_risk(holdings, cash, total):  # pragma: no cover - compatibility only
-    if total <= 0:
-        return {"score": 0, "level": "Low", "concentration": 0.0,
-                "symbols_count": 0, "cash_buffer": 1.0, "notes": "No assets"}
-    largest = holdings[0]["value"] if holdings else 0.0
-    concentration = largest / total
-    symbols_count = len(holdings)
-    cash_buffer = cash / total
-    pts = 0
-    if concentration >= 0.60: pts += 35
-    elif concentration >= 0.40: pts += 25
-    elif concentration >= 0.25: pts += 15
-    elif concentration >= 0.15: pts += 8
-    if symbols_count <= 1: pts += 20
-    elif symbols_count == 2: pts += 12
-    elif symbols_count <= 4: pts += 6
-    if cash_buffer < 0.05: pts += 20
-    elif cash_buffer < 0.10: pts += 12
-    elif cash_buffer < 0.20: pts += 6
-    pts = _clamp(pts)
-    level = "High" if pts >= 60 else ("Medium" if pts >= 30 else "Low")
-    notes = []
-    if concentration >= 0.40: notes.append("High position concentration")
-    if symbols_count <= 2: notes.append("Low diversification")
-    if cash_buffer < 0.10: notes.append("Low cash buffer")
-    if not notes: notes.append("Balanced by heuristics")
-    return {"score": pts, "level": level, "concentration": concentration,
-            "symbols_count": symbols_count, "cash_buffer": cash_buffer,
-            "notes": "; ".join(notes)}
+def validate_narrative_risk_record(record: Mapping[str, Any]) -> None:
+    """Validate a generated record against the packaged JSON Schema."""
+    try:
+        import json
+        from jsonschema import Draft202012Validator
+    except ImportError as exc:  # pragma: no cover - dependency contract
+        raise RuntimeError("jsonschema is required to validate narrative-risk records") from exc
+
+    schema_path = Path(__file__).resolve().parents[1] / "schemas" / "narrative_risk_record.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER).validate(dict(record))

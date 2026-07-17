@@ -1,27 +1,34 @@
-from narrative_risk.service import build_narrative_risk_record, score_narrative_risk, score_simple_risk
+import json
+import re
+from pathlib import Path
+
+import pytest
+
+from narrative_risk.service import (
+    VERSION,
+    NarrativeRiskValidationError,
+    build_narrative_risk_record,
+    score_narrative_risk,
+    validate_narrative_risk_record,
+)
+
+FIXTURES = json.loads((Path(__file__).parent / "fixtures" / "scoring-parity.json").read_text())
 
 
-def test_high_risk_claim_scores_high():
+@pytest.mark.parametrize("case", FIXTURES["valid"], ids=lambda case: case["name"])
+def test_python_scoring_matches_canonical_fixtures(case):
+    assert score_narrative_risk(**case["payload"]) == case["expected"]
+
+
+@pytest.mark.parametrize("case", FIXTURES["invalid"], ids=lambda case: case["name"])
+def test_invalid_payloads_fail_consistently(case):
+    with pytest.raises(NarrativeRiskValidationError, match=re.escape(case["message"])):
+        build_narrative_risk_record(case["payload"])
+
+
+def test_zero_weight_values_remain_zero():
     result = score_narrative_risk(
-        claim="Major unsupported claim",
-        source_type="unknown",
-        evidence_strength="weak",
-        uncertainty="high",
-        narrative_volatility="high",
-        stakeholder_pressure="high",
-        time_sensitivity="high",
-        consequences="critical",
-        review_status="not_reviewed",
-        source_count=0,
-    )
-    assert result["risk_level"] == "High"
-    assert result["risk_score"] >= 70
-    assert result["flags"]
-
-
-def test_lower_risk_claim_scores_low():
-    result = score_narrative_risk(
-        claim="Narrow claim with strong support",
+        claim="Zero weights must remain canonical.",
         source_type="official_or_primary",
         evidence_strength="strong",
         uncertainty="low",
@@ -32,17 +39,14 @@ def test_lower_risk_claim_scores_low():
         review_status="reviewed",
         source_count=5,
     )
-    assert result["risk_level"] == "Low"
-    assert result["risk_score"] < 40
+    assert result["components"]["source_type"] == 0
+    assert result["components"]["evidence_strength"] == 0
+    assert result["components"]["review_status"] == 0
+    assert result["risk_score"] == 10
 
 
-def test_record_has_required_fields():
-    record = build_narrative_risk_record({"claim": "Test claim"})
-    assert record["record_type"] == "catalyst_narrative_risk_record"
-    assert "generated_at" in record
-    assert "decision_note" in record
-
-
-def test_legacy_simple_risk_zero_total():
-    m = score_simple_risk([], 0.0, 0.0)
-    assert m["score"] == 0 and m["level"] == "Low"
+def test_record_validates_against_schema():
+    record = build_narrative_risk_record({"claim": "Schema-valid record"}, generated_at="2026-07-17T12:00:00+00:00")
+    validate_narrative_risk_record(record)
+    assert record["method_version"] == VERSION
+    assert record["schema_version"] == VERSION

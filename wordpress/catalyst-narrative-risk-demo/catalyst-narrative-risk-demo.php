@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk Demo
  * Description: Browser-based Sustainable Catalyst Narrative Risk demo with shortcode [catalyst_narrative_risk_demo].
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,8 +13,9 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.0.0');
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array(), '1.0.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.0.1');
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array(), '1.0.1', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.0.1', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -139,6 +140,7 @@ function cnrisk_demo_shortcode() {
         </form>
 
         <aside class="cnrisk-demo__result" aria-live="polite">
+          <p class="cnrisk-demo__error" data-cnrisk-error role="alert" hidden></p>
           <div class="cnrisk-demo__scorebox">
             <span class="cnrisk-demo__label">Narrative risk score</span>
             <strong data-cnrisk-score>—</strong>

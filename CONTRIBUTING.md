@@ -1,18 +1,20 @@
 # Contributing
 
-Contributions should preserve the Sustainable Catalyst standard: transparent assumptions, traceable claims, readable methods, and reviewable outputs.
+Changes to scoring, normalization, flags, actions, thresholds, exports, or validation must preserve the cross-runtime contract.
 
-## Principles
-
-- Keep scoring logic inspectable and deterministic.
-- Do not present heuristic scores as truth verification.
-- Keep examples educational and non-sensitive.
-- Preserve JSON export compatibility when possible.
-- Add tests when changing scoring, flags, or output structure.
-
-## Local checks
+Before opening a pull request:
 
 ```bash
-python -m pytest
-python python/narrative_risk_brief.py --input data/sample_narrative_risk_input.json --json-out outputs/sample_narrative_risk_output.json --markdown-out outputs/sample_narrative_risk_output.md
+python -m pip install -r requirements-dev.txt
+bash scripts/release_check.sh
 ```
+
+When changing analytical behavior:
+
+1. Update the Python engine and browser engine together.
+2. Add or revise a canonical fixture in `tests/fixtures/scoring-parity.json`.
+3. Update the JSON Schema when the record contract changes.
+4. Update methodology and release documentation.
+5. Do not weaken the human-review or truth-verification boundary.
+
+Pull requests must pass Python, Node, PHP, schema, version, CLI, and cross-runtime parity checks.

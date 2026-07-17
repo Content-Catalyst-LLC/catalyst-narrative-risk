@@ -1,26 +1,31 @@
-name: Python tests
+name: Release integrity
 
 on:
   push:
   pull_request:
 
 jobs:
-  test:
+  release-contract:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install test dependencies
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
-      - name: Run tests
-        run: python -m pytest
-      - name: Generate sample brief
-        run: |
-          python python/narrative_risk_brief.py \
-            --input data/sample_narrative_risk_input.json \
-            --json-out outputs/sample_narrative_risk_output.json \
-            --markdown-out outputs/sample_narrative_risk_output.md
+          python -m pip install -r requirements-dev.txt
+      - name: Run complete release suite
+        run: bash scripts/release_check.sh

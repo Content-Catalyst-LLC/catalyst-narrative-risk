@@ -57,3 +57,10 @@
   .cnrisk-demo__grid, .cnrisk-demo__two, .cnrisk-demo__three { grid-template-columns: 1fr; }
   .cnrisk-demo__form { border-right: 0; border-bottom: 1px solid var(--cnr-border); }
 }
+
+.cnrisk-demo__error {
+  margin: 0 0 1rem;
+  padding: .8rem 1rem;
+  border: 1px solid currentColor;
+  font-weight: 700;
+}
