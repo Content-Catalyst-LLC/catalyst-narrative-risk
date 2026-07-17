@@ -1,53 +1,49 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.2.0 — Claims, Sources, and Evidence Ledger**
+**Current release: v1.3.0 — Persistent Cases and Review Workspaces**
 
-Catalyst Narrative Risk is the Sustainable Catalyst platform layer for traceable claims review. It connects narrative statements to structured sources, evidence excerpts, provenance, qualifications, contradictions, uncertainty, consequence, machine interpretation, and accountable human decisions.
+Catalyst Narrative Risk is the Sustainable Catalyst platform layer for traceable claims, evidence, uncertainty, narrative interpretation, and accountable human review. v1.3.0 adds durable case management around the canonical analytical record.
 
-The module does not certify whether a claim is true. It makes the review path inspectable: what was claimed, which evidence was linked, how source independence and contradictions affected the heuristic, what the method calculated, and what a human reviewer ultimately decided.
+The module does not certify whether a claim is true. It preserves what was claimed, which evidence was linked, how the transparent method calculated risk, what a reviewer decided, and how the case changed over time.
 
-## v1.2.0 contract
+## v1.3.0 architecture
 
-Every canonical record contains five separate analytical and governance layers:
+The release separates mutable workspace state from immutable analytical artifacts:
 
-1. `normalized_input` — strict scalar inputs, including source values derived from the ledger when evidence relationships exist.
-2. `evidence_ledger` — claims, sources, evidence excerpts, claim-evidence relationships, coverage, citations, provenance, and derived scoring inputs.
-3. `calculations` — selected values, weights, rationale, remediation, totals, score, and threshold.
-4. `interpretation` — risk level, flags, actions, and the method's decision note.
-5. `human_decision` — reviewer status and disposition, stored separately and never inferred from the score.
+- **Cases** hold title, summary, organization and project references, status, priority, tags, archive state, and current revision pointers.
+- **Revisions** hold complete canonical narrative-risk records and SHA-256 hashes. Revisions are never edited in place.
+- **Review events** append comments, review requests, completed reviews, decision updates, status changes, and assignment changes.
+- **Activity** is append-only and protected from update or deletion by SQLite triggers.
+- **Saved views** preserve validated search and filtering criteria.
+- **Portable bundles** contain a case, all revisions, review events, activity, and a complete bundle checksum.
 
-Each record also carries stable record, case, method, input-schema, record-schema, and ledger-schema identifiers; the complete method snapshot; and SHA-256 digests for the method, normalized input, evidence ledger, and complete record payload.
+The existing five canonical analytical layers remain unchanged:
 
-## Evidence-ledger behavior
-
-The ledger supports:
-
-- Atomic primary, supporting, and contextual claims
-- Structured source metadata, identifiers, independence groups, duplicate links, directness, freshness, and acquisition provenance
-- Evidence excerpts with locators, capture timestamps, and excerpt hashes
-- `support`, `qualify`, `contradict`, `contextualize`, and `unresolved` relationships
-- Per-claim and overall coverage summaries
-- Harvard-style citations and portable source lists
-- Knowledge Library and Catalyst Data source handoffs
-
-When the primary claim has evidence relationships, `source_type`, `evidence_strength`, and `source_count` are derived from the ledger. Conflicting manually supplied scalar values are rejected.
+1. `normalized_input`
+2. `evidence_ledger`
+3. `calculations`
+4. `interpretation`
+5. `human_decision`
 
 ## Canonical assets
 
 ```text
-contracts/narrative-risk-contract.v1.2.0.json
-contracts/controlled-vocabularies.v1.2.0.json
-methods/transparent-heuristic.v1.2.0.json
+contracts/narrative-risk-contract.v1.3.0.json
+contracts/controlled-vocabularies.v1.3.0.json
+methods/transparent-heuristic.v1.3.0.json
 schemas/narrative_risk_input.schema.json
 schemas/narrative_risk_evidence_ledger.schema.json
 schemas/narrative_risk_method_snapshot.schema.json
 schemas/narrative_risk_record.schema.json
-schemas/knowledge_library_source_handoff.schema.json
-schemas/catalyst_data_source_handoff.schema.json
+schemas/narrative_risk_case.schema.json
+schemas/narrative_risk_revision.schema.json
+schemas/narrative_risk_review_event.schema.json
+schemas/narrative_risk_saved_view.schema.json
+schemas/narrative_risk_workspace_bundle.schema.json
 schemas/archive/
 ```
 
-## Python usage
+## Python analytical usage
 
 ```bash
 python -m pip install -r requirements.txt
@@ -59,53 +55,80 @@ python python/narrative_risk_brief.py \
   --bibliography-out outputs/sample_source_list.md
 ```
 
-Export only the evidence ledger:
-
-```bash
-python python/export_evidence_ledger.py \
-  --input outputs/sample_narrative_risk_output.json \
-  --output outputs/sample_evidence_ledger.csv \
-  --format csv
-```
-
-Verify an exported record:
+Verify a record:
 
 ```bash
 python python/verify_narrative_risk_record.py \
   --input outputs/sample_narrative_risk_output.json
 ```
 
-Migrate a v1.0.1 or v1.1.0 record:
+## Persistent workspace CLI
+
+Initialize and create a persistent case:
 
 ```bash
-python python/migrate_narrative_risk_record.py \
-  --input tests/fixtures/legacy-v1.1.0-record.json \
-  --output migrated-record.json
+python python/narrative_risk_workspace.py \
+  --database data/catalyst-narrative-risk.sqlite3 init
+
+python python/narrative_risk_workspace.py \
+  --database data/catalyst-narrative-risk.sqlite3 create \
+  --title "Pilot energy narrative" \
+  --tag energy \
+  --input data/sample_narrative_risk_input.json
 ```
 
-## API
+The CLI also supports `list`, `show`, `add-revision`, `add-review`, `archive`, `restore`, `export`, `import`, `verify-bundle`, and `save-view`.
 
-- `POST /api/narrative-risk` — create a canonical v1.2.0 record
-- `POST /api/narrative-risk/ledger/analyze` — analyze normalized inputs and the evidence ledger without assigning record IDs
-- `POST /api/narrative-risk/verify` — validate and exactly reproduce a record
-- `POST /api/narrative-risk/migrate` — auto-detect and migrate v1.0.1 or v1.1.0
+## REST API
+
+Analytical endpoints:
+
+- `POST /api/narrative-risk`
+- `POST /api/narrative-risk/ledger/analyze`
+- `POST /api/narrative-risk/verify`
+- `POST /api/narrative-risk/migrate`
 - `POST /api/narrative-risk/migrate/v1.0.1`
 - `POST /api/narrative-risk/migrate/v1.1.0`
-- `POST /api/narrative-risk/import/knowledge-library`
-- `POST /api/narrative-risk/import/catalyst-data`
+- `POST /api/narrative-risk/migrate/v1.2.0`
 - `GET /api/narrative-risk/contract`
 - `GET /api/narrative-risk/vocabularies`
 - `GET /api/narrative-risk/methods/current`
 
-## WordPress demo
+Workspace endpoints:
+
+- `GET /api/narrative-risk/workspaces/health`
+- `POST|GET /api/narrative-risk/cases`
+- `GET|PATCH /api/narrative-risk/cases/{case_id}`
+- `POST /api/narrative-risk/cases/{case_id}/revisions`
+- `POST /api/narrative-risk/cases/{case_id}/reviews`
+- `POST /api/narrative-risk/cases/{case_id}/archive`
+- `POST /api/narrative-risk/cases/{case_id}/restore`
+- `GET /api/narrative-risk/cases/{case_id}/export`
+- `POST /api/narrative-risk/cases/import`
+- `POST|GET /api/narrative-risk/saved-views`
+
+Set `CNRISK_DATABASE_PATH` to the persistent SQLite file. Flask otherwise uses `instance/catalyst-narrative-risk.sqlite3`.
+
+## WordPress
 
 Install `wordpress/catalyst-narrative-risk-demo/` and use:
 
 ```text
 [catalyst_narrative_risk_demo]
+[catalyst_narrative_risk_workspace]
 ```
 
-The browser demo accepts optional ledger JSON, derives source-related scoring inputs, displays evidence coverage and citations, and exports the same canonical record and SHA-256 digests as Python.
+The workspace shortcode provides browser-local case persistence and portable bundle import/export. The production persistence contract is the SQLite-backed REST API.
+
+## Migration
+
+The migration tool auto-detects v1.0.1, v1.1.0, and v1.2.0 records:
+
+```bash
+python python/migrate_narrative_risk_record.py \
+  --input tests/fixtures/legacy-v1.2.0-record.json \
+  --output migrated-v1.3.0-record.json
+```
 
 ## Release validation
 
@@ -114,7 +137,7 @@ python -m pip install -r requirements-dev.txt
 bash scripts/release_check.sh
 ```
 
-The release gate covers Python tests, schemas, method generation, API and CLI behavior, migrations, handoffs, browser fixtures, exact Python–JavaScript ledger/record/digest parity, JSON/Markdown/CSV exports, JavaScript syntax, and PHP syntax.
+The release gate covers Python tests, SQLite persistence, immutable revision hashes, append-only activity, bundle round trips, schemas, migrations, API and CLI behavior, browser parity, WordPress syntax, and packaged artifacts.
 
 ## Methodological boundary
 

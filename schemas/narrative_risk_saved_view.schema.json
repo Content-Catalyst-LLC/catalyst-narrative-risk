@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/saved-view/1.3.0",
+  "title": "Catalyst Narrative Risk Saved View 1.3.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["view_id", "name", "owner_id", "filters", "created_at", "updated_at"],
+  "properties": {
+    "view_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 500},
+    "owner_id": {"type": ["string", "null"], "maxLength": 500},
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {"type": "string", "maxLength": 500},
+        "organization_id": {"type": ["string", "null"], "maxLength": 500},
+        "project_id": {"type": ["string", "null"], "maxLength": 500},
+        "status": {"type": ["string", "null"], "enum": ["draft", "active", "in_review", "approved", "closed", null]},
+        "priority": {"type": ["string", "null"], "enum": ["low", "normal", "high", "critical", null]},
+        "tags": {"type": "array", "items": {"type": "string", "minLength": 1, "maxLength": 100}, "uniqueItems": true},
+        "archived": {"type": "boolean"}
+      }
+    },
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

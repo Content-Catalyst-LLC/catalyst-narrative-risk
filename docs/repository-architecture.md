@@ -1,6 +1,6 @@
 # Repository architecture
 
-The v1.2.0 repository separates contract data, analytical logic, integrations, interfaces, and release validation.
+The v1.3.0 repository separates contract data, analytical logic, integrations, interfaces, and release validation.
 
 - `contracts/` contains the contract registry and controlled vocabularies.
 - `methods/` contains the complete versioned method and ledger policy.

@@ -1,18 +1,18 @@
 {
   "name": "Catalyst Narrative Risk",
   "slug": "catalyst-narrative-risk",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-  "contract_version": "1.2.0",
+  "contract_version": "1.3.0",
   "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-  "method_version": "1.2.0",
-  "record_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0",
-  "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.2.0",
-  "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0",
-  "knowledge_library_handoff_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/knowledge-library-source/1.2.0",
-  "catalyst_data_handoff_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/catalyst-data-source/1.2.0",
-  "schema_version": "1.2.0",
-  "controlled_vocabulary_version": "1.2.0",
+  "method_version": "1.3.0",
+  "record_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0",
+  "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.3.0",
+  "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0",
+  "knowledge_library_handoff_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/knowledge-library-source/1.3.0",
+  "catalyst_data_handoff_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/catalyst-data-source/1.3.0",
+  "schema_version": "1.3.0",
+  "controlled_vocabulary_version": "1.3.0",
   "shortcode": "[catalyst_narrative_risk_demo]",
   "repository": "https://github.com/Content-Catalyst-LLC/catalyst-narrative-risk",
   "platform_role": "traceable claims, sources, evidence, uncertainty, narrative interpretation, and human review governance layer",
@@ -24,10 +24,38 @@
     "evidence-ledger-markdown",
     "evidence-ledger-csv",
     "method-snapshot",
-    "wordpress-demo"
+    "wordpress-demo",
+    "persistent-case",
+    "immutable-revision",
+    "review-event",
+    "saved-view",
+    "portable-case-bundle",
+    "sqlite-workspace"
   ],
-  "runtime_contracts": ["python", "browser-javascript", "wordpress-php"],
-  "migration_sources": ["1.0.1", "1.1.0"],
-  "integration_handoffs": ["knowledge-library-source", "catalyst-data-source"],
-  "method_boundary": "heuristic review support, not truth verification or automatic approval"
+  "runtime_contracts": [
+    "python",
+    "browser-javascript",
+    "wordpress-php",
+    "sqlite3"
+  ],
+  "migration_sources": [
+    "1.0.1",
+    "1.1.0",
+    "1.2.0"
+  ],
+  "integration_handoffs": [
+    "knowledge-library-source",
+    "catalyst-data-source"
+  ],
+  "method_boundary": "heuristic review support, not truth verification or automatic approval",
+  "case_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.3.0",
+  "revision_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.3.0",
+  "review_event_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.3.0",
+  "saved_view_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/saved-view/1.3.0",
+  "workspace_bundle_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/workspace-bundle/1.3.0",
+  "database": "sqlite3",
+  "workspace_shortcodes": [
+    "[catalyst_narrative_risk_demo]",
+    "[catalyst_narrative_risk_workspace]"
+  ]
 }

@@ -1,4 +1,4 @@
-name: Canonical claims and evidence release integrity
+name: Persistent cases and workspace release integrity
 
 on:
   push:

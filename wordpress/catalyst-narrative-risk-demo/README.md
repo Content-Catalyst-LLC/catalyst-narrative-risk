@@ -1,13 +1,14 @@
-# Catalyst Narrative Risk Demo v1.2.0
+# Catalyst Narrative Risk WordPress Package v1.3.0
 
-Install this directory as a WordPress plugin and activate it.
-
-Use:
+The plugin provides two shortcodes:
 
 ```text
 [catalyst_narrative_risk_demo]
+[catalyst_narrative_risk_workspace]
 ```
 
-The demo runs entirely in the visitor's browser. `narrative-risk-method.js` is generated from the canonical v1.2.0 method JSON. The browser engine produces the same claims, sources, evidence relationships, coverage analysis, citations, layered record, hashes, score, and interpretation as Python.
+The demo builds a canonical analytical record with claims, sources, evidence relationships, scoring, interpretation, and a separate human decision.
 
-The optional evidence-ledger JSON field accepts `claims`, `sources`, `evidence_items`, and `relationships`. When relationships are supplied, the source type, evidence strength, and source count used by the heuristic are derived from the ledger.
+The workspace stores cases, immutable revisions, review comments, search state, and archive state in the visitor's browser. It exports and imports v1.3.0 checksummed case bundles. Institutional deployment should connect the interface to the SQLite-backed REST API rather than treating browser storage as shared persistence.
+
+`narrative-risk-method.js` is generated from the canonical v1.3.0 method JSON. The browser engine produces the same evidence ledger, score, canonical record, and SHA-256 digests as Python.

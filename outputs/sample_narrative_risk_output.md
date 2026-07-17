@@ -9,10 +9,10 @@
 **Independent source groups:** 2
 **Record ID:** urn:uuid:30000000-0000-4000-8000-000000000001
 **Case ID:** urn:uuid:30000000-0000-4000-8000-000000000002
-**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.2.0
-**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0
-**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0
-**Method snapshot SHA-256:** `e1c85e06985545fda64bb128def20c0fe93fdb0e7046e780679e3932fc059cf7`
+**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.3.0
+**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0
+**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0
+**Method snapshot SHA-256:** `d4bf6deef10badba926f2d6fa78cb726d5936db20e54b8dce08361936a332942`
 
 ## Decision note
 

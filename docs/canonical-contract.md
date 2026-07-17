@@ -1,6 +1,6 @@
 # Canonical contract
 
-Catalyst Narrative Risk v1.2.0 uses a five-layer record:
+Catalyst Narrative Risk v1.3.0 uses a five-layer record:
 
 1. `normalized_input`
 2. `evidence_ledger`

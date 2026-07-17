@@ -1,6 +1,6 @@
 # Reproducibility
 
-A v1.2.0 record can be rebuilt exactly from its stored normalized input, evidence ledger, method snapshot, IDs, timestamp, human decision, and optional migration metadata.
+A v1.3.0 record can be rebuilt exactly from its stored normalized input, evidence ledger, method snapshot, IDs, timestamp, human decision, and optional migration metadata.
 
 Verification checks:
 

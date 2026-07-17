@@ -3,7 +3,8 @@
 from .errors import NarrativeRiskValidationError
 from .integrations import import_catalyst_data_source, import_knowledge_library_source
 from .ledger import harvard_citation, stable_ledger_id
-from .migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record
+from .migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record
+from .workspaces import SQLiteCaseRepository
 from .service import (
     CONTRACT_ID,
     INPUT_SCHEMA_ID,
@@ -32,6 +33,7 @@ __all__ = [
     "score_narrative_risk", "build_narrative_risk_record", "validate_method_snapshot",
     "validate_narrative_risk_record", "reproduce_narrative_risk_record",
     "verify_record_reproducibility", "migrate_record", "migrate_v1_0_1_record",
-    "migrate_v1_1_0_record", "stable_ledger_id", "harvard_citation",
+    "migrate_v1_1_0_record", "migrate_v1_2_0_record", "SQLiteCaseRepository",
+    "stable_ledger_id", "harvard_citation",
     "import_knowledge_library_source", "import_catalyst_data_source",
 ]

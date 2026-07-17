@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.2.0",
+  "contract_version": "1.3.0",
   "valid": [
     {
       "name": "zero_weight_low",
@@ -31,7 +31,7 @@
           "method_notes": "Reviewed against the primary record."
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
           "claims": [
             {
@@ -188,7 +188,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
           "claims": [
             {
@@ -355,7 +355,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
           "claims": [
             {
@@ -535,7 +535,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
           "claims": [
             {
@@ -704,7 +704,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
           "claims": [
             {
@@ -872,7 +872,7 @@
           "method_notes": "normalized notes"
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
           "claims": [
             {
@@ -1158,7 +1158,7 @@
           "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "claims": [
             {
@@ -1350,7 +1350,7 @@
             "source_type": "official_or_primary",
             "evidence_strength": "strong",
             "source_count": 2,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy."
           }
         },
         "calculations": {
@@ -1512,7 +1512,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.2.0",
+          "ledger_version": "1.3.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "claims": [
             {
@@ -1634,7 +1634,7 @@
             "source_type": "internal_unreviewed",
             "evidence_strength": "limited",
             "source_count": 1,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy."
           }
         },
         "calculations": {

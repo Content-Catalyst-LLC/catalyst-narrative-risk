@@ -8,7 +8,7 @@ Migration:
 - Preserves `generated_at`
 - Preserves the original risk score and level
 - Creates deterministic UUID-based record and case identifiers from the legacy record digest
-- Embeds the v1.2.0 method snapshot and an empty evidence ledger
+- Embeds the v1.3.0 method snapshot and an empty evidence ledger
 - Adds migration warnings
 - Sets human disposition to `undecided`
 

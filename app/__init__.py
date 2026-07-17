@@ -1,8 +1,17 @@
+"""Flask API for the canonical engine and persistent review workspaces."""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
 from flask import Flask, jsonify, request
 
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
-from narrative_risk.migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record
+from narrative_risk.migrations import (
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record,
+)
 from narrative_risk.service import (
     VERSION,
     NarrativeRiskValidationError,
@@ -11,6 +20,7 @@ from narrative_risk.service import (
     validate_narrative_risk_record,
     verify_record_reproducibility,
 )
+from narrative_risk.workspaces import SQLiteCaseRepository
 
 
 def _json_object():
@@ -24,8 +34,38 @@ def _bad_request(error_code: str, exc: Exception):
     return jsonify({"error": error_code, "message": str(exc)}), 400
 
 
-def create_app():
+def _bool_query(name: str, default: bool = False) -> bool:
+    raw = request.args.get(name)
+    if raw is None:
+        return default
+    if raw.lower() in {"1", "true", "yes"}:
+        return True
+    if raw.lower() in {"0", "false", "no"}:
+        return False
+    raise NarrativeRiskValidationError(f"{name} must be true or false")
+
+
+def _int_query(name: str, default: int) -> int:
+    raw = request.args.get(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError as exc:
+        raise NarrativeRiskValidationError(f"{name} must be an integer") from exc
+
+
+def create_app(config: dict | None = None):
     app = Flask(__name__)
+    default_db = os.environ.get(
+        "CNRISK_DATABASE_PATH",
+        str(Path(app.instance_path) / "catalyst-narrative-risk.sqlite3"),
+    )
+    app.config.update(NARRATIVE_RISK_DATABASE=default_db)
+    if config:
+        app.config.update(config)
+    repository = SQLiteCaseRepository(app.config["NARRATIVE_RISK_DATABASE"])
+    app.extensions["narrative_risk_repository"] = repository
 
     @app.get("/healthz")
     def healthz():
@@ -35,6 +75,8 @@ def create_app():
             "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
             "contract_version": VERSION,
             "evidence_ledger": True,
+            "persistent_cases": True,
+            "workspace": repository.health(),
         }, 200
 
     @app.get("/api/narrative-risk/contract")
@@ -100,6 +142,14 @@ def create_app():
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
 
+    @app.post("/api/narrative-risk/migrate/v1.2.0")
+    def narrative_risk_migrate_v120():
+        try:
+            migrated = migrate_v1_2_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
     @app.post("/api/narrative-risk/import/knowledge-library")
     def narrative_risk_import_knowledge_library():
         try:
@@ -115,5 +165,132 @@ def create_app():
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_catalyst_data_handoff", exc)
         return jsonify({"source": source}), 200
+
+    @app.get("/api/narrative-risk/workspaces/health")
+    def workspace_health():
+        return jsonify(repository.health()), 200
+
+    @app.post("/api/narrative-risk/cases")
+    def create_case():
+        try:
+            payload = _json_object()
+            allowed = {
+                "title", "summary", "organization_id", "project_id", "status", "priority",
+                "tags", "case_id", "created_at", "initial_payload", "created_by", "change_note",
+            }
+            unknown = sorted(set(payload) - allowed)
+            if unknown:
+                raise NarrativeRiskValidationError(f"unsupported case field(s): {', '.join(unknown)}")
+            case = repository.create_case(**payload)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case", exc)
+        return jsonify(case), 201
+
+    @app.get("/api/narrative-risk/cases")
+    def list_cases():
+        try:
+            tags = [value.strip() for value in request.args.get("tags", "").split(",") if value.strip()]
+            cases = repository.list_cases(
+                query=request.args.get("query", ""),
+                organization_id=request.args.get("organization_id"),
+                project_id=request.args.get("project_id"),
+                status=request.args.get("status"),
+                priority=request.args.get("priority"),
+                tags=tags,
+                archived=_bool_query("archived", False),
+                limit=_int_query("limit", 100),
+                offset=_int_query("offset", 0),
+            )
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_query", exc)
+        return jsonify({"cases": cases, "count": len(cases)}), 200
+
+    @app.get("/api/narrative-risk/cases/<case_id>")
+    def get_case(case_id: str):
+        try:
+            case = repository.get_case(case_id, include_details=_bool_query("include_details", True))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("case_not_found", exc)
+        return jsonify(case), 200
+
+    @app.patch("/api/narrative-risk/cases/<case_id>")
+    def update_case(case_id: str):
+        try:
+            case = repository.update_case(case_id, _json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_update", exc)
+        return jsonify(case), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/archive")
+    def archive_case(case_id: str):
+        try:
+            payload = request.get_json(silent=True) or {}
+            if not isinstance(payload, dict):
+                raise NarrativeRiskValidationError("request body must be a JSON object")
+            case = repository.archive_case(case_id, archived_at=payload.get("archived_at"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_archive", exc)
+        return jsonify(case), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/restore")
+    def restore_case(case_id: str):
+        try:
+            case = repository.restore_case(case_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_restore", exc)
+        return jsonify(case), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/revisions")
+    def add_revision(case_id: str):
+        try:
+            payload = _json_object()
+            allowed = {"record", "payload", "human_decision", "created_by", "change_note", "revision_id", "created_at"}
+            unknown = sorted(set(payload) - allowed)
+            if unknown:
+                raise NarrativeRiskValidationError(f"unsupported revision field(s): {', '.join(unknown)}")
+            revision = repository.add_revision(case_id, **payload)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_revision", exc)
+        return jsonify(revision), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/reviews")
+    def add_review(case_id: str):
+        try:
+            event = repository.add_review_event(case_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_review_event", exc)
+        return jsonify(event), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/export")
+    def export_case(case_id: str):
+        try:
+            bundle = repository.export_case_bundle(case_id, exported_at=request.args.get("exported_at"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_export", exc)
+        return jsonify(bundle), 200
+
+    @app.post("/api/narrative-risk/cases/import")
+    def import_case():
+        try:
+            result = repository.import_case_bundle(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_bundle", exc)
+        return jsonify(result), 201
+
+    @app.post("/api/narrative-risk/saved-views")
+    def create_saved_view():
+        try:
+            view = repository.save_view(**_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_saved_view", exc)
+        return jsonify(view), 201
+
+    @app.get("/api/narrative-risk/saved-views")
+    def list_saved_views():
+        try:
+            views = repository.list_saved_views(owner_id=request.args.get("owner_id"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_saved_view_query", exc)
+        return jsonify({"saved_views": views, "count": len(views)}), 200
 
     return app

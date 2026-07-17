@@ -1,4 +1,4 @@
-"""Claims, sources, evidence, provenance, citations, and coverage for v1.2.0."""
+"""Claims, sources, evidence, provenance, citations, and coverage for v1.3.0."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from .contracts import LEDGER_SCHEMA_PATH, sha256_digest, validate_against_schema
 from .errors import NarrativeRiskValidationError
 
-LEDGER_VERSION = "1.2.0"
+LEDGER_VERSION = "1.3.0"
 CLAIM_TYPES = ("factual", "causal", "predictive", "normative", "recommendation", "interpretive")
 CLAIM_ROLES = ("primary", "supporting", "context")
 EVIDENCE_TYPES = ("quote", "data", "finding", "observation", "method", "context")
@@ -434,7 +434,7 @@ def _derive_scoring_inputs(
         "source_type": source_type,
         "evidence_strength": strength,
         "source_count": len(source_ids),
-        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy.",
+        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy.",
     }
 
 

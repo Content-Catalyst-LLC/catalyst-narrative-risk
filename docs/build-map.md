@@ -6,7 +6,7 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.2.0
+## Current implementation — v1.3.0
 
 The repository now provides a validated canonical method and traceable evidence foundation:
 

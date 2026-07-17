@@ -2,15 +2,15 @@
   "record_type": "catalyst_narrative_risk_record",
   "contract": {
     "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-    "contract_version": "1.2.0"
+    "contract_version": "1.3.0"
   },
   "identifiers": {
     "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
     "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0",
-    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.2.0",
-    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0"
+    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0",
+    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.3.0",
+    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0"
   },
   "generated_at": "2026-07-17T12:00:00+00:00",
   "normalized_input": {
@@ -27,7 +27,7 @@
     "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
   },
   "evidence_ledger": {
-    "ledger_version": "1.2.0",
+    "ledger_version": "1.3.0",
     "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "claims": [
       {
@@ -219,14 +219,14 @@
       "source_type": "official_or_primary",
       "evidence_strength": "strong",
       "source_count": 2,
-      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy."
     }
   },
   "method_snapshot": {
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "method_version": "1.2.0",
+    "method_version": "1.3.0",
     "name": "Transparent Heuristic Narrative Risk Method",
-    "description": "A weighted, inspectable review heuristic with a traceable claims, sources, and evidence ledger. It structures risk without verifying truth or replacing human judgment.",
+    "description": "A weighted, inspectable review heuristic with a traceable claims, sources, and evidence ledger. It structures risk without verifying truth or replacing human judgment. v1.3.0 stores outputs as immutable revisions within persistent review cases without changing the scoring algorithm.",
     "algorithm": {
       "type": "weighted_additive_v1",
       "component_order": [
@@ -263,7 +263,7 @@
       ]
     },
     "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-    "controlled_vocabulary_version": "1.2.0",
+    "controlled_vocabulary_version": "1.3.0",
     "defaults": {
       "source_type": "reputable_secondary",
       "evidence_strength": "moderate",
@@ -548,7 +548,7 @@
     },
     "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
     "ledger_policy": {
-      "policy_version": "1.2.0",
+      "policy_version": "1.3.0",
       "primary_claim_role": "primary",
       "positive_relation_types": [
         "support",
@@ -600,7 +600,7 @@
       }
     }
   },
-  "method_snapshot_sha256": "e1c85e06985545fda64bb128def20c0fe93fdb0e7046e780679e3932fc059cf7",
+  "method_snapshot_sha256": "d4bf6deef10badba926f2d6fa78cb726d5936db20e54b8dce08361936a332942",
   "calculations": {
     "components": {
       "source_type": {
@@ -690,7 +690,7 @@
   },
   "reproducibility": {
     "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-    "evidence_ledger_sha256": "bad5549a343b950944935572cfe50fcf0871036576f7023d93b9ab8c7716b841",
-    "record_payload_sha256": "a564467278315322367156735b1d7d3a80b97a84a13cb7a62b6959c4adddbdbe"
+    "evidence_ledger_sha256": "7747b497b89f4fe513baa1f651e96ee71d8b9541b09bf8aaf3070b50b8732179",
+    "record_payload_sha256": "389894da2aae33a4e2564c35425c72ee135ef18a8d3f06bad8a61b143c5fc02f"
   }
 }

@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.2.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v1.3.0."""
 
 from __future__ import annotations
 
@@ -9,20 +9,29 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.2.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.2.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.2.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.2.0.json"
+VERSION = "1.3.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.3.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.3.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.3.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 METHOD_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_method_snapshot.schema.json"
 RECORD_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_record.schema.json"
 KNOWLEDGE_LIBRARY_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "knowledge_library_source_handoff.schema.json"
 CATALYST_DATA_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "catalyst_data_source_handoff.schema.json"
+CASE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_case.schema.json"
+REVISION_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_revision.schema.json"
+REVIEW_EVENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_event.schema.json"
+SAVED_VIEW_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_saved_view.schema.json"
+WORKSPACE_BUNDLE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_workspace_bundle.schema.json"
 LEGACY_V101_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.0.1.schema.json"
 LEGACY_V110_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.1.0.schema.json"
 LEGACY_V110_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.1.0.schema.json"
 LEGACY_V110_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.1.0.schema.json"
+LEGACY_V120_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.2.0.schema.json"
+LEGACY_V120_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.2.0.schema.json"
+LEGACY_V120_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.2.0.schema.json"
+LEGACY_V120_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.2.0.schema.json"
 # Backwards-compatible alias retained for integrations written against v1.1.0.
 LEGACY_RECORD_SCHEMA_PATH = LEGACY_V101_RECORD_SCHEMA_PATH
 
@@ -83,10 +92,19 @@ def _registry():
         RECORD_SCHEMA_PATH,
         KNOWLEDGE_LIBRARY_HANDOFF_SCHEMA_PATH,
         CATALYST_DATA_HANDOFF_SCHEMA_PATH,
+        CASE_SCHEMA_PATH,
+        REVISION_SCHEMA_PATH,
+        REVIEW_EVENT_SCHEMA_PATH,
+        SAVED_VIEW_SCHEMA_PATH,
+        WORKSPACE_BUNDLE_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
         LEGACY_V110_RECORD_SCHEMA_PATH,
+        LEGACY_V120_INPUT_SCHEMA_PATH,
+        LEGACY_V120_LEDGER_SCHEMA_PATH,
+        LEGACY_V120_METHOD_SCHEMA_PATH,
+        LEGACY_V120_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:

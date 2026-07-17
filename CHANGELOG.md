@@ -1,29 +1,45 @@
 # Changelog
 
+## 1.3.0 - 2026-07-17
+
+### Added
+
+- SQLite-backed persistent cases and repository schema metadata.
+- Mutable case metadata with status, priority, tags, organization, project, archive, and restore.
+- Immutable numbered revisions containing complete canonical records and record hashes.
+- Append-only review events and audit activity protected by SQLite triggers.
+- Search, filters, pagination, and saved views.
+- Portable checksummed case bundles with transactional verification and import.
+- Workspace REST endpoints and command-line management tool.
+- v1.2.0 record migration preserving evidence, score, identifiers, and human decisions.
+- Case, revision, review-event, saved-view, and workspace-bundle schemas.
+- WordPress `[catalyst_narrative_risk_workspace]` shortcode with browser-local persistence.
+
+### Changed
+
+- Canonical analytical records are now stored as immutable case revisions rather than overwritten working files.
+- The release manifest and contract now declare workspace schemas, SQLite runtime support, and v1.2.0 migration compatibility.
+- WordPress package now contains both analytical demo and review workspace interfaces.
+
 ## 1.2.0 - 2026-07-17
 
 ### Added
 
 - Canonical claims, sources, evidence items, and claim-evidence relationship records.
 - Deterministic claim, source, evidence, and relationship identifiers.
-- Evidence-ledger schema, ledger identifier, ledger snapshot hash, and exact ledger reproduction.
-- Source provenance, identifiers, independence groups, duplicate relationships, directness, freshness, and excerpt hashes.
-- Support, qualification, contradiction, contextualization, and unresolved relationship types.
+- Evidence-ledger schema, source provenance, independence groups, freshness, directness, and excerpt hashes.
 - Per-claim and overall evidence-coverage summaries.
-- Ledger-derived source type, evidence strength, and source count for the primary claim.
-- Harvard-style source-list generation and JSON, Markdown, bibliography, and CSV exports.
-- Knowledge Library and Catalyst Data source-handoff schemas, adapters, and API endpoints.
-- Deterministic migration from canonical v1.1.0 records while preserving analysis and human decisions.
-- Browser/Python full-ledger, record, and SHA-256 parity fixtures.
-- WordPress evidence-ledger input, coverage, derived-input, and citation displays.
+- Ledger-derived source type, evidence strength, and source count.
+- Harvard-style citations and JSON, Markdown, bibliography, and CSV exports.
+- Knowledge Library and Catalyst Data source handoffs.
+- Browser/Python full-ledger, canonical-record, and SHA-256 parity.
+- WordPress evidence-ledger workflow.
 
 ### Changed
 
-- Canonical records now use five layers: normalized input, evidence ledger, calculations, interpretation, and human decision.
-- Source-related scalar values are derived from evidence relationships when a ledger is present.
-- Conflicting manual source type, evidence strength, or source count values now fail explicitly.
-- Migration tooling now auto-detects supported v1.0.1 and v1.1.0 records.
-- The canonical method snapshot now includes a versioned evidence-ledger derivation and interpretation policy.
+- Canonical records use five layers, including a dedicated evidence ledger.
+- Conflicting manual source fields are rejected when ledger-derived values exist.
+- Migration tooling supports v1.0.1 and v1.1.0 records.
 
 ## 1.1.0 - 2026-07-17
 

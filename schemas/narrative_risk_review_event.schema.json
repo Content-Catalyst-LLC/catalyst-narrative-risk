@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.3.0",
+  "title": "Catalyst Narrative Risk Review Event 1.3.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "case_id", "revision_id", "event_type", "author_id", "author_name", "body", "created_at", "metadata"],
+  "properties": {
+    "event_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
+    "case_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
+    "revision_id": {"type": ["string", "null"], "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
+    "event_type": {"enum": ["comment", "review_requested", "review_completed", "decision_updated", "status_changed", "assignment_changed"]},
+    "author_id": {"type": ["string", "null"], "maxLength": 500},
+    "author_name": {"type": ["string", "null"], "maxLength": 500},
+    "body": {"type": "string", "maxLength": 50000},
+    "created_at": {"type": "string", "format": "date-time"},
+    "metadata": {"type": "object"}
+  }
+}

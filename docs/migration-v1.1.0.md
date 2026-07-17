@@ -1,6 +1,6 @@
 # Migrating v1.1.0 records
 
-The v1.2.0 migrator validates the archived v1.1.0 schema before migration.
+The v1.3.0 migrator validates the archived v1.1.0 schema before migration.
 
 It preserves:
 
@@ -12,7 +12,7 @@ It preserves:
 
 It adds:
 
-- v1.2.0 contract, schema, method, and ledger identifiers
+- v1.3.0 contract, schema, method, and ledger identifiers
 - A deterministic primary claim derived from the original claim text
 - An empty item-level source and evidence ledger
 - Method, normalized-input, evidence-ledger, and record-payload hashes

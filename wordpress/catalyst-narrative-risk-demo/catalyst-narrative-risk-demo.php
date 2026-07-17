@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Catalyst Narrative Risk Demo
- * Description: Browser-based Sustainable Catalyst Narrative Risk demo with shortcode [catalyst_narrative_risk_demo].
- * Version: 1.2.0
+ * Plugin Name: Catalyst Narrative Risk
+ * Description: Narrative-risk scoring, evidence ledger, and persistent review workspace interfaces for Sustainable Catalyst.
+ * Version: 1.3.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,10 +13,12 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.2.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.2.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.2.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.2.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.3.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.3.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.3.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.3.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.3.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.3.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -209,3 +211,67 @@ function cnrisk_demo_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('catalyst_narrative_risk_demo', 'cnrisk_demo_shortcode');
+
+
+function cnrisk_workspace_shortcode() {
+    wp_enqueue_style('cnrisk-workspace-css');
+    wp_enqueue_script('cnrisk-workspace-js');
+    ob_start();
+    ?>
+    <div class="cnrisk-workspace" data-cnrisk-workspace>
+      <header class="cnrisk-workspace__head">
+        <h3>Narrative Risk Review Workspace</h3>
+        <p>Create durable cases, add immutable analytical revisions, preserve review comments, and export checksummed case bundles.</p>
+      </header>
+      <div class="cnrisk-workspace__layout">
+        <aside class="cnrisk-workspace__sidebar">
+          <label><span>Search cases</span><input type="search" data-cnrisk-workspace-search placeholder="Title, summary, or tag" /></label>
+          <div class="cnrisk-workspace__actions">
+            <button type="button" data-cnrisk-new-case>New case</button>
+            <label class="cnrisk-workspace__file">Import bundle<input type="file" accept="application/json" data-cnrisk-import-bundle /></label>
+          </div>
+          <div data-cnrisk-workspace-list></div>
+        </aside>
+        <main class="cnrisk-workspace__main">
+          <form data-cnrisk-workspace-form>
+            <div class="cnrisk-workspace__two">
+              <label><span>Case title</span><input name="case_title" required value="New narrative review case" /></label>
+              <label><span>Tags</span><input name="case_tags" placeholder="public, energy, pilot" /></label>
+            </div>
+            <label><span>Case summary</span><textarea name="case_summary" rows="2"></textarea></label>
+            <div class="cnrisk-workspace__two">
+              <label><span>Status</span><select name="case_status"><option value="draft">Draft</option><option value="active">Active</option><option value="in_review">In review</option><option value="approved">Approved</option><option value="closed">Closed</option></select></label>
+              <label><span>Priority</span><select name="case_priority"><option value="low">Low</option><option value="normal" selected>Normal</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+            </div>
+            <label><span>Claim or narrative statement</span><textarea name="claim" rows="4" required>The proposed initiative will improve public trust.</textarea></label>
+            <div class="cnrisk-workspace__two">
+              <label><span>Uncertainty</span><select name="uncertainty"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+              <label><span>Review status</span><select name="review_status"><option value="reviewed">Reviewed</option><option value="partly_reviewed" selected>Partly reviewed</option><option value="not_reviewed">Not reviewed</option></select></label>
+              <label><span>Narrative volatility</span><select name="narrative_volatility"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+              <label><span>Stakeholder pressure</span><select name="stakeholder_pressure"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+              <label><span>Time sensitivity</span><select name="time_sensitivity"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+              <label><span>Consequences</span><select name="consequences"><option value="low">Low</option><option value="moderate" selected>Moderate</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+            </div>
+            <label><span>Method notes</span><textarea name="method_notes" rows="2"></textarea></label>
+            <label><span>Revision note</span><input name="change_note" placeholder="What changed in this revision?" /></label>
+            <div class="cnrisk-workspace__actions">
+              <button type="submit">Save revision</button>
+              <button type="button" data-cnrisk-archive-case>Archive open case</button>
+            </div>
+          </form>
+          <div class="cnrisk-workspace__notice">
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.3.0 SQLite-backed REST workspace API.
+          </div>
+          <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
+          <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
+          <div class="cnrisk-workspace__reviews">
+            <label><span>Add review comment</span><textarea rows="2" data-cnrisk-review-body></textarea></label>
+            <button type="button" data-cnrisk-add-review>Add review activity</button>
+          </div>
+        </main>
+      </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('catalyst_narrative_risk_workspace', 'cnrisk_workspace_shortcode');

@@ -48,7 +48,7 @@ assert.deepStrictEqual(engine.verifyRecordReproducibility(record), {
   record_payload_hash_match: true,
   record_id: 'urn:uuid:00000000-0000-4000-8000-000000000001',
   method_id: engine.METHOD_ID,
-  method_version: '1.2.0',
+  method_version: '1.3.0',
   schema_id: engine.SCHEMA_ID,
   ledger_schema_id: engine.LEDGER_SCHEMA_ID
 });
