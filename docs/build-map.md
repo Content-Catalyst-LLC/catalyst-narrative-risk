@@ -6,19 +6,22 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.7.0
+## Current implementation — v1.9.0
 
 The repository now provides:
 
-- Cross-runtime scoring, narrative-map, evidence-ledger, canonical-record, and SHA-256 parity.
-- Versioned contracts, methods, vocabularies, and active plus archived schemas.
+- Cross-runtime scoring, evidence-ledger, narrative-map, canonical-record, and SHA-256 parity.
+- Versioned contracts, methods, vocabularies, active schemas, and archived migration contracts.
 - Persistent SQLite cases, immutable revisions, review history, saved views, and portable bundles.
 - Claim decomposition, typed narrative relationships, diagnostics, and wording comparison.
-- Staged review templates, assignments, human decisions, publication controls, expiration, and reassessment.
-- Immutable monitoring snapshots, source-freshness evaluation, change comparisons, watchlists, alerts, timelines, and Site Intelligence handoffs.
-- REST, CLI, and WordPress browser-workspace surfaces.
+- Staged governance, assignments, human decisions, publication controls, expiration, and reassessment.
+- Monitoring snapshots, freshness evaluation, narrative drift, watchlists, alerts, and Site Intelligence handoffs.
+- Stakeholder, incentive, pressure, conflict, relationship, and consequence intelligence.
+- Comparative evidence matrices, scenarios, sensitivity analysis, portfolios, and Decision Studio handoffs.
+- Governance-aware briefings and publication packages in JSON, Markdown, HTML, PDF, CSV, and JSON-LD.
+- Scoped API keys, rate limits, OpenAPI, public embeds, platform handoffs, and WordPress publication surfaces.
 
-The next roadmap release is v1.7.0 — Stakeholder, Incentive, and Pressure Intelligence.
+The next roadmap release is v1.10.0 — Security, Privacy, Accessibility, and Production Hardening.
 
 ## Release roadmap
 
@@ -115,7 +118,7 @@ Turn narrative-risk analysis into an accountable institutional process.
 
 **Release gate:** every approved narrative has an identifiable reviewer, decision, date, conditions, and complete audit trail.
 
-### v1.7.0 — Narrative Change, Freshness, and Monitoring
+### v1.6.0 — Narrative Change, Freshness, and Monitoring
 
 Make time and change first-class review dimensions.
 
@@ -208,7 +211,7 @@ Deliver the complete institutional claims-governance system.
 4. Persistence and workspaces: v1.3.0.
 5. Complex claim modeling: v1.4.0.
 6. Institutional review governance: v1.5.0.
-7. Time-based monitoring: v1.7.0.
+7. Time-based monitoring: v1.6.0.
 8. Stakeholder and pressure intelligence: v1.7.0.
 9. Comparative and scenario analysis: v1.8.0.
 10. Publication and integration: v1.9.0.
@@ -217,6 +220,6 @@ Deliver the complete institutional claims-governance system.
 
 ## Immediate next build
 
-**Build v1.3.0 — Persistent Cases and Review Workspaces.**
+**Build v1.10.0 — Security, Privacy, Accessibility, and Production Hardening.**
 
-The scoring, canonical contract, and evidence-ledger foundations are now complete. Persistence should be added next so claims, sources, evidence, reviews, revisions, and provenance can survive collaborative workflows, migration, and re-import without losing identity.
+The complete analytical, evidence, narrative, governance, monitoring, stakeholder, comparative, publication, API, and platform-integration foundation is now in place. The next release should harden organization isolation, permissions, private evidence, retention, accessibility, performance, deployment, backup, restore, and incident-recovery contracts before the v2.0.0 connected-platform release.

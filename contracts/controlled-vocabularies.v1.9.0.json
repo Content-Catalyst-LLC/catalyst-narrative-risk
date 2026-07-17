@@ -1,0 +1,693 @@
+{
+  "vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
+  "vocabulary_version": "1.9.0",
+  "vocabularies": {
+    "source_type": {
+      "default": "reputable_secondary",
+      "values": [
+        "official_or_primary",
+        "peer_reviewed_or_audited",
+        "reputable_secondary",
+        "internal_unreviewed",
+        "single_report_or_media",
+        "social_or_anecdotal",
+        "unknown"
+      ]
+    },
+    "evidence_strength": {
+      "default": "moderate",
+      "values": [
+        "strong",
+        "moderate",
+        "limited",
+        "weak",
+        "unclear"
+      ]
+    },
+    "three_level_scale": {
+      "default": "medium",
+      "values": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "consequences": {
+      "default": "moderate",
+      "values": [
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ]
+    },
+    "review_status": {
+      "default": "partly_reviewed",
+      "values": [
+        "reviewed",
+        "partly_reviewed",
+        "not_reviewed"
+      ]
+    },
+    "risk_level": {
+      "values": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "human_decision_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "pending_review",
+        "reviewed"
+      ]
+    },
+    "human_disposition": {
+      "default": "undecided",
+      "values": [
+        "undecided",
+        "approved",
+        "approved_with_conditions",
+        "revise",
+        "rejected"
+      ]
+    },
+    "claim_type": {
+      "default": "factual",
+      "values": [
+        "factual",
+        "causal",
+        "predictive",
+        "normative",
+        "recommendation",
+        "interpretive"
+      ]
+    },
+    "claim_role": {
+      "default": "primary",
+      "values": [
+        "primary",
+        "supporting",
+        "context"
+      ]
+    },
+    "evidence_type": {
+      "default": "finding",
+      "values": [
+        "quote",
+        "data",
+        "finding",
+        "observation",
+        "method",
+        "context"
+      ]
+    },
+    "evidence_relation_type": {
+      "values": [
+        "support",
+        "qualify",
+        "contradict",
+        "contextualize",
+        "unresolved"
+      ]
+    },
+    "source_directness": {
+      "default": "unknown",
+      "values": [
+        "direct",
+        "indirect",
+        "mixed",
+        "unknown"
+      ]
+    },
+    "source_freshness": {
+      "default": "unknown",
+      "values": [
+        "current",
+        "aging",
+        "stale",
+        "unknown"
+      ]
+    },
+    "source_acquisition_method": {
+      "default": "manual",
+      "values": [
+        "manual",
+        "knowledge_library",
+        "catalyst_data",
+        "api",
+        "document_import",
+        "other"
+      ]
+    },
+    "identifier_scheme": {
+      "values": [
+        "doi",
+        "isbn",
+        "issn",
+        "url",
+        "handle",
+        "ark",
+        "catalog",
+        "other"
+      ]
+    },
+    "coverage_status": {
+      "values": [
+        "none",
+        "partial",
+        "substantial",
+        "contested"
+      ]
+    },
+    "case_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "active",
+        "in_review",
+        "approved",
+        "closed"
+      ]
+    },
+    "case_priority": {
+      "default": "normal",
+      "values": [
+        "low",
+        "normal",
+        "high",
+        "critical"
+      ]
+    },
+    "review_event_type": {
+      "default": "comment",
+      "values": [
+        "comment",
+        "review_requested",
+        "review_completed",
+        "decision_updated",
+        "status_changed",
+        "assignment_changed"
+      ]
+    },
+    "narrative_node_type": {
+      "values": [
+        "factual_claim",
+        "causal_claim",
+        "predictive_claim",
+        "normative_claim",
+        "recommendation",
+        "assumption",
+        "context",
+        "unknown"
+      ]
+    },
+    "narrative_link_type": {
+      "values": [
+        "decomposes_to",
+        "depends_on",
+        "causes",
+        "predicts",
+        "supports",
+        "qualifies",
+        "contradicts",
+        "contextualizes",
+        "recommends",
+        "sequence"
+      ]
+    },
+    "confidence_language": {
+      "values": [
+        "absolute",
+        "confident",
+        "qualified",
+        "tentative",
+        "unknown"
+      ]
+    },
+    "narrative_issue_severity": {
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "wording_variant_status": {
+      "values": [
+        "current",
+        "draft",
+        "preferred",
+        "rejected",
+        "archived"
+      ]
+    },
+    "governance_role": {
+      "values": [
+        "author",
+        "reviewer",
+        "domain_reviewer",
+        "editorial_reviewer",
+        "legal_reviewer",
+        "compliance_reviewer",
+        "final_approver",
+        "administrator",
+        "observer"
+      ]
+    },
+    "review_stage": {
+      "values": [
+        "intake",
+        "domain",
+        "editorial",
+        "legal",
+        "compliance",
+        "final"
+      ]
+    },
+    "workflow_status": {
+      "values": [
+        "draft",
+        "active",
+        "blocked",
+        "changes_required",
+        "approved",
+        "rejected",
+        "expired",
+        "closed"
+      ]
+    },
+    "assignment_status": {
+      "values": [
+        "pending",
+        "accepted",
+        "completed",
+        "waived",
+        "overdue"
+      ]
+    },
+    "governance_disposition": {
+      "values": [
+        "approve",
+        "approve_with_conditions",
+        "revise",
+        "reject",
+        "waive"
+      ]
+    },
+    "publication_restriction": {
+      "values": [
+        "internal_only",
+        "embargoed",
+        "no_public_claim",
+        "attribution_required",
+        "legal_review_required",
+        "disclosure_required"
+      ]
+    },
+    "governance_permission": {
+      "values": [
+        "view",
+        "comment",
+        "submit_review",
+        "assign_reviewers",
+        "decide_stage",
+        "approve_final",
+        "manage_templates",
+        "override_expiration",
+        "publish"
+      ]
+    },
+    "snapshot_trigger": {
+      "default": "manual",
+      "values": [
+        "manual",
+        "revision_created",
+        "scheduled",
+        "site_intelligence",
+        "import"
+      ]
+    },
+    "source_freshness_status": {
+      "values": [
+        "current",
+        "aging",
+        "stale",
+        "unknown"
+      ]
+    },
+    "watch_status": {
+      "default": "active",
+      "values": [
+        "active",
+        "paused",
+        "closed"
+      ]
+    },
+    "watch_cadence": {
+      "default": "daily",
+      "values": [
+        "manual",
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly"
+      ]
+    },
+    "watch_trigger": {
+      "values": [
+        "new_evidence",
+        "material_change",
+        "source_stale",
+        "source_content_changed",
+        "risk_level_changed",
+        "wording_changed",
+        "confidence_changed",
+        "reassessment_due",
+        "approval_expired",
+        "site_intelligence_event"
+      ]
+    },
+    "monitoring_alert_severity": {
+      "values": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "monitoring_alert_status": {
+      "default": "open",
+      "values": [
+        "open",
+        "acknowledged",
+        "resolved"
+      ]
+    },
+    "site_intelligence_event_type": {
+      "values": [
+        "new_evidence",
+        "material_change",
+        "source_update",
+        "narrative_shift"
+      ]
+    },
+    "stakeholder_actor_type": {
+      "values": [
+        "individual",
+        "community",
+        "organization",
+        "company",
+        "government",
+        "regulator",
+        "funder",
+        "media",
+        "research_institution",
+        "advocacy_group",
+        "public",
+        "other"
+      ]
+    },
+    "stakeholder_influence": {
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "stakeholder_stance": {
+      "values": [
+        "supportive",
+        "neutral",
+        "opposed",
+        "mixed",
+        "unknown"
+      ]
+    },
+    "disclosure_status": {
+      "values": [
+        "not_required",
+        "disclosed",
+        "partially_disclosed",
+        "not_disclosed",
+        "unknown"
+      ]
+    },
+    "stakeholder_relationship_type": {
+      "values": [
+        "funds",
+        "employs",
+        "governs",
+        "regulates",
+        "represents",
+        "advises",
+        "partners_with",
+        "competes_with",
+        "depends_on",
+        "supplies",
+        "influences",
+        "amplifies",
+        "contests",
+        "benefits_from",
+        "harmed_by",
+        "other"
+      ]
+    },
+    "relationship_strength": {
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "critical",
+        "unknown"
+      ]
+    },
+    "relationship_direction": {
+      "values": [
+        "directed",
+        "mutual",
+        "undirected"
+      ]
+    },
+    "incentive_type": {
+      "values": [
+        "financial",
+        "political",
+        "reputational",
+        "legal",
+        "social",
+        "operational",
+        "mission",
+        "career",
+        "ideological",
+        "other"
+      ]
+    },
+    "incentive_alignment": {
+      "values": [
+        "aligned",
+        "mixed",
+        "opposed",
+        "unknown"
+      ]
+    },
+    "conflict_status": {
+      "values": [
+        "none",
+        "potential",
+        "confirmed",
+        "managed",
+        "unknown"
+      ]
+    },
+    "pressure_type": {
+      "values": [
+        "financial",
+        "political",
+        "reputational",
+        "legal",
+        "social",
+        "operational",
+        "deadline",
+        "funding",
+        "media",
+        "public",
+        "other"
+      ]
+    },
+    "pressure_horizon": {
+      "values": [
+        "immediate",
+        "short_term",
+        "medium_term",
+        "long_term",
+        "ongoing"
+      ]
+    },
+    "pressure_status": {
+      "values": [
+        "active",
+        "historical",
+        "anticipated",
+        "disputed"
+      ]
+    },
+    "stakeholder_impact_type": {
+      "values": [
+        "financial",
+        "reputational",
+        "legal",
+        "operational",
+        "social",
+        "environmental",
+        "political",
+        "health",
+        "safety",
+        "rights",
+        "other"
+      ]
+    },
+    "impact_direction": {
+      "values": [
+        "benefit",
+        "harm",
+        "mixed",
+        "unknown"
+      ]
+    },
+    "comparison_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "active",
+        "complete",
+        "archived"
+      ]
+    },
+    "comparison_mode": {
+      "default": "revision",
+      "values": [
+        "revision",
+        "record",
+        "scenario",
+        "mixed"
+      ]
+    },
+    "scenario_type": {
+      "default": "custom",
+      "values": [
+        "best_case",
+        "base_case",
+        "worst_case",
+        "counterfactual",
+        "adversarial",
+        "custom"
+      ]
+    },
+    "scenario_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "active",
+        "evaluated",
+        "retired"
+      ]
+    },
+    "scenario_adjustment_operation": {
+      "default": "hold",
+      "values": [
+        "add",
+        "remove",
+        "replace",
+        "increase",
+        "decrease",
+        "hold"
+      ]
+    },
+    "publication_readiness": {
+      "values": [
+        "not_assessed",
+        "blocked",
+        "conditional",
+        "ready"
+      ]
+    },
+    "briefing_audience": {
+      "default": "internal",
+      "values": [
+        "internal",
+        "executive",
+        "technical",
+        "public",
+        "regulatory",
+        "media"
+      ]
+    },
+    "publication_classification": {
+      "default": "internal",
+      "values": [
+        "internal",
+        "confidential",
+        "restricted",
+        "public"
+      ]
+    },
+    "publication_format": {
+      "values": [
+        "json",
+        "markdown",
+        "html",
+        "pdf",
+        "csv",
+        "jsonld"
+      ]
+    },
+    "publication_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "ready",
+        "published",
+        "revoked",
+        "superseded"
+      ]
+    },
+    "embed_status": {
+      "default": "active",
+      "values": [
+        "active",
+        "disabled",
+        "expired",
+        "revoked"
+      ]
+    },
+    "api_scope": {
+      "values": [
+        "records:read",
+        "cases:read",
+        "cases:write",
+        "publication:read",
+        "publication:write",
+        "embeds:read",
+        "embeds:write",
+        "handoffs:write",
+        "admin"
+      ]
+    },
+    "platform_target": {
+      "values": [
+        "knowledge_library",
+        "research_librarian",
+        "site_intelligence",
+        "catalyst_data",
+        "catalyst_canvas",
+        "decision_studio",
+        "external"
+      ]
+    }
+  }
+}

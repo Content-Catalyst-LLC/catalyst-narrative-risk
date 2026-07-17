@@ -1,6 +1,6 @@
 {
   "bundle_type": "catalyst_narrative_risk_case_bundle",
-  "bundle_version": "1.8.0",
+  "bundle_version": "1.9.0",
   "exported_at": "2026-07-17T19:40:00+00:00",
   "case": {
     "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
@@ -20,7 +20,7 @@
     "created_at": "2026-07-17T12:00:00+00:00",
     "updated_at": "2028-07-18T12:00:00+00:00",
     "current_revision": 2,
-    "latest_record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
+    "latest_record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
     "revision_count": 2,
     "review_event_count": 1,
     "assignment_count": 4,
@@ -47,15 +47,20 @@
     "evaluated_scenario_count": 4,
     "sensitivity_analysis_count": 1,
     "decision_studio_handoff_count": 1,
-    "comparative_status": "scenario_ready"
+    "comparative_status": "scenario_ready",
+    "publication_briefing_count": 1,
+    "publication_package_count": 1,
+    "public_embed_count": 1,
+    "platform_handoff_count": 4,
+    "publication_status": "published"
   },
   "revisions": [
     {
-      "revision_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+      "revision_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "revision_number": 1,
-      "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-      "record_sha256": "59ac0d6f969d7173a5ffe31839646f051b2cfbcee4851c82da8868ca04082a91",
+      "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+      "record_sha256": "fba5f7060e7d26d48916a5e2e78a1a2b46bcb90cf940cb4f01fa3d9f88e9370c",
       "created_at": "2026-07-17T12:00:00+00:00",
       "created_by": "release-suite",
       "change_note": "Initial case revision.",
@@ -129,7 +134,7 @@
         },
         "contract": {
           "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-          "contract_version": "1.8.0"
+          "contract_version": "1.9.0"
         },
         "evidence_ledger": {
           "claims": [
@@ -198,7 +203,7 @@
             ]
           },
           "derived_scoring_inputs": {
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.8.0 ledger policy.",
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.9.0 ledger policy.",
             "evidence_strength": "strong",
             "ledger_applied": true,
             "source_count": 2,
@@ -226,7 +231,7 @@
               "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
             }
           ],
-          "ledger_version": "1.8.0",
+          "ledger_version": "1.9.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "relationships": [
             {
@@ -338,12 +343,12 @@
         },
         "identifiers": {
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.8.0",
-          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.8.0",
+          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.9.0",
+          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.9.0",
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.8.0",
-          "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.8.0"
+          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.9.0",
+          "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.9.0"
         },
         "interpretation": {
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
@@ -399,7 +404,7 @@
             "comparison_member_maximum": 50,
             "comparison_member_minimum": 2,
             "decision_studio_handoff_mode": "Explicit, checksummed handoff with selected scenarios, evidence matrix, sensitivity results, portfolio summary, and governance context.",
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "scenario_types": [
               "best_case",
               "base_case",
@@ -486,7 +491,7 @@
             }
           },
           "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-          "controlled_vocabulary_version": "1.8.0",
+          "controlled_vocabulary_version": "1.9.0",
           "defaults": {
             "consequences": "moderate",
             "evidence_strength": "moderate",
@@ -566,7 +571,7 @@
                 "decide_stage"
               ]
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "reassessment_behavior": "A reassessment_at date creates a due item even when valid_until has not elapsed.",
             "roles": [
               "author",
@@ -766,7 +771,7 @@
             ],
             "evidence_strength_derivation": "Start with the strongest positive evidence relationship, downgrade one level when fewer than two independent source groups support the primary claim, and downgrade one additional level when contradictory evidence is present.",
             "minimum_independent_groups_for_no_downgrade": 2,
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "positive_relation_types": [
               "support",
               "qualify"
@@ -786,7 +791,7 @@
             "substantial_minimum_strength": "moderate"
           },
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "method_version": "1.8.0",
+          "method_version": "1.9.0",
           "monitoring_policy": {
             "boundary": "Monitoring detects change, freshness, and reassessment needs; it does not verify truth, alter the analytical score, or approve publication.",
             "default_cadence": "daily",
@@ -814,7 +819,7 @@
               "source_content_change": 15,
               "wording_change": 10
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "source_age_days": {
               "default": {
                 "aging_max": 365,
@@ -892,7 +897,55 @@
               "context",
               "unknown"
             ],
-            "policy_version": "1.8.0"
+            "policy_version": "1.9.0"
+          },
+          "publication_policy": {
+            "allowed_public_sections": [
+              "executive_summary",
+              "claim",
+              "risk_summary",
+              "evidence_summary",
+              "narrative_summary",
+              "governance_summary",
+              "disclosures",
+              "citations",
+              "reassessment"
+            ],
+            "blocking_restrictions": [
+              "internal_only",
+              "embargoed",
+              "no_public_claim"
+            ],
+            "conditional_restrictions": [
+              "attribution_required",
+              "legal_review_required",
+              "disclosure_required"
+            ],
+            "default_api_rate_limit_per_minute": 60,
+            "default_embed_ttl_days": 365,
+            "formats": [
+              "json",
+              "markdown",
+              "html",
+              "pdf",
+              "csv",
+              "jsonld"
+            ],
+            "maximum_api_rate_limit_per_minute": 1000,
+            "policy_version": "1.9.0",
+            "public_classification_requires_approved_workflow": true,
+            "redacted_private_fields": [
+              "reviewer_id",
+              "reviewer_name",
+              "author_id",
+              "author_name",
+              "created_by",
+              "decided_by",
+              "decided_by_name",
+              "body",
+              "notes",
+              "method_notes"
+            ]
           },
           "stakeholder_policy": {
             "boundary": "Stakeholder intelligence documents observable actors, relationships, incentives, pressures, disclosures, and consequences. It does not infer undisclosed motives, certify conflicts, or silently change the analytical score.",
@@ -911,7 +964,7 @@
               "low": 1,
               "medium": 2
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "pressure_intensity_weights": {
               "critical": 4,
               "high": 3,
@@ -986,7 +1039,7 @@
             }
           }
         },
-        "method_snapshot_sha256": "b2d6eab838e2a4c19a8846571debd93366922dd2cdb9bef2cd8860374dcc2b6f",
+        "method_snapshot_sha256": "0b4b142e844e66897caac7cf97b9eb6f5172f6be32af6be095100e0339ba8413",
         "narrative_map": {
           "analysis": {
             "cycles": [],
@@ -1072,7 +1125,7 @@
               "to_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222"
             }
           ],
-          "map_version": "1.8.0",
+          "map_version": "1.9.0",
           "nodes": [
             {
               "baseline": "weather-normalized pre-pilot consumption",
@@ -1197,18 +1250,18 @@
         "record_type": "catalyst_narrative_risk_record",
         "reproducibility": {
           "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-          "evidence_ledger_sha256": "12631779ad866dc71be8beea4fddfbbd542d7455a96f70e4deea7f939c05dea6",
-          "narrative_map_sha256": "7702b2f855ae13bcba4aeb0e37c3bc528bf88627791e9c9259179310b58536c9",
-          "record_payload_sha256": "c11be49176120f0533c611e855ef9643a0e057c6300a91b9ab1d2e0283b186da"
+          "evidence_ledger_sha256": "227b4eb4d388f7a29920158a5ae93d448c63ead8fd7e54663a00901ac35e917b",
+          "narrative_map_sha256": "c13883edd2adabf4b3b85438eeb62fcc5a815812fe8942e54a0520a61a45497f",
+          "record_payload_sha256": "1ea4abdfad851eea3597ae9880f76ed3f4b3fde505608a9ddb336d34614833de"
         }
       }
     },
     {
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "revision_number": 2,
-      "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-      "record_sha256": "b1db011fae47a6b0ec9ca1405aa77da4b3c17789dde5988ecc1228d669a23532",
+      "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+      "record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
       "created_at": "2026-07-17T13:00:00+00:00",
       "created_by": "release-suite",
       "change_note": "Added a qualified attribution and affordability frame.",
@@ -1282,7 +1335,7 @@
         },
         "contract": {
           "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-          "contract_version": "1.8.0"
+          "contract_version": "1.9.0"
         },
         "evidence_ledger": {
           "claims": [
@@ -1351,7 +1404,7 @@
             ]
           },
           "derived_scoring_inputs": {
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.8.0 ledger policy.",
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.9.0 ledger policy.",
             "evidence_strength": "strong",
             "ledger_applied": true,
             "source_count": 2,
@@ -1379,7 +1432,7 @@
               "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
             }
           ],
-          "ledger_version": "1.8.0",
+          "ledger_version": "1.9.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "relationships": [
             {
@@ -1491,12 +1544,12 @@
         },
         "identifiers": {
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.8.0",
-          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.8.0",
+          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.9.0",
+          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.9.0",
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.8.0",
-          "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.8.0"
+          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.9.0",
+          "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.9.0"
         },
         "interpretation": {
           "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language.",
@@ -1558,7 +1611,7 @@
             "comparison_member_maximum": 50,
             "comparison_member_minimum": 2,
             "decision_studio_handoff_mode": "Explicit, checksummed handoff with selected scenarios, evidence matrix, sensitivity results, portfolio summary, and governance context.",
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "scenario_types": [
               "best_case",
               "base_case",
@@ -1645,7 +1698,7 @@
             }
           },
           "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-          "controlled_vocabulary_version": "1.8.0",
+          "controlled_vocabulary_version": "1.9.0",
           "defaults": {
             "consequences": "moderate",
             "evidence_strength": "moderate",
@@ -1725,7 +1778,7 @@
                 "decide_stage"
               ]
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "reassessment_behavior": "A reassessment_at date creates a due item even when valid_until has not elapsed.",
             "roles": [
               "author",
@@ -1925,7 +1978,7 @@
             ],
             "evidence_strength_derivation": "Start with the strongest positive evidence relationship, downgrade one level when fewer than two independent source groups support the primary claim, and downgrade one additional level when contradictory evidence is present.",
             "minimum_independent_groups_for_no_downgrade": 2,
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "positive_relation_types": [
               "support",
               "qualify"
@@ -1945,7 +1998,7 @@
             "substantial_minimum_strength": "moderate"
           },
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "method_version": "1.8.0",
+          "method_version": "1.9.0",
           "monitoring_policy": {
             "boundary": "Monitoring detects change, freshness, and reassessment needs; it does not verify truth, alter the analytical score, or approve publication.",
             "default_cadence": "daily",
@@ -1973,7 +2026,7 @@
               "source_content_change": 15,
               "wording_change": 10
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "source_age_days": {
               "default": {
                 "aging_max": 365,
@@ -2051,7 +2104,55 @@
               "context",
               "unknown"
             ],
-            "policy_version": "1.8.0"
+            "policy_version": "1.9.0"
+          },
+          "publication_policy": {
+            "allowed_public_sections": [
+              "executive_summary",
+              "claim",
+              "risk_summary",
+              "evidence_summary",
+              "narrative_summary",
+              "governance_summary",
+              "disclosures",
+              "citations",
+              "reassessment"
+            ],
+            "blocking_restrictions": [
+              "internal_only",
+              "embargoed",
+              "no_public_claim"
+            ],
+            "conditional_restrictions": [
+              "attribution_required",
+              "legal_review_required",
+              "disclosure_required"
+            ],
+            "default_api_rate_limit_per_minute": 60,
+            "default_embed_ttl_days": 365,
+            "formats": [
+              "json",
+              "markdown",
+              "html",
+              "pdf",
+              "csv",
+              "jsonld"
+            ],
+            "maximum_api_rate_limit_per_minute": 1000,
+            "policy_version": "1.9.0",
+            "public_classification_requires_approved_workflow": true,
+            "redacted_private_fields": [
+              "reviewer_id",
+              "reviewer_name",
+              "author_id",
+              "author_name",
+              "created_by",
+              "decided_by",
+              "decided_by_name",
+              "body",
+              "notes",
+              "method_notes"
+            ]
           },
           "stakeholder_policy": {
             "boundary": "Stakeholder intelligence documents observable actors, relationships, incentives, pressures, disclosures, and consequences. It does not infer undisclosed motives, certify conflicts, or silently change the analytical score.",
@@ -2070,7 +2171,7 @@
               "low": 1,
               "medium": 2
             },
-            "policy_version": "1.8.0",
+            "policy_version": "1.9.0",
             "pressure_intensity_weights": {
               "critical": 4,
               "high": 3,
@@ -2145,7 +2246,7 @@
             }
           }
         },
-        "method_snapshot_sha256": "b2d6eab838e2a4c19a8846571debd93366922dd2cdb9bef2cd8860374dcc2b6f",
+        "method_snapshot_sha256": "0b4b142e844e66897caac7cf97b9eb6f5172f6be32af6be095100e0339ba8413",
         "narrative_map": {
           "analysis": {
             "cycles": [],
@@ -2231,7 +2332,7 @@
               "to_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222"
             }
           ],
-          "map_version": "1.8.0",
+          "map_version": "1.9.0",
           "nodes": [
             {
               "baseline": "weather-normalized pre-pilot consumption",
@@ -2356,16 +2457,16 @@
         "record_type": "catalyst_narrative_risk_record",
         "reproducibility": {
           "canonical_input_sha256": "3b75924e25acfc1ecbb819b10e688adcc54875e51d76dddda069f5786e552945",
-          "evidence_ledger_sha256": "71e278e3c470320bd6ff56ddda7a0a3c2b06b8036ddce114f45262ecdcc27324",
-          "narrative_map_sha256": "740dd285ae190abc8761eee6894809185c37591b237b4b03baa8ffeab9dd1086",
-          "record_payload_sha256": "d510180ddc7cc0bb3b800dc5f114ec5ed1c57a04db843b4966b6599fc7c58a99"
+          "evidence_ledger_sha256": "1f4cb8e62aeeb70dc76e26168bddba2e5ee322183d9af44bfb16d50a769b8dab",
+          "narrative_map_sha256": "edff8f060fdd347e047b5d74b06b54ba1532919c8b21e4be4655751dce6a82a0",
+          "record_payload_sha256": "7cadc6cc1a84088b4e32d8fe6df792845c86540d5e2a95dce21ac78457f88780"
         }
       }
     }
   ],
   "review_events": [
     {
-      "event_id": "urn:uuid:b9369dd9-b2bf-441f-8b59-759a816c08d5",
+      "event_id": "urn:uuid:e77aef72-692c-4bd1-98b0-1029a5c7225f",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "revision_id": null,
       "event_type": "comment",
@@ -2377,10 +2478,10 @@
     }
   ],
   "governance_workflow": {
-    "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+    "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
     "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-    "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-    "template_id": "urn:uuid:929cda9c-c021-43c9-b6c8-1388092dcfca",
+    "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+    "template_id": "urn:uuid:9be69f5f-f1ca-4cdf-821d-d367b1f637b7",
     "template_snapshot": {
       "active": true,
       "created_at": "2026-07-17T14:00:00+00:00",
@@ -2427,7 +2528,7 @@
           "stage": "final"
         }
       ],
-      "template_id": "urn:uuid:929cda9c-c021-43c9-b6c8-1388092dcfca",
+      "template_id": "urn:uuid:9be69f5f-f1ca-4cdf-821d-d367b1f637b7",
       "updated_at": "2026-07-17T14:00:00+00:00"
     },
     "status": "approved",
@@ -2448,48 +2549,10 @@
   },
   "review_assignments": [
     {
-      "assignment_id": "urn:uuid:67266cf3-68a9-4eee-853e-d15e5eff6cc0",
+      "assignment_id": "urn:uuid:080dff6b-adde-46f3-9962-e9956158af5c",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "stage": "domain",
-      "reviewer_id": "domain-reviewer",
-      "reviewer_name": null,
-      "reviewer_role": "domain_reviewer",
-      "status": "completed",
-      "required": true,
-      "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
-      "created_at": "2026-07-17T14:10:00+00:00",
-      "created_by": "release-suite",
-      "due_at": "2026-07-24T17:00:00+00:00",
-      "accepted_at": null,
-      "completed_at": "2026-07-17T16:00:00+00:00",
-      "escalated_at": null
-    },
-    {
-      "assignment_id": "urn:uuid:c8c0b64a-53cc-4ef1-88f4-53fd1e809ca4",
-      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "stage": "editorial",
-      "reviewer_id": "editorial-reviewer",
-      "reviewer_name": null,
-      "reviewer_role": "editorial_reviewer",
-      "status": "completed",
-      "required": true,
-      "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
-      "created_at": "2026-07-17T14:10:00+00:00",
-      "created_by": "release-suite",
-      "due_at": "2026-07-24T17:00:00+00:00",
-      "accepted_at": null,
-      "completed_at": "2026-07-17T17:00:00+00:00",
-      "escalated_at": null
-    },
-    {
-      "assignment_id": "urn:uuid:c9b5fb3f-6a80-452d-80d2-f3bd852b8a2f",
-      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
       "stage": "intake",
       "reviewer_id": "intake-reviewer",
       "reviewer_name": null,
@@ -2505,10 +2568,29 @@
       "escalated_at": null
     },
     {
-      "assignment_id": "urn:uuid:fd5d3a9c-6385-4076-bd76-a10b3869d6e7",
+      "assignment_id": "urn:uuid:15454455-00ed-405a-9db9-3192cb474e66",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "stage": "editorial",
+      "reviewer_id": "editorial-reviewer",
+      "reviewer_name": null,
+      "reviewer_role": "editorial_reviewer",
+      "status": "completed",
+      "required": true,
+      "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
+      "created_at": "2026-07-17T14:10:00+00:00",
+      "created_by": "release-suite",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T17:00:00+00:00",
+      "escalated_at": null
+    },
+    {
+      "assignment_id": "urn:uuid:3843ea33-d83d-4d83-9b68-5218e62931fc",
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
       "stage": "final",
       "reviewer_id": "final-approver",
       "reviewer_name": null,
@@ -2522,15 +2604,34 @@
       "accepted_at": null,
       "completed_at": "2026-07-17T18:10:00+00:00",
       "escalated_at": null
+    },
+    {
+      "assignment_id": "urn:uuid:f3b8a621-daab-44e2-83cb-0dea3b89a9ce",
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "stage": "domain",
+      "reviewer_id": "domain-reviewer",
+      "reviewer_name": null,
+      "reviewer_role": "domain_reviewer",
+      "status": "completed",
+      "required": true,
+      "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
+      "created_at": "2026-07-17T14:10:00+00:00",
+      "created_by": "release-suite",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T16:00:00+00:00",
+      "escalated_at": null
     }
   ],
   "governance_decisions": [
     {
-      "decision_id": "urn:uuid:d81da2d1-0eff-457e-8b67-45090580f608",
+      "decision_id": "urn:uuid:3032f800-6de5-4d11-a1d8-a95720acca6b",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "assignment_id": "urn:uuid:c9b5fb3f-6a80-452d-80d2-f3bd852b8a2f",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "assignment_id": "urn:uuid:080dff6b-adde-46f3-9962-e9956158af5c",
       "stage": "intake",
       "disposition": "approve",
       "decided_by": "intake-reviewer",
@@ -2547,11 +2648,11 @@
       "supersedes_decision_id": null
     },
     {
-      "decision_id": "urn:uuid:ea0e378e-63e9-4983-a46e-c242c92e1b28",
+      "decision_id": "urn:uuid:706767d0-514e-4019-aeb0-e0e07988bd85",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "assignment_id": "urn:uuid:67266cf3-68a9-4eee-853e-d15e5eff6cc0",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "assignment_id": "urn:uuid:f3b8a621-daab-44e2-83cb-0dea3b89a9ce",
       "stage": "domain",
       "disposition": "approve",
       "decided_by": "domain-reviewer",
@@ -2568,11 +2669,11 @@
       "supersedes_decision_id": null
     },
     {
-      "decision_id": "urn:uuid:a38492ce-2345-4211-9631-b0ed05b46ddf",
+      "decision_id": "urn:uuid:1bc7e21f-f5e2-4aa2-853a-504c82b808d1",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "assignment_id": "urn:uuid:c8c0b64a-53cc-4ef1-88f4-53fd1e809ca4",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "assignment_id": "urn:uuid:15454455-00ed-405a-9db9-3192cb474e66",
       "stage": "editorial",
       "disposition": "approve",
       "decided_by": "editorial-reviewer",
@@ -2589,10 +2690,10 @@
       "supersedes_decision_id": null
     },
     {
-      "decision_id": "urn:uuid:402850c5-f250-400a-9150-109559c4c99c",
+      "decision_id": "urn:uuid:b013d7c9-6c75-4c53-9fff-792070290811",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
       "assignment_id": null,
       "stage": "legal",
       "disposition": "waive",
@@ -2610,10 +2711,10 @@
       "supersedes_decision_id": null
     },
     {
-      "decision_id": "urn:uuid:84b43118-c7e8-4bcc-b775-2b0d5976cd6a",
+      "decision_id": "urn:uuid:54f4800d-e470-44bb-8b01-bcf242bfab02",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
       "assignment_id": null,
       "stage": "compliance",
       "disposition": "waive",
@@ -2631,11 +2732,11 @@
       "supersedes_decision_id": null
     },
     {
-      "decision_id": "urn:uuid:bdb00705-9aee-4350-b1e4-bd9767a393a7",
+      "decision_id": "urn:uuid:a72fa45f-c3fd-4ec3-89b9-fedfa33fff08",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-      "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
-      "assignment_id": "urn:uuid:fd5d3a9c-6385-4076-bd76-a10b3869d6e7",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
+      "assignment_id": "urn:uuid:3843ea33-d83d-4d83-9b68-5218e62931fc",
       "stage": "final",
       "disposition": "approve_with_conditions",
       "decided_by": "final-approver",
@@ -2752,14 +2853,14 @@
           "text": "Operating schedules, occupancy, and weather remain comparable to the measured pilot period."
         }
       ],
-      "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-      "record_sha256": "59ac0d6f969d7173a5ffe31839646f051b2cfbcee4851c82da8868ca04082a91",
-      "revision_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+      "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+      "record_sha256": "fba5f7060e7d26d48916a5e2e78a1a2b46bcb90cf940cb4f01fa3d9f88e9370c",
+      "revision_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
       "risk_level": "Medium",
       "risk_score": 46,
-      "snapshot_id": "urn:uuid:d9c5ee52-64d0-468d-bfd9-f92f135d412b",
-      "snapshot_sha256": "2c024c06504682a7c7a717579c4794a128e42eed96ec3f96ee540c709b869ef4",
-      "snapshot_version": "1.8.0",
+      "snapshot_id": "urn:uuid:899e2273-861c-4694-832a-7dad22c02c91",
+      "snapshot_sha256": "10836f46dbfebafb211d331d5e2d217208e5e999dd1cdd8900997e049221a30a",
+      "snapshot_version": "1.9.0",
       "source_ids": [
         "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
@@ -2856,14 +2957,14 @@
           "text": "Operating schedules, occupancy, and weather remain comparable to the measured pilot period."
         }
       ],
-      "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-      "record_sha256": "b1db011fae47a6b0ec9ca1405aa77da4b3c17789dde5988ecc1228d669a23532",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+      "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+      "record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
       "risk_level": "High",
       "risk_score": 71,
-      "snapshot_id": "urn:uuid:589a999c-47ee-40e1-97c0-ad36a8aef2a7",
-      "snapshot_sha256": "b8a46d9fc56ffd2c689b7718ef81ad9b0d8fdacff6a1898fcc863e130ec803fc",
-      "snapshot_version": "1.8.0",
+      "snapshot_id": "urn:uuid:3669ea33-2dfe-4397-b35e-64f21150f908",
+      "snapshot_sha256": "dec58bc6a1d1437f24b3d70c981407dcb2c4df64553d3527294320de8d0e1e23",
+      "snapshot_version": "1.9.0",
       "source_ids": [
         "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
@@ -2960,14 +3061,14 @@
           "text": "Operating schedules, occupancy, and weather remain comparable to the measured pilot period."
         }
       ],
-      "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-      "record_sha256": "b1db011fae47a6b0ec9ca1405aa77da4b3c17789dde5988ecc1228d669a23532",
-      "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+      "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+      "record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
       "risk_level": "High",
       "risk_score": 71,
-      "snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
-      "snapshot_sha256": "5931d01e058ccf9b6c605a99e713628333a1e54dc3f5ea3e8916b0a02afa1688",
-      "snapshot_version": "1.8.0",
+      "snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
+      "snapshot_sha256": "b0a70598fafa472562a9320f74903dbd34ac3e7fde6020f7b10ec0dbc6c840a5",
+      "snapshot_version": "1.9.0",
       "source_ids": [
         "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
@@ -2979,9 +3080,9 @@
     {
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "compared_at": "2026-07-17T13:31:00+00:00",
-      "comparison_id": "urn:uuid:3c24841c-5b23-483a-a5d8-df5961479e90",
-      "comparison_sha256": "bdfcfea45ed55c3780893c4268dfff4400361177123ab7588839c8db434affb1",
-      "comparison_version": "1.8.0",
+      "comparison_id": "urn:uuid:2fe1f1b9-7847-4a27-9041-679f2a9a450b",
+      "comparison_sha256": "e20887d31c361a35a487b5f9d675c3237a707dc6676bc715d2d4bdf663cb4896",
+      "comparison_version": "1.9.0",
       "confidence_changes": [
         {
           "field": "uncertainty",
@@ -2997,7 +3098,7 @@
         "removed_source_ids": []
       },
       "freshness_changes": [],
-      "from_snapshot_id": "urn:uuid:d9c5ee52-64d0-468d-bfd9-f92f135d412b",
+      "from_snapshot_id": "urn:uuid:899e2273-861c-4694-832a-7dad22c02c91",
       "governance_changes": [],
       "material_change": true,
       "materiality_score": 97,
@@ -3019,7 +3120,7 @@
       "risk_level_changed": true,
       "score_delta": 25,
       "severity": "critical",
-      "to_snapshot_id": "urn:uuid:589a999c-47ee-40e1-97c0-ad36a8aef2a7",
+      "to_snapshot_id": "urn:uuid:3669ea33-2dfe-4397-b35e-64f21150f908",
       "wording_changes": [
         {
           "change_type": "modified",
@@ -3033,9 +3134,9 @@
     {
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "compared_at": "2028-07-18T12:00:00+00:00",
-      "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
-      "comparison_sha256": "0d794454dd37f0504dcea086fc450eee6ef1bb8087a78b5ca80b21848874f6d9",
-      "comparison_version": "1.8.0",
+      "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
+      "comparison_sha256": "3010c1fb743b6e58ccd0680a86d0c81b4bfefc1ed77167f2b9860713b148649e",
+      "comparison_version": "1.9.0",
       "confidence_changes": [],
       "evidence_changes": {
         "added_evidence_ids": [],
@@ -3056,7 +3157,7 @@
           "to": "stale"
         }
       ],
-      "from_snapshot_id": "urn:uuid:589a999c-47ee-40e1-97c0-ad36a8aef2a7",
+      "from_snapshot_id": "urn:uuid:3669ea33-2dfe-4397-b35e-64f21150f908",
       "governance_changes": [
         {
           "field": "approval_valid_until",
@@ -3095,14 +3196,14 @@
       "risk_level_changed": false,
       "score_delta": 0,
       "severity": "critical",
-      "to_snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
+      "to_snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
       "wording_changes": []
     }
   ],
   "watchlists": [
     {
-      "watch_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
-      "watch_version": "1.8.0",
+      "watch_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
+      "watch_version": "1.9.0",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "name": "Comparative narrative watch",
       "status": "active",
@@ -3124,12 +3225,12 @@
   ],
   "monitoring_alerts": [
     {
-      "alert_id": "urn:uuid:1d50c083-cc3c-4394-9f79-9461b1ab1555",
-      "alert_version": "1.8.0",
+      "alert_id": "urn:uuid:a347f218-ec20-4fbb-b0fe-9a07f658b380",
+      "alert_version": "1.9.0",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "watch_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
-      "snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
-      "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
+      "watch_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
+      "snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
+      "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
       "alert_type": "approval_expired",
       "severity": "critical",
       "title": "Approval expired",
@@ -3142,12 +3243,99 @@
       "metadata": {}
     },
     {
-      "alert_id": "urn:uuid:22df761c-b216-4c69-b56b-7c87f1a86da7",
-      "alert_version": "1.8.0",
+      "alert_id": "urn:uuid:b1ac1a1b-5846-46cb-879f-a21e2025faa9",
+      "alert_version": "1.9.0",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "watch_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
-      "snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
-      "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
+      "watch_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
+      "snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
+      "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
+      "alert_type": "material_change",
+      "severity": "critical",
+      "title": "Material narrative change detected",
+      "body": "2 source freshness state(s) changed. 4 governance state change(s) detected.",
+      "status": "open",
+      "created_at": "2028-07-18T12:00:00+00:00",
+      "acknowledged_at": null,
+      "acknowledged_by": null,
+      "resolved_at": null,
+      "metadata": {
+        "comparison": {
+          "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+          "compared_at": "2028-07-18T12:00:00+00:00",
+          "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
+          "comparison_sha256": "3010c1fb743b6e58ccd0680a86d0c81b4bfefc1ed77167f2b9860713b148649e",
+          "comparison_version": "1.9.0",
+          "confidence_changes": [],
+          "evidence_changes": {
+            "added_evidence_ids": [],
+            "added_source_ids": [],
+            "content_changed_source_ids": [],
+            "removed_evidence_ids": [],
+            "removed_source_ids": []
+          },
+          "freshness_changes": [
+            {
+              "from": "current",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "to": "aging"
+            },
+            {
+              "from": "current",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "to": "stale"
+            }
+          ],
+          "from_snapshot_id": "urn:uuid:3669ea33-2dfe-4397-b35e-64f21150f908",
+          "governance_changes": [
+            {
+              "field": "approval_valid_until",
+              "from": null,
+              "to": "2027-01-17T23:59:59+00:00"
+            },
+            {
+              "field": "final_disposition",
+              "from": null,
+              "to": "approve_with_conditions"
+            },
+            {
+              "field": "reassessment_at",
+              "from": null,
+              "to": "2026-10-17T12:00:00+00:00"
+            },
+            {
+              "field": "workflow_status",
+              "from": null,
+              "to": "expired"
+            }
+          ],
+          "material_change": true,
+          "materiality_score": 76,
+          "narrative_changes": {
+            "added_link_ids": [],
+            "added_node_ids": [],
+            "modified_node_ids": [],
+            "removed_link_ids": [],
+            "removed_node_ids": []
+          },
+          "reasons": [
+            "2 source freshness state(s) changed.",
+            "4 governance state change(s) detected."
+          ],
+          "risk_level_changed": false,
+          "score_delta": 0,
+          "severity": "critical",
+          "to_snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
+          "wording_changes": []
+        }
+      }
+    },
+    {
+      "alert_id": "urn:uuid:f3e902ea-fb55-4b5c-b7e0-a3f79534af13",
+      "alert_version": "1.9.0",
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "watch_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
+      "snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
+      "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
       "alert_type": "source_stale",
       "severity": "high",
       "title": "Source freshness requires review",
@@ -3192,93 +3380,6 @@
           "status": "stale"
         }
       }
-    },
-    {
-      "alert_id": "urn:uuid:edf9c17d-ae83-4736-b1b5-c0995acd778e",
-      "alert_version": "1.8.0",
-      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "watch_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
-      "snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
-      "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
-      "alert_type": "material_change",
-      "severity": "critical",
-      "title": "Material narrative change detected",
-      "body": "2 source freshness state(s) changed. 4 governance state change(s) detected.",
-      "status": "open",
-      "created_at": "2028-07-18T12:00:00+00:00",
-      "acknowledged_at": null,
-      "acknowledged_by": null,
-      "resolved_at": null,
-      "metadata": {
-        "comparison": {
-          "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "compared_at": "2028-07-18T12:00:00+00:00",
-          "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
-          "comparison_sha256": "0d794454dd37f0504dcea086fc450eee6ef1bb8087a78b5ca80b21848874f6d9",
-          "comparison_version": "1.8.0",
-          "confidence_changes": [],
-          "evidence_changes": {
-            "added_evidence_ids": [],
-            "added_source_ids": [],
-            "content_changed_source_ids": [],
-            "removed_evidence_ids": [],
-            "removed_source_ids": []
-          },
-          "freshness_changes": [
-            {
-              "from": "current",
-              "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-              "to": "aging"
-            },
-            {
-              "from": "current",
-              "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-              "to": "stale"
-            }
-          ],
-          "from_snapshot_id": "urn:uuid:589a999c-47ee-40e1-97c0-ad36a8aef2a7",
-          "governance_changes": [
-            {
-              "field": "approval_valid_until",
-              "from": null,
-              "to": "2027-01-17T23:59:59+00:00"
-            },
-            {
-              "field": "final_disposition",
-              "from": null,
-              "to": "approve_with_conditions"
-            },
-            {
-              "field": "reassessment_at",
-              "from": null,
-              "to": "2026-10-17T12:00:00+00:00"
-            },
-            {
-              "field": "workflow_status",
-              "from": null,
-              "to": "expired"
-            }
-          ],
-          "material_change": true,
-          "materiality_score": 76,
-          "narrative_changes": {
-            "added_link_ids": [],
-            "added_node_ids": [],
-            "modified_node_ids": [],
-            "removed_link_ids": [],
-            "removed_node_ids": []
-          },
-          "reasons": [
-            "2 source freshness state(s) changed.",
-            "4 governance state change(s) detected."
-          ],
-          "risk_level_changed": false,
-          "score_delta": 0,
-          "severity": "critical",
-          "to_snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
-          "wording_changes": []
-        }
-      }
     }
   ],
   "site_intelligence_events": [
@@ -3291,7 +3392,7 @@
       "event_id": "urn:uuid:50000000-0000-4000-8000-000000000001",
       "event_type": "material_change",
       "handoff_type": "site_intelligence_monitoring_event",
-      "handoff_version": "1.8.0",
+      "handoff_version": "1.9.0",
       "headline": "Updated official measurement published",
       "observed_at": "2026-07-20T12:00:00+00:00",
       "payload": {
@@ -3438,7 +3539,7 @@
     }
   ],
   "stakeholder_intelligence": {
-    "intelligence_version": "1.8.0",
+    "intelligence_version": "1.9.0",
     "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
     "generated_at": "2028-07-18T12:00:00+00:00",
     "counts": {
@@ -3479,11 +3580,11 @@
       }
     ],
     "boundary": "Advisory evidence-linked assessment; does not infer motives or change the canonical score automatically.",
-    "intelligence_sha256": "4f126fd98cacf1a6a04dcac9a8ca1919b0dd38292fae9bbc59afcbc4f4885d9c"
+    "intelligence_sha256": "5fd7caa1e69282794ee8f94d5e5620bedf763095d759193cfe73b4cd69981f40"
   },
   "catalyst_canvas_handoffs": [
     {
-      "handoff_id": "urn:uuid:12b89060-d2e7-4226-b69d-bcbfd0ffaa09",
+      "handoff_id": "urn:uuid:4b110f52-13d6-4d75-a8a7-e6cecad82f95",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "canvas_id": "canvas:energy-pilot",
       "handoff": {
@@ -3491,7 +3592,7 @@
         "case_id": null,
         "exported_at": "2026-07-17T19:00:00+00:00",
         "handoff_type": "catalyst_canvas_stakeholder_handoff",
-        "handoff_version": "1.8.0",
+        "handoff_version": "1.9.0",
         "relationships": [
           {
             "description": "The evaluator is paid through the pilot evaluation budget.",
@@ -3551,15 +3652,15 @@
           }
         ]
       },
-      "handoff_sha256": "bffea19e6985fa20c910f83229da360bf08da002cced34e3a0ccec6ca16134c3",
+      "handoff_sha256": "8e4e5b8fd69bfe1490f3df34a2a6be3fa6573ef296c11a850d3073f34fb13781",
       "imported_at": "2026-07-17T18:30:00+00:00"
     }
   ],
   "comparison_sets": [
     {
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "comparison_mode": "revision",
       "created_at": "2026-07-17T19:00:00+00:00",
       "created_by": "release-suite",
@@ -3572,9 +3673,9 @@
           ],
           "frame": "Measured performance",
           "label": "Audited performance",
-          "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
-          "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-          "revision_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+          "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
+          "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+          "revision_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
           "selected": true,
           "tags": []
         },
@@ -3585,9 +3686,9 @@
           ],
           "frame": "Attribution and affordability uncertainty",
           "label": "Qualified attribution",
-          "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
-          "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-          "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+          "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
+          "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+          "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
           "selected": true,
           "tags": []
         }
@@ -3612,7 +3713,7 @@
               "contradiction_count": 0,
               "coverage_status": "strong",
               "independent_source_count": 2,
-              "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+              "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3627,7 +3728,7 @@
               "contradiction_count": 0,
               "coverage_status": "none",
               "independent_source_count": 0,
-              "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+              "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3651,7 +3752,7 @@
               "contradiction_count": 0,
               "coverage_status": "partial",
               "independent_source_count": 1,
-              "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+              "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3668,7 +3769,7 @@
               "contradiction_count": 0,
               "coverage_status": "partial",
               "independent_source_count": 1,
-              "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+              "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3690,7 +3791,7 @@
               "contradiction_count": 0,
               "coverage_status": "none",
               "independent_source_count": 0,
-              "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+              "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3707,7 +3808,7 @@
               "contradiction_count": 0,
               "coverage_status": "strong",
               "independent_source_count": 2,
-              "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+              "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
               "relationship_counts": {
                 "contextualize": 0,
                 "contradict": 0,
@@ -3721,19 +3822,19 @@
           "text": "The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review."
         }
       ],
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "generated_at": "2026-07-17T19:05:00+00:00",
-      "matrix_id": "urn:uuid:e9451aca-f3c3-5586-806a-bb9f93f06645",
-      "matrix_sha256": "ffaa6dc0f9e0f2d1fed706368bc2aa08065ead44a39e7895be44ed48b89c9f43",
+      "matrix_id": "urn:uuid:944445d6-bafe-5c21-ba88-f34e73ecd7f9",
+      "matrix_sha256": "c6ea5079feb04063111ea7ce64317e231083deb2f415074df76d69398bef0280",
       "summary": {
         "claim_count": 3,
         "coverage_by_member": {
-          "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc": {
+          "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e": {
             "contested_claims": 0,
             "covered_claims": 2,
             "source_count": 2
           },
-          "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366": {
+          "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854": {
             "contested_claims": 0,
             "covered_claims": 2,
             "source_count": 2
@@ -3750,7 +3851,7 @@
         "Audited reductions persist"
       ],
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "created_at": "2026-07-17T19:10:00+00:00",
       "created_by": "release-suite",
       "description": "Explicit comparative release scenario.",
@@ -3763,7 +3864,7 @@
         "uncertainty": "low"
       },
       "probability": null,
-      "scenario_id": "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba",
+      "scenario_id": "urn:uuid:367655eb-8984-56de-a622-b268a643d685",
       "scenario_type": "best_case",
       "status": "evaluated",
       "updated_at": "2026-07-17T19:10:00+00:00"
@@ -3773,7 +3874,7 @@
         "Attribution fails and consequences escalate"
       ],
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "created_at": "2026-07-17T19:15:00+00:00",
       "created_by": "release-suite",
       "description": "Explicit comparative release scenario.",
@@ -3787,7 +3888,7 @@
         "uncertainty": "high"
       },
       "probability": null,
-      "scenario_id": "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0",
+      "scenario_id": "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b",
       "scenario_type": "worst_case",
       "status": "evaluated",
       "updated_at": "2026-07-17T19:15:00+00:00"
@@ -3797,7 +3898,7 @@
         "Primary measurements are unavailable"
       ],
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "created_at": "2026-07-17T19:20:00+00:00",
       "created_by": "release-suite",
       "description": "Explicit comparative release scenario.",
@@ -3810,7 +3911,7 @@
         "uncertainty": "high"
       },
       "probability": null,
-      "scenario_id": "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787",
+      "scenario_id": "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6",
       "scenario_type": "counterfactual",
       "status": "evaluated",
       "updated_at": "2026-07-17T19:20:00+00:00"
@@ -3820,7 +3921,7 @@
         "Public scrutiny and competing explanations increase"
       ],
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "created_at": "2026-07-17T19:25:00+00:00",
       "created_by": "release-suite",
       "description": "Explicit comparative release scenario.",
@@ -3833,7 +3934,7 @@
         "uncertainty": "high"
       },
       "probability": null,
-      "scenario_id": "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3",
+      "scenario_id": "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1",
       "scenario_type": "adversarial",
       "status": "evaluated",
       "updated_at": "2026-07-17T19:25:00+00:00"
@@ -3841,7 +3942,7 @@
   ],
   "scenario_results": [
     {
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "calculations": {
         "components": {
           "consequences": {
@@ -3910,7 +4011,7 @@
         }
       },
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "deltas": {
         "component_weights": {
           "consequences": -15,
@@ -3940,9 +4041,9 @@
         ],
         "risk_level": "Low"
       },
-      "result_id": "urn:uuid:8b82946a-dee5-5ef7-b5b8-cc7d6ec9aea7",
-      "result_sha256": "2cc83fc7ff0e8aede2493ac20f50b9850044522b3d921747e9e769e8c9d3f8d7",
-      "scenario_id": "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba",
+      "result_id": "urn:uuid:06916fc9-49c9-52da-b0ba-9df2772fb25f",
+      "result_sha256": "14c7d6642cbce481981fd8b8099be45a5b2dd7047fa401f5efba077c042468fd",
+      "scenario_id": "urn:uuid:367655eb-8984-56de-a622-b268a643d685",
       "simulated_input": {
         "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
         "consequences": "low",
@@ -3958,7 +4059,7 @@
       }
     },
     {
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "calculations": {
         "components": {
           "consequences": {
@@ -4027,7 +4128,7 @@
         }
       },
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "deltas": {
         "component_weights": {
           "consequences": 6,
@@ -4064,9 +4165,9 @@
         ],
         "risk_level": "High"
       },
-      "result_id": "urn:uuid:f8b5b418-f581-5b52-b703-de4f18b179cb",
-      "result_sha256": "3d2a4c68ce3a70e36a6b4673e7dd56caa7c2215bf735f436ba757d57c68befa9",
-      "scenario_id": "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0",
+      "result_id": "urn:uuid:7cd79910-426c-587a-8b85-42737c2bad33",
+      "result_sha256": "006462b577a0037f79298f52e4765cd5cd55a66593a514a70d2ffcc43db3ab93",
+      "scenario_id": "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b",
       "simulated_input": {
         "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
         "consequences": "critical",
@@ -4082,7 +4183,7 @@
       }
     },
     {
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "calculations": {
         "components": {
           "consequences": {
@@ -4151,7 +4252,7 @@
         }
       },
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "deltas": {
         "component_weights": {
           "consequences": 0,
@@ -4187,9 +4288,9 @@
         ],
         "risk_level": "High"
       },
-      "result_id": "urn:uuid:4a1ab062-a54e-5729-9b28-4430642841cb",
-      "result_sha256": "7574fbd8c2057d35b3ff3929a18089ab0c444020bed2e612a7693e72f68cb7ce",
-      "scenario_id": "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787",
+      "result_id": "urn:uuid:5b7f4dba-e72c-553d-95ed-8b21c2e9ddc8",
+      "result_sha256": "5efb79d40f642a2d4ac1913f848e193166e77eb845c35a4bd30b7fde96830256",
+      "scenario_id": "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6",
       "simulated_input": {
         "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
         "consequences": "high",
@@ -4205,7 +4306,7 @@
       }
     },
     {
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "calculations": {
         "components": {
           "consequences": {
@@ -4274,7 +4375,7 @@
         }
       },
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "deltas": {
         "component_weights": {
           "consequences": 0,
@@ -4311,9 +4412,9 @@
         ],
         "risk_level": "Medium"
       },
-      "result_id": "urn:uuid:b235ff03-f0a8-57b3-a5dc-f3533e956c74",
-      "result_sha256": "c0fbc6c8b6d617c424bd435dc44b222cbcb6f61532a5b877c9fc2311d577f449",
-      "scenario_id": "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3",
+      "result_id": "urn:uuid:2bc38c61-5537-5643-91e8-0e70b6d3c894",
+      "result_sha256": "b540c4ea67eea793ea2903f97398a3f43543c09cd578fadaa3c2e0516ece796c",
+      "scenario_id": "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1",
       "simulated_input": {
         "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
         "consequences": "high",
@@ -4331,8 +4432,8 @@
   ],
   "sensitivity_analyses": [
     {
-      "analysis_id": "urn:uuid:45520c73-9f74-5da6-92de-8c5b45f386d0",
-      "analysis_sha256": "c12a4b3a48e207faf4208590c0b490e8b28601f13cea15897bb36306d73aaede",
+      "analysis_id": "urn:uuid:5fe6a838-be7a-533e-b7dc-d940b42ed918",
+      "analysis_sha256": "a2417df5c8a2b337d255b9643d4bae7f081957710001476ece87cc216e1385b4",
       "baseline": {
         "component_weights": {
           "consequences": 18,
@@ -4348,9 +4449,9 @@
         "risk_level": "Medium",
         "risk_score": 46
       },
-      "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+      "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "dimensions": [
         "evidence_strength",
         "uncertainty",
@@ -4405,7 +4506,7 @@
           "dimension": "evidence_strength",
           "risk_level": "Medium",
           "risk_score": 59,
-          "run_id": "urn:uuid:6ae66d9f-9d93-5a7a-be59-237a83dca8dd",
+          "run_id": "urn:uuid:c08be96e-1127-528c-9f18-5e1a98d98794",
           "value": "limited"
         },
         {
@@ -4424,7 +4525,7 @@
           "dimension": "evidence_strength",
           "risk_level": "Medium",
           "risk_score": 52,
-          "run_id": "urn:uuid:794367d2-b6f0-5d96-8523-bd08bff5b014",
+          "run_id": "urn:uuid:801d4153-d172-533b-89a6-8f0ea6463d61",
           "value": "moderate"
         },
         {
@@ -4443,7 +4544,7 @@
           "dimension": "evidence_strength",
           "risk_level": "Medium",
           "risk_score": 46,
-          "run_id": "urn:uuid:0c9129e9-1406-5388-8a3a-b95799f72830",
+          "run_id": "urn:uuid:9e1c89c1-54c7-510d-a031-5f84d3815fbb",
           "value": "strong"
         },
         {
@@ -4462,7 +4563,7 @@
           "dimension": "evidence_strength",
           "risk_level": "Medium",
           "risk_score": 62,
-          "run_id": "urn:uuid:b4e1fb5e-bb06-57a8-babe-f8a5db080b03",
+          "run_id": "urn:uuid:93576080-d5cb-5365-b431-bc0565c2e2a3",
           "value": "unclear"
         },
         {
@@ -4481,7 +4582,7 @@
           "dimension": "evidence_strength",
           "risk_level": "Medium",
           "risk_score": 66,
-          "run_id": "urn:uuid:0f6ed33b-cff3-58e2-8fe0-b2d1e26ff6ba",
+          "run_id": "urn:uuid:33898304-77ca-5e03-8662-85ec89664ef3",
           "value": "weak"
         },
         {
@@ -4500,7 +4601,7 @@
           "dimension": "uncertainty",
           "risk_level": "Medium",
           "risk_score": 51,
-          "run_id": "urn:uuid:e714b81d-7544-51ed-9b6f-bfc1ba438ca6",
+          "run_id": "urn:uuid:665a6f60-c64a-5d16-b797-b70f84810582",
           "value": "high"
         },
         {
@@ -4519,7 +4620,7 @@
           "dimension": "uncertainty",
           "risk_level": "Medium",
           "risk_score": 41,
-          "run_id": "urn:uuid:912a0199-b07b-5333-a7bd-98e7f233e12b",
+          "run_id": "urn:uuid:0991f29f-30de-5cc5-b00b-c864dddb90fb",
           "value": "low"
         },
         {
@@ -4538,7 +4639,7 @@
           "dimension": "uncertainty",
           "risk_level": "Medium",
           "risk_score": 46,
-          "run_id": "urn:uuid:f91497ca-8bd9-577b-9b64-460ba431b6b2",
+          "run_id": "urn:uuid:2c42912d-549c-5488-bbae-bd898b6945cd",
           "value": "medium"
         },
         {
@@ -4557,7 +4658,7 @@
           "dimension": "consequences",
           "risk_level": "Medium",
           "risk_score": 50,
-          "run_id": "urn:uuid:80afa610-eb02-53a3-b1fd-fb7661db582b",
+          "run_id": "urn:uuid:7927ce2a-91ca-5c00-8199-c73737ce87f7",
           "value": "critical"
         },
         {
@@ -4576,7 +4677,7 @@
           "dimension": "consequences",
           "risk_level": "Medium",
           "risk_score": 46,
-          "run_id": "urn:uuid:13a61833-ba78-56bc-8ced-dfdb010c2272",
+          "run_id": "urn:uuid:010ee248-5da6-5273-8f88-30eb5fa38e24",
           "value": "high"
         },
         {
@@ -4595,7 +4696,7 @@
           "dimension": "consequences",
           "risk_level": "Low",
           "risk_score": 35,
-          "run_id": "urn:uuid:dfdb2de7-7b52-50d7-8b4d-c2eea9ddc7da",
+          "run_id": "urn:uuid:cbf50192-e7b6-5471-ac89-b96a56626aa2",
           "value": "low"
         },
         {
@@ -4614,7 +4715,7 @@
           "dimension": "consequences",
           "risk_level": "Medium",
           "risk_score": 40,
-          "run_id": "urn:uuid:d430aacb-010e-5d10-b6ed-354aeec6fcec",
+          "run_id": "urn:uuid:3c304d82-967f-5aae-babb-30fb31ebdb70",
           "value": "moderate"
         },
         {
@@ -4633,7 +4734,7 @@
           "dimension": "stakeholder_pressure",
           "risk_level": "Medium",
           "risk_score": 51,
-          "run_id": "urn:uuid:89e7877a-7aa0-5718-8a2a-61ec9c32b5d3",
+          "run_id": "urn:uuid:802bd3b7-e462-507b-a4bd-46b2ca8ddd0b",
           "value": "high"
         },
         {
@@ -4652,7 +4753,7 @@
           "dimension": "stakeholder_pressure",
           "risk_level": "Medium",
           "risk_score": 41,
-          "run_id": "urn:uuid:804b6b30-b2aa-56a9-9976-f69a9b180969",
+          "run_id": "urn:uuid:4e4e3aef-2509-54c7-9b0d-d52475a9c983",
           "value": "low"
         },
         {
@@ -4671,14 +4772,14 @@
           "dimension": "stakeholder_pressure",
           "risk_level": "Medium",
           "risk_score": 46,
-          "run_id": "urn:uuid:0e9e80db-f862-5bb6-8386-7967de1365cd",
+          "run_id": "urn:uuid:ad801a32-250d-5658-88b9-423dac0756ed",
           "value": "medium"
         }
       ]
     }
   ],
   "comparative_portfolio": {
-    "portfolio_id": "urn:uuid:1e19e3c4-ae5a-52df-8138-8526fcaa64cf",
+    "portfolio_id": "urn:uuid:33bde4a9-bb7b-5486-a3a2-93afca02c053",
     "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
     "generated_at": "2026-07-17T19:40:00+00:00",
     "comparison_count": 1,
@@ -4702,16 +4803,16 @@
       "uncertainty"
     ],
     "publication_readiness": "conditional",
-    "portfolio_sha256": "1b424c287bc23f57093208be84fd2e6ce934140e65b8dce0ce8f8140d252da1c"
+    "portfolio_sha256": "e991119fb5d52b1971a25df1422fc665e8746a160c737da772e06616760b26dd"
   },
   "decision_studio_handoffs": [
     {
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-      "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "comparison_set": {
-        "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+        "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
         "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-        "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+        "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
         "comparison_mode": "revision",
         "created_at": "2026-07-17T19:00:00+00:00",
         "created_by": "release-suite",
@@ -4724,9 +4825,9 @@
             ],
             "frame": "Measured performance",
             "label": "Audited performance",
-            "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
-            "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-            "revision_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+            "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
+            "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+            "revision_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
             "selected": true,
             "tags": []
           },
@@ -4737,9 +4838,9 @@
             ],
             "frame": "Attribution and affordability uncertainty",
             "label": "Qualified attribution",
-            "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
-            "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
+            "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "selected": true,
             "tags": []
           }
@@ -4762,7 +4863,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "strong",
                 "independent_source_count": 2,
-                "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+                "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4777,7 +4878,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "none",
                 "independent_source_count": 0,
-                "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+                "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4801,7 +4902,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "partial",
                 "independent_source_count": 1,
-                "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+                "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4818,7 +4919,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "partial",
                 "independent_source_count": 1,
-                "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+                "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4840,7 +4941,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "none",
                 "independent_source_count": 0,
-                "member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+                "member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4857,7 +4958,7 @@
                 "contradiction_count": 0,
                 "coverage_status": "strong",
                 "independent_source_count": 2,
-                "member_id": "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366",
+                "member_id": "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e",
                 "relationship_counts": {
                   "contextualize": 0,
                   "contradict": 0,
@@ -4871,19 +4972,19 @@
             "text": "The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review."
           }
         ],
-        "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+        "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
         "generated_at": "2026-07-17T19:05:00+00:00",
-        "matrix_id": "urn:uuid:e9451aca-f3c3-5586-806a-bb9f93f06645",
-        "matrix_sha256": "ffaa6dc0f9e0f2d1fed706368bc2aa08065ead44a39e7895be44ed48b89c9f43",
+        "matrix_id": "urn:uuid:944445d6-bafe-5c21-ba88-f34e73ecd7f9",
+        "matrix_sha256": "c6ea5079feb04063111ea7ce64317e231083deb2f415074df76d69398bef0280",
         "summary": {
           "claim_count": 3,
           "coverage_by_member": {
-            "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc": {
+            "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e": {
               "contested_claims": 0,
               "covered_claims": 2,
               "source_count": 2
             },
-            "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366": {
+            "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854": {
               "contested_claims": 0,
               "covered_claims": 2,
               "source_count": 2
@@ -4906,67 +5007,67 @@
         "final_disposition": "approve_with_conditions",
         "governance_decisions": [
           {
-            "assignment_id": "urn:uuid:c9b5fb3f-6a80-452d-80d2-f3bd852b8a2f",
+            "assignment_id": "urn:uuid:080dff6b-adde-46f3-9962-e9956158af5c",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "conditions": [],
             "decided_at": "2026-07-17T15:00:00+00:00",
             "decided_by": "intake-reviewer",
             "decided_by_name": null,
             "decider_role": "reviewer",
-            "decision_id": "urn:uuid:d81da2d1-0eff-457e-8b67-45090580f608",
+            "decision_id": "urn:uuid:3032f800-6de5-4d11-a1d8-a95720acca6b",
             "disclosures": [],
             "disposition": "approve",
             "publication_restrictions": [],
             "rationale": "intake comparative review passed.",
             "reassessment_at": null,
             "required_wording": [],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "intake",
             "supersedes_decision_id": null,
             "valid_until": null,
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
-            "assignment_id": "urn:uuid:67266cf3-68a9-4eee-853e-d15e5eff6cc0",
+            "assignment_id": "urn:uuid:f3b8a621-daab-44e2-83cb-0dea3b89a9ce",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "conditions": [],
             "decided_at": "2026-07-17T16:00:00+00:00",
             "decided_by": "domain-reviewer",
             "decided_by_name": null,
             "decider_role": "domain_reviewer",
-            "decision_id": "urn:uuid:ea0e378e-63e9-4983-a46e-c242c92e1b28",
+            "decision_id": "urn:uuid:706767d0-514e-4019-aeb0-e0e07988bd85",
             "disclosures": [],
             "disposition": "approve",
             "publication_restrictions": [],
             "rationale": "domain comparative review passed.",
             "reassessment_at": null,
             "required_wording": [],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "domain",
             "supersedes_decision_id": null,
             "valid_until": null,
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
-            "assignment_id": "urn:uuid:c8c0b64a-53cc-4ef1-88f4-53fd1e809ca4",
+            "assignment_id": "urn:uuid:15454455-00ed-405a-9db9-3192cb474e66",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "conditions": [],
             "decided_at": "2026-07-17T17:00:00+00:00",
             "decided_by": "editorial-reviewer",
             "decided_by_name": null,
             "decider_role": "editorial_reviewer",
-            "decision_id": "urn:uuid:a38492ce-2345-4211-9631-b0ed05b46ddf",
+            "decision_id": "urn:uuid:1bc7e21f-f5e2-4aa2-853a-504c82b808d1",
             "disclosures": [],
             "disposition": "approve",
             "publication_restrictions": [],
             "rationale": "editorial comparative review passed.",
             "reassessment_at": null,
             "required_wording": [],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "editorial",
             "supersedes_decision_id": null,
             "valid_until": null,
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
             "assignment_id": null,
@@ -4976,18 +5077,18 @@
             "decided_by": "release-suite",
             "decided_by_name": null,
             "decider_role": "administrator",
-            "decision_id": "urn:uuid:402850c5-f250-400a-9150-109559c4c99c",
+            "decision_id": "urn:uuid:b013d7c9-6c75-4c53-9fff-792070290811",
             "disclosures": [],
             "disposition": "waive",
             "publication_restrictions": [],
             "rationale": "No separate legal trigger in the sample fixture.",
             "reassessment_at": null,
             "required_wording": [],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "legal",
             "supersedes_decision_id": null,
             "valid_until": null,
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
             "assignment_id": null,
@@ -4997,21 +5098,21 @@
             "decided_by": "release-suite",
             "decided_by_name": null,
             "decider_role": "administrator",
-            "decision_id": "urn:uuid:84b43118-c7e8-4bcc-b775-2b0d5976cd6a",
+            "decision_id": "urn:uuid:54f4800d-e470-44bb-8b01-bcf242bfab02",
             "disclosures": [],
             "disposition": "waive",
             "publication_restrictions": [],
             "rationale": "No regulated communication in the sample fixture.",
             "reassessment_at": null,
             "required_wording": [],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "compliance",
             "supersedes_decision_id": null,
             "valid_until": null,
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
-            "assignment_id": "urn:uuid:fd5d3a9c-6385-4076-bd76-a10b3869d6e7",
+            "assignment_id": "urn:uuid:3843ea33-d83d-4d83-9b68-5218e62931fc",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "conditions": [
               "Preserve the advisory method boundary and publish the competing frame."
@@ -5020,7 +5121,7 @@
             "decided_by": "final-approver",
             "decided_by_name": null,
             "decider_role": "final_approver",
-            "decision_id": "urn:uuid:bdb00705-9aee-4350-b1e4-bd9767a393a7",
+            "decision_id": "urn:uuid:a72fa45f-c3fd-4ec3-89b9-fedfa33fff08",
             "disclosures": [
               "Scenarios are explicit assumption tests and do not certify truth."
             ],
@@ -5034,11 +5135,11 @@
             "required_wording": [
               "Available evidence indicates; alternative attribution remains possible."
             ],
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "final",
             "supersedes_decision_id": null,
             "valid_until": "2027-01-17T23:59:59+00:00",
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           }
         ],
         "governance_flags": [],
@@ -5048,45 +5149,7 @@
         "review_assignments": [
           {
             "accepted_at": null,
-            "assignment_id": "urn:uuid:67266cf3-68a9-4eee-853e-d15e5eff6cc0",
-            "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-            "completed_at": "2026-07-17T16:00:00+00:00",
-            "created_at": "2026-07-17T14:10:00+00:00",
-            "created_by": "release-suite",
-            "due_at": "2026-07-24T17:00:00+00:00",
-            "escalated_at": null,
-            "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
-            "required": true,
-            "reviewer_id": "domain-reviewer",
-            "reviewer_name": null,
-            "reviewer_role": "domain_reviewer",
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-            "stage": "domain",
-            "status": "completed",
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
-          },
-          {
-            "accepted_at": null,
-            "assignment_id": "urn:uuid:c8c0b64a-53cc-4ef1-88f4-53fd1e809ca4",
-            "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-            "completed_at": "2026-07-17T17:00:00+00:00",
-            "created_at": "2026-07-17T14:10:00+00:00",
-            "created_by": "release-suite",
-            "due_at": "2026-07-24T17:00:00+00:00",
-            "escalated_at": null,
-            "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
-            "required": true,
-            "reviewer_id": "editorial-reviewer",
-            "reviewer_name": null,
-            "reviewer_role": "editorial_reviewer",
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
-            "stage": "editorial",
-            "status": "completed",
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
-          },
-          {
-            "accepted_at": null,
-            "assignment_id": "urn:uuid:c9b5fb3f-6a80-452d-80d2-f3bd852b8a2f",
+            "assignment_id": "urn:uuid:080dff6b-adde-46f3-9962-e9956158af5c",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "completed_at": "2026-07-17T15:00:00+00:00",
             "created_at": "2026-07-17T14:10:00+00:00",
@@ -5098,14 +5161,33 @@
             "reviewer_id": "intake-reviewer",
             "reviewer_name": null,
             "reviewer_role": "reviewer",
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "intake",
             "status": "completed",
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           },
           {
             "accepted_at": null,
-            "assignment_id": "urn:uuid:fd5d3a9c-6385-4076-bd76-a10b3869d6e7",
+            "assignment_id": "urn:uuid:15454455-00ed-405a-9db9-3192cb474e66",
+            "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+            "completed_at": "2026-07-17T17:00:00+00:00",
+            "created_at": "2026-07-17T14:10:00+00:00",
+            "created_by": "release-suite",
+            "due_at": "2026-07-24T17:00:00+00:00",
+            "escalated_at": null,
+            "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
+            "required": true,
+            "reviewer_id": "editorial-reviewer",
+            "reviewer_name": null,
+            "reviewer_role": "editorial_reviewer",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+            "stage": "editorial",
+            "status": "completed",
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
+          },
+          {
+            "accepted_at": null,
+            "assignment_id": "urn:uuid:3843ea33-d83d-4d83-9b68-5218e62931fc",
             "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
             "completed_at": "2026-07-17T18:10:00+00:00",
             "created_at": "2026-07-17T14:10:00+00:00",
@@ -5117,16 +5199,35 @@
             "reviewer_id": "final-approver",
             "reviewer_name": null,
             "reviewer_role": "final_approver",
-            "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
             "stage": "final",
             "status": "completed",
-            "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
+          },
+          {
+            "accepted_at": null,
+            "assignment_id": "urn:uuid:f3b8a621-daab-44e2-83cb-0dea3b89a9ce",
+            "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+            "completed_at": "2026-07-17T16:00:00+00:00",
+            "created_at": "2026-07-17T14:10:00+00:00",
+            "created_by": "release-suite",
+            "due_at": "2026-07-24T17:00:00+00:00",
+            "escalated_at": null,
+            "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
+            "required": true,
+            "reviewer_id": "domain-reviewer",
+            "reviewer_name": null,
+            "reviewer_role": "domain_reviewer",
+            "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+            "stage": "domain",
+            "status": "completed",
+            "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
           }
         ],
-        "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+        "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
         "started_at": "2026-07-17T14:05:00+00:00",
         "status": "approved",
-        "template_id": "urn:uuid:929cda9c-c021-43c9-b6c8-1388092dcfca",
+        "template_id": "urn:uuid:9be69f5f-f1ca-4cdf-821d-d367b1f637b7",
         "template_snapshot": {
           "active": true,
           "created_at": "2026-07-17T14:00:00+00:00",
@@ -5173,24 +5274,24 @@
               "stage": "final"
             }
           ],
-          "template_id": "urn:uuid:929cda9c-c021-43c9-b6c8-1388092dcfca",
+          "template_id": "urn:uuid:9be69f5f-f1ca-4cdf-821d-d367b1f637b7",
           "updated_at": "2026-07-17T14:00:00+00:00"
         },
         "updated_at": "2026-07-17T18:10:00+00:00",
-        "workflow_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb"
+        "workflow_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5"
       },
-      "handoff_id": "urn:uuid:335c340e-eb4d-5291-8e63-4c1713f8612c",
-      "handoff_sha256": "cbb0aa09e29006112b12480f475bae24780f07e0577b530318722f0531075170",
+      "handoff_id": "urn:uuid:5229c36d-9e75-529c-ad0a-c56911e0099d",
+      "handoff_sha256": "8d22c3559dc4c6ce3fc75ae26c6de20e4dbccf2dcd0062f4033d288a13f5dc19",
       "handoff_type": "catalyst_narrative_risk_decision_studio_handoff",
-      "handoff_version": "1.8.0",
+      "handoff_version": "1.9.0",
       "portfolio": {
         "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
         "comparison_count": 1,
         "evaluated_scenario_count": 4,
         "generated_at": "2026-07-17T19:35:00+00:00",
         "member_count": 2,
-        "portfolio_id": "urn:uuid:1e19e3c4-ae5a-52df-8138-8526fcaa64cf",
-        "portfolio_sha256": "e16796f8524651529cc4cfec6f2f973486cf4801225bde90a1bdf1f51e5bee61",
+        "portfolio_id": "urn:uuid:33bde4a9-bb7b-5486-a3a2-93afca02c053",
+        "portfolio_sha256": "d445da19ecb386986688367b446848e7b78538a557c6b9efcf16363bd42be518",
         "publication_readiness": "conditional",
         "risk_distribution": {
           "High": 1,
@@ -5212,7 +5313,7 @@
       },
       "scenario_results": [
         {
-          "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+          "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
           "calculations": {
             "components": {
               "consequences": {
@@ -5281,7 +5382,7 @@
             }
           },
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+          "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
           "deltas": {
             "component_weights": {
               "consequences": -15,
@@ -5311,9 +5412,9 @@
             ],
             "risk_level": "Low"
           },
-          "result_id": "urn:uuid:8b82946a-dee5-5ef7-b5b8-cc7d6ec9aea7",
-          "result_sha256": "2cc83fc7ff0e8aede2493ac20f50b9850044522b3d921747e9e769e8c9d3f8d7",
-          "scenario_id": "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba",
+          "result_id": "urn:uuid:06916fc9-49c9-52da-b0ba-9df2772fb25f",
+          "result_sha256": "14c7d6642cbce481981fd8b8099be45a5b2dd7047fa401f5efba077c042468fd",
+          "scenario_id": "urn:uuid:367655eb-8984-56de-a622-b268a643d685",
           "simulated_input": {
             "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
             "consequences": "low",
@@ -5329,7 +5430,7 @@
           }
         },
         {
-          "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+          "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
           "calculations": {
             "components": {
               "consequences": {
@@ -5398,7 +5499,7 @@
             }
           },
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+          "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
           "deltas": {
             "component_weights": {
               "consequences": 6,
@@ -5435,9 +5536,9 @@
             ],
             "risk_level": "High"
           },
-          "result_id": "urn:uuid:f8b5b418-f581-5b52-b703-de4f18b179cb",
-          "result_sha256": "3d2a4c68ce3a70e36a6b4673e7dd56caa7c2215bf735f436ba757d57c68befa9",
-          "scenario_id": "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0",
+          "result_id": "urn:uuid:7cd79910-426c-587a-8b85-42737c2bad33",
+          "result_sha256": "006462b577a0037f79298f52e4765cd5cd55a66593a514a70d2ffcc43db3ab93",
+          "scenario_id": "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b",
           "simulated_input": {
             "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
             "consequences": "critical",
@@ -5453,7 +5554,7 @@
           }
         },
         {
-          "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+          "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
           "calculations": {
             "components": {
               "consequences": {
@@ -5522,7 +5623,7 @@
             }
           },
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+          "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
           "deltas": {
             "component_weights": {
               "consequences": 0,
@@ -5558,9 +5659,9 @@
             ],
             "risk_level": "High"
           },
-          "result_id": "urn:uuid:4a1ab062-a54e-5729-9b28-4430642841cb",
-          "result_sha256": "7574fbd8c2057d35b3ff3929a18089ab0c444020bed2e612a7693e72f68cb7ce",
-          "scenario_id": "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787",
+          "result_id": "urn:uuid:5b7f4dba-e72c-553d-95ed-8b21c2e9ddc8",
+          "result_sha256": "5efb79d40f642a2d4ac1913f848e193166e77eb845c35a4bd30b7fde96830256",
+          "scenario_id": "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6",
           "simulated_input": {
             "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
             "consequences": "high",
@@ -5576,7 +5677,7 @@
           }
         },
         {
-          "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+          "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
           "calculations": {
             "components": {
               "consequences": {
@@ -5645,7 +5746,7 @@
             }
           },
           "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-          "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+          "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
           "deltas": {
             "component_weights": {
               "consequences": 0,
@@ -5682,9 +5783,9 @@
             ],
             "risk_level": "Medium"
           },
-          "result_id": "urn:uuid:b235ff03-f0a8-57b3-a5dc-f3533e956c74",
-          "result_sha256": "c0fbc6c8b6d617c424bd435dc44b222cbcb6f61532a5b877c9fc2311d577f449",
-          "scenario_id": "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3",
+          "result_id": "urn:uuid:2bc38c61-5537-5643-91e8-0e70b6d3c894",
+          "result_sha256": "b540c4ea67eea793ea2903f97398a3f43543c09cd578fadaa3c2e0516ece796c",
+          "scenario_id": "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1",
           "simulated_input": {
             "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
             "consequences": "high",
@@ -5701,14 +5802,14 @@
         }
       ],
       "selected_scenario_ids": [
-        "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba",
-        "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0",
-        "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787",
-        "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3"
+        "urn:uuid:367655eb-8984-56de-a622-b268a643d685",
+        "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b",
+        "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6",
+        "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1"
       ],
       "sensitivity_analysis": {
-        "analysis_id": "urn:uuid:45520c73-9f74-5da6-92de-8c5b45f386d0",
-        "analysis_sha256": "c12a4b3a48e207faf4208590c0b490e8b28601f13cea15897bb36306d73aaede",
+        "analysis_id": "urn:uuid:5fe6a838-be7a-533e-b7dc-d940b42ed918",
+        "analysis_sha256": "a2417df5c8a2b337d255b9643d4bae7f081957710001476ece87cc216e1385b4",
         "baseline": {
           "component_weights": {
             "consequences": 18,
@@ -5724,9 +5825,9 @@
           "risk_level": "Medium",
           "risk_score": 46
         },
-        "baseline_member_id": "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc",
+        "baseline_member_id": "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854",
         "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
-        "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+        "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
         "dimensions": [
           "evidence_strength",
           "uncertainty",
@@ -5781,7 +5882,7 @@
             "dimension": "evidence_strength",
             "risk_level": "Medium",
             "risk_score": 59,
-            "run_id": "urn:uuid:6ae66d9f-9d93-5a7a-be59-237a83dca8dd",
+            "run_id": "urn:uuid:c08be96e-1127-528c-9f18-5e1a98d98794",
             "value": "limited"
           },
           {
@@ -5800,7 +5901,7 @@
             "dimension": "evidence_strength",
             "risk_level": "Medium",
             "risk_score": 52,
-            "run_id": "urn:uuid:794367d2-b6f0-5d96-8523-bd08bff5b014",
+            "run_id": "urn:uuid:801d4153-d172-533b-89a6-8f0ea6463d61",
             "value": "moderate"
           },
           {
@@ -5819,7 +5920,7 @@
             "dimension": "evidence_strength",
             "risk_level": "Medium",
             "risk_score": 46,
-            "run_id": "urn:uuid:0c9129e9-1406-5388-8a3a-b95799f72830",
+            "run_id": "urn:uuid:9e1c89c1-54c7-510d-a031-5f84d3815fbb",
             "value": "strong"
           },
           {
@@ -5838,7 +5939,7 @@
             "dimension": "evidence_strength",
             "risk_level": "Medium",
             "risk_score": 62,
-            "run_id": "urn:uuid:b4e1fb5e-bb06-57a8-babe-f8a5db080b03",
+            "run_id": "urn:uuid:93576080-d5cb-5365-b431-bc0565c2e2a3",
             "value": "unclear"
           },
           {
@@ -5857,7 +5958,7 @@
             "dimension": "evidence_strength",
             "risk_level": "Medium",
             "risk_score": 66,
-            "run_id": "urn:uuid:0f6ed33b-cff3-58e2-8fe0-b2d1e26ff6ba",
+            "run_id": "urn:uuid:33898304-77ca-5e03-8662-85ec89664ef3",
             "value": "weak"
           },
           {
@@ -5876,7 +5977,7 @@
             "dimension": "uncertainty",
             "risk_level": "Medium",
             "risk_score": 51,
-            "run_id": "urn:uuid:e714b81d-7544-51ed-9b6f-bfc1ba438ca6",
+            "run_id": "urn:uuid:665a6f60-c64a-5d16-b797-b70f84810582",
             "value": "high"
           },
           {
@@ -5895,7 +5996,7 @@
             "dimension": "uncertainty",
             "risk_level": "Medium",
             "risk_score": 41,
-            "run_id": "urn:uuid:912a0199-b07b-5333-a7bd-98e7f233e12b",
+            "run_id": "urn:uuid:0991f29f-30de-5cc5-b00b-c864dddb90fb",
             "value": "low"
           },
           {
@@ -5914,7 +6015,7 @@
             "dimension": "uncertainty",
             "risk_level": "Medium",
             "risk_score": 46,
-            "run_id": "urn:uuid:f91497ca-8bd9-577b-9b64-460ba431b6b2",
+            "run_id": "urn:uuid:2c42912d-549c-5488-bbae-bd898b6945cd",
             "value": "medium"
           },
           {
@@ -5933,7 +6034,7 @@
             "dimension": "consequences",
             "risk_level": "Medium",
             "risk_score": 50,
-            "run_id": "urn:uuid:80afa610-eb02-53a3-b1fd-fb7661db582b",
+            "run_id": "urn:uuid:7927ce2a-91ca-5c00-8199-c73737ce87f7",
             "value": "critical"
           },
           {
@@ -5952,7 +6053,7 @@
             "dimension": "consequences",
             "risk_level": "Medium",
             "risk_score": 46,
-            "run_id": "urn:uuid:13a61833-ba78-56bc-8ced-dfdb010c2272",
+            "run_id": "urn:uuid:010ee248-5da6-5273-8f88-30eb5fa38e24",
             "value": "high"
           },
           {
@@ -5971,7 +6072,7 @@
             "dimension": "consequences",
             "risk_level": "Low",
             "risk_score": 35,
-            "run_id": "urn:uuid:dfdb2de7-7b52-50d7-8b4d-c2eea9ddc7da",
+            "run_id": "urn:uuid:cbf50192-e7b6-5471-ac89-b96a56626aa2",
             "value": "low"
           },
           {
@@ -5990,7 +6091,7 @@
             "dimension": "consequences",
             "risk_level": "Medium",
             "risk_score": 40,
-            "run_id": "urn:uuid:d430aacb-010e-5d10-b6ed-354aeec6fcec",
+            "run_id": "urn:uuid:3c304d82-967f-5aae-babb-30fb31ebdb70",
             "value": "moderate"
           },
           {
@@ -6009,7 +6110,7 @@
             "dimension": "stakeholder_pressure",
             "risk_level": "Medium",
             "risk_score": 51,
-            "run_id": "urn:uuid:89e7877a-7aa0-5718-8a2a-61ec9c32b5d3",
+            "run_id": "urn:uuid:802bd3b7-e462-507b-a4bd-46b2ca8ddd0b",
             "value": "high"
           },
           {
@@ -6028,7 +6129,7 @@
             "dimension": "stakeholder_pressure",
             "risk_level": "Medium",
             "risk_score": 41,
-            "run_id": "urn:uuid:804b6b30-b2aa-56a9-9976-f69a9b180969",
+            "run_id": "urn:uuid:4e4e3aef-2509-54c7-9b0d-d52475a9c983",
             "value": "low"
           },
           {
@@ -6047,11 +6148,504 @@
             "dimension": "stakeholder_pressure",
             "risk_level": "Medium",
             "risk_score": 46,
-            "run_id": "urn:uuid:0e9e80db-f862-5bb6-8386-7967de1365cd",
+            "run_id": "urn:uuid:ad801a32-250d-5658-88b9-423dac0756ed",
             "value": "medium"
           }
         ]
       }
+    }
+  ],
+  "publication_briefings": [
+    {
+      "audience": "public",
+      "briefing_id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
+      "briefing_sha256": "a98a2ea435d9cc762d4b66b7a54dd82fd9e860116f48e10da31c46b2d4312118",
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "classification": "public",
+      "disclosures": [
+        "Scenarios are explicit assumption tests and do not certify truth."
+      ],
+      "generated_at": "2026-07-17T19:36:00+00:00",
+      "generated_by": "release-suite",
+      "public_safe": true,
+      "publication_readiness": "conditional",
+      "publication_restrictions": [
+        "attribution_required",
+        "disclosure_required"
+      ],
+      "reassessment_at": "2026-10-17T12:00:00+00:00",
+      "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+      "redactions": [
+        "reviewer_id",
+        "reviewer_name",
+        "author_id",
+        "author_name",
+        "created_by",
+        "decided_by",
+        "decided_by_name",
+        "body",
+        "notes",
+        "method_notes"
+      ],
+      "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+      "sections": {
+        "citations": [
+          "Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).",
+          "City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17)."
+        ],
+        "claim": "The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.",
+        "disclosures": [
+          "Scenarios are explicit assumption tests and do not certify truth."
+        ],
+        "evidence_summary": {
+          "claim_count": 2,
+          "contested_claim_count": 0,
+          "coverage_status": "partial",
+          "evidence_count": 2,
+          "independent_source_count": 2,
+          "source_count": 2,
+          "stale_source_count": 0
+        },
+        "executive_summary": "Comparative public-impact narrative: Do not use as a confident public claim without additional review, source support, and narrowed language.",
+        "governance_summary": {
+          "conditions": [
+            "Preserve the advisory method boundary and publish the competing frame."
+          ],
+          "final_disposition": "approve_with_conditions",
+          "publication_allowed": true,
+          "publication_restrictions": [
+            "attribution_required",
+            "disclosure_required"
+          ],
+          "required_wording": [
+            "Available evidence indicates; alternative attribution remains possible."
+          ],
+          "status": "approved"
+        },
+        "narrative_summary": {
+          "diagnostic_count": 0,
+          "diagnostics": [],
+          "link_count": 0,
+          "node_count": 0
+        },
+        "reassessment": {
+          "reassessment_at": "2026-10-17T12:00:00+00:00",
+          "valid_until": "2027-01-17T23:59:59+00:00"
+        },
+        "risk_summary": {
+          "flags": [
+            "High uncertainty should be stated explicitly",
+            "Narrative may be changing quickly",
+            "Stakeholder pressure may be influencing interpretation",
+            "High-consequence claim needs stricter review"
+          ],
+          "level": "High",
+          "review_actions": [
+            "Add at least one independent source or primary reference.",
+            "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+            "Re-check source freshness before publication or decision use.",
+            "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+            "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Replace or define vague terms using measurable criteria, scope, and timeframe."
+          ],
+          "score": 71
+        }
+      },
+      "source_record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
+      "title": "Qualified Energy Performance Narrative",
+      "valid_until": "2027-01-17T23:59:59+00:00"
+    }
+  ],
+  "publication_packages": [
+    {
+      "artifacts": [
+        {
+          "content": "{\n  \"audience\": \"public\",\n  \"briefing_id\": \"urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0\",\n  \"briefing_sha256\": \"a98a2ea435d9cc762d4b66b7a54dd82fd9e860116f48e10da31c46b2d4312118\",\n  \"case_id\": \"urn:uuid:70000000-0000-4000-8000-000000000001\",\n  \"classification\": \"public\",\n  \"disclosures\": [\n    \"Scenarios are explicit assumption tests and do not certify truth.\"\n  ],\n  \"generated_at\": \"2026-07-17T19:36:00+00:00\",\n  \"generated_by\": \"release-suite\",\n  \"public_safe\": true,\n  \"publication_readiness\": \"conditional\",\n  \"publication_restrictions\": [\n    \"attribution_required\",\n    \"disclosure_required\"\n  ],\n  \"reassessment_at\": \"2026-10-17T12:00:00+00:00\",\n  \"record_id\": \"urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59\",\n  \"redactions\": [\n    \"reviewer_id\",\n    \"reviewer_name\",\n    \"author_id\",\n    \"author_name\",\n    \"created_by\",\n    \"decided_by\",\n    \"decided_by_name\",\n    \"body\",\n    \"notes\",\n    \"method_notes\"\n  ],\n  \"revision_id\": \"urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b\",\n  \"sections\": {\n    \"citations\": [\n      \"Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).\",\n      \"City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17).\"\n    ],\n    \"claim\": \"The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.\",\n    \"disclosures\": [\n      \"Scenarios are explicit assumption tests and do not certify truth.\"\n    ],\n    \"evidence_summary\": {\n      \"claim_count\": 2,\n      \"contested_claim_count\": 0,\n      \"coverage_status\": \"partial\",\n      \"evidence_count\": 2,\n      \"independent_source_count\": 2,\n      \"source_count\": 2,\n      \"stale_source_count\": 0\n    },\n    \"executive_summary\": \"Comparative public-impact narrative: Do not use as a confident public claim without additional review, source support, and narrowed language.\",\n    \"governance_summary\": {\n      \"conditions\": [\n        \"Preserve the advisory method boundary and publish the competing frame.\"\n      ],\n      \"final_disposition\": \"approve_with_conditions\",\n      \"publication_allowed\": true,\n      \"publication_restrictions\": [\n        \"attribution_required\",\n        \"disclosure_required\"\n      ],\n      \"required_wording\": [\n        \"Available evidence indicates; alternative attribution remains possible.\"\n      ],\n      \"status\": \"approved\"\n    },\n    \"narrative_summary\": {\n      \"diagnostic_count\": 0,\n      \"diagnostics\": [],\n      \"link_count\": 0,\n      \"node_count\": 0\n    },\n    \"reassessment\": {\n      \"reassessment_at\": \"2026-10-17T12:00:00+00:00\",\n      \"valid_until\": \"2027-01-17T23:59:59+00:00\"\n    },\n    \"risk_summary\": {\n      \"flags\": [\n        \"High uncertainty should be stated explicitly\",\n        \"Narrative may be changing quickly\",\n        \"Stakeholder pressure may be influencing interpretation\",\n        \"High-consequence claim needs stricter review\"\n      ],\n      \"level\": \"High\",\n      \"review_actions\": [\n        \"Add at least one independent source or primary reference.\",\n        \"Add an uncertainty note that separates knowns, assumptions, and unknowns.\",\n        \"Re-check source freshness before publication or decision use.\",\n        \"Document whether pressure, incentives, or reputational concerns may be shaping the claim.\",\n        \"Escalate to domain, legal, compliance, or editorial review as appropriate.\",\n        \"Record a reviewer, date, and decision before treating the claim as approved.\",\n        \"Replace or define vague terms using measurable criteria, scope, and timeframe.\"\n      ],\n      \"score\": 71\n    }\n  },\n  \"source_record_sha256\": \"ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc\",\n  \"title\": \"Qualified Energy Performance Narrative\",\n  \"valid_until\": \"2027-01-17T23:59:59+00:00\"\n}\n",
+          "content_encoding": "utf-8",
+          "content_sha256": "4778a9d7a5a330e4656e81a76ce62568892a4aad206302afc2668d1bfc9b0f08",
+          "filename": "qualified-energy-performance-narrative.json",
+          "format": "json",
+          "media_type": "application/json",
+          "size_bytes": 3871
+        },
+        {
+          "content": "# Qualified Energy Performance Narrative\n\nComparative public-impact narrative: Do not use as a confident public claim without additional review, source support, and narrowed language.\n\n## Claim\nThe pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.\n\n## Narrative risk\n**Score:** 71 · **Level:** High\n\n### Flags\n- High uncertainty should be stated explicitly\n- Narrative may be changing quickly\n- Stakeholder pressure may be influencing interpretation\n- High-consequence claim needs stricter review\n\n## Evidence\nCoverage: partial; 2 sources; 2 independent sources; 2 evidence items.\n\n## Governance\nStatus: approved; final disposition: approve_with_conditions; publication allowed: yes.\n\n## Disclosures\n- Scenarios are explicit assumption tests and do not certify truth.\n\n## Sources\n- Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).\n- City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17).\n\n## Reassessment\nValid until: 2027-01-17T23:59:59+00:00\nReassess at: 2026-10-17T12:00:00+00:00\n",
+          "content_encoding": "utf-8",
+          "content_sha256": "65914585d54427d0514c856aa0dea5514b7f93f32ed7f1ec1f82f1ed3ae83abc",
+          "filename": "qualified-energy-performance-narrative.md",
+          "format": "markdown",
+          "media_type": "text/markdown",
+          "size_bytes": 1219
+        },
+        {
+          "content": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width\"><title>Qualified Energy Performance Narrative</title><style>body{font:16px/1.55 system-ui;max-width:850px;margin:3rem auto;padding:0 1rem}h1,h2,h3{line-height:1.2}li{margin:.3rem 0}</style></head><body><h1>Qualified Energy Performance Narrative</h1>\n<p>Comparative public-impact narrative: Do not use as a confident public claim without additional review, source support, and narrowed language.</p>\n<h2>Claim</h2>\n<p>The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.</p>\n<h2>Narrative risk</h2>\n<p>**Score:** 71 · **Level:** High</p>\n<h3>Flags</h3>\n<li>High uncertainty should be stated explicitly</li>\n<li>Narrative may be changing quickly</li>\n<li>Stakeholder pressure may be influencing interpretation</li>\n<li>High-consequence claim needs stricter review</li>\n<h2>Evidence</h2>\n<p>Coverage: partial; 2 sources; 2 independent sources; 2 evidence items.</p>\n<h2>Governance</h2>\n<p>Status: approved; final disposition: approve_with_conditions; publication allowed: yes.</p>\n<h2>Disclosures</h2>\n<li>Scenarios are explicit assumption tests and do not certify truth.</li>\n<h2>Sources</h2>\n<li>Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).</li>\n<li>City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17).</li>\n<h2>Reassessment</h2>\n<p>Valid until: 2027-01-17T23:59:59+00:00</p>\n<p>Reassess at: 2026-10-17T12:00:00+00:00</p></body></html>",
+          "content_encoding": "utf-8",
+          "content_sha256": "cc04cdd1c75a36f6884614fcc99a64c3561de1a5bbe676b142083b1180beee0c",
+          "filename": "qualified-energy-performance-narrative.html",
+          "format": "html",
+          "media_type": "text/html",
+          "size_bytes": 1687
+        },
+        {
+          "content": "JVBERi0xLjQKMSAwIG9iajw8IC9UeXBlIC9DYXRhbG9nIC9QYWdlcyAyIDAgUiA+PmVuZG9iagoyIDAgb2JqPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj5lbmRvYmoKMyAwIG9iajw8IC9UeXBlIC9QYWdlIC9QYXJlbnQgMiAwIFIgL01lZGlhQm94IFswIDAgNjEyIDc5Ml0gL1Jlc291cmNlczw8IC9Gb250PDwgL0YxIDQgMCBSID4+ID4+IC9Db250ZW50cyA1IDAgUiA+PmVuZG9iago0IDAgb2JqPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9CYXNlRm9udCAvSGVsdmV0aWNhID4+ZW5kb2JqCjUgMCBvYmo8PCAvTGVuZ3RoIDE1NDUgPj5zdHJlYW0KQlQgL0YxIDEwIFRmIDUwIDc2MCBUZCAxNCBUTCAoIyBRdWFsaWZpZWQgRW5lcmd5IFBlcmZvcm1hbmNlIE5hcnJhdGl2ZSkgVGogVCogKCkgVGogVCogKENvbXBhcmF0aXZlIHB1YmxpYy1pbXBhY3QgbmFycmF0aXZlOiBEbyBub3QgdXNlIGFzIGEgY29uZmlkZW50IHB1YmxpYyBjbGFpbSB3aXRob3V0KSBUaiBUKiAoYWRkaXRpb25hbCByZXZpZXcsIHNvdXJjZSBzdXBwb3J0LCBhbmQgbmFycm93ZWQgbGFuZ3VhZ2UuKSBUaiBUKiAoKSBUaiBUKiAoIyMgQ2xhaW0pIFRqIFQqIChUaGUgcGlsb3QgbWF5IGhhdmUgcmVkdWNlZCBlbmVyZ3kgdXNlLCBidXQgYXR0cmlidXRpb24gcmVtYWlucyB1bmNlcnRhaW4gYW5kIGFmZm9yZGFiaWxpdHkpIFRqIFQqIChlZmZlY3RzIHJlcXVpcmUgZnVydGhlciByZXZpZXcuKSBUaiBUKiAoKSBUaiBUKiAoIyMgTmFycmF0aXZlIHJpc2spIFRqIFQqICgqKlNjb3JlOioqIDcxILcgKipMZXZlbDoqKiBIaWdoKSBUaiBUKiAoKSBUaiBUKiAoIyMjIEZsYWdzKSBUaiBUKiAoLSBIaWdoIHVuY2VydGFpbnR5IHNob3VsZCBiZSBzdGF0ZWQgZXhwbGljaXRseSkgVGogVCogKC0gTmFycmF0aXZlIG1heSBiZSBjaGFuZ2luZyBxdWlja2x5KSBUaiBUKiAoLSBTdGFrZWhvbGRlciBwcmVzc3VyZSBtYXkgYmUgaW5mbHVlbmNpbmcgaW50ZXJwcmV0YXRpb24pIFRqIFQqICgtIEhpZ2gtY29uc2VxdWVuY2UgY2xhaW0gbmVlZHMgc3RyaWN0ZXIgcmV2aWV3KSBUaiBUKiAoKSBUaiBUKiAoIyMgRXZpZGVuY2UpIFRqIFQqIChDb3ZlcmFnZTogcGFydGlhbDsgMiBzb3VyY2VzOyAyIGluZGVwZW5kZW50IHNvdXJjZXM7IDIgZXZpZGVuY2UgaXRlbXMuKSBUaiBUKiAoKSBUaiBUKiAoIyMgR292ZXJuYW5jZSkgVGogVCogKFN0YXR1czogYXBwcm92ZWQ7IGZpbmFsIGRpc3Bvc2l0aW9uOiBhcHByb3ZlX3dpdGhfY29uZGl0aW9uczsgcHVibGljYXRpb24gYWxsb3dlZDogeWVzLikgVGogVCogKCkgVGogVCogKCMjIERpc2Nsb3N1cmVzKSBUaiBUKiAoLSBTY2VuYXJpb3MgYXJlIGV4cGxpY2l0IGFzc3VtcHRpb24gdGVzdHMgYW5kIGRvIG5vdCBjZXJ0aWZ5IHRydXRoLikgVGogVCogKCkgVGogVCogKCMjIFNvdXJjZXMpIFRqIFQqICgtIEVuZXJneSBBdWRpdCBUZWFtIFwoMjAyNlwpIFBpbG90IG1ldGVyIGF1ZGl0LiBJbmRlcGVuZGVudCBBdWRpdCBHcm91cC4gQXZhaWxhYmxlIGF0OikgVGogVCogKGh0dHBzOi8vZXhhbXBsZS5vcmcvcGlsb3QtYXVkaXQgXChBY2Nlc3NlZDogMjAyNi0wNy0xN1wpLikgVGogVCogKC0gQ2l0eSBVdGlsaXR5IFwoMjAyNlwpIFV0aWxpdHkgaW50ZXJ2YWwgZGF0YXNldC4gQ2l0eSBVdGlsaXR5LiBBdmFpbGFibGUgYXQ6KSBUaiBUKiAoaHR0cHM6Ly9leGFtcGxlLm9yZy91dGlsaXR5LWRhdGEgXChBY2Nlc3NlZDogMjAyNi0wNy0xN1wpLikgVGogVCogKCkgVGogVCogKCMjIFJlYXNzZXNzbWVudCkgVGogVCogKFZhbGlkIHVudGlsOiAyMDI3LTAxLTE3VDIzOjU5OjU5KzAwOjAwKSBUaiBUKiAoUmVhc3Nlc3MgYXQ6IDIwMjYtMTAtMTdUMTI6MDA6MDArMDA6MDApIFRqIFQqIEVUCmVuZHN0cmVhbSBlbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDA5IDAwMDAwIG4gCjAwMDAwMDAwNTYgMDAwMDAgbiAKMDAwMDAwMDExMSAwMDAwMCBuIAowMDAwMDAwMjMzIDAwMDAwIG4gCjAwMDAwMDAzMDEgMDAwMDAgbiAKdHJhaWxlcjw8IC9TaXplIDYgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjE4OTYKJSVFT0YK",
+          "content_encoding": "base64",
+          "content_sha256": "e3c8f28d141e186397ba9ff6bcfb2084c6ec64dcd7c030dd9e7142de74a3363c",
+          "filename": "qualified-energy-performance-narrative.pdf",
+          "format": "pdf",
+          "media_type": "application/pdf",
+          "size_bytes": 2079
+        },
+        {
+          "content": "field,value\nbriefing_id,urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0\ncase_id,urn:uuid:70000000-0000-4000-8000-000000000001\ntitle,Qualified Energy Performance Narrative\nclaim,\"The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.\"\nrisk_score,71\nrisk_level,High\nevidence_coverage,partial\nsource_count,2\npublication_readiness,conditional\ngenerated_at,2026-07-17T19:36:00+00:00\n",
+          "content_encoding": "utf-8",
+          "content_sha256": "1a5f68788ec0cc179180a865f1ff989081893c94880e9cfc615e26fdecfd6a2c",
+          "filename": "qualified-energy-performance-narrative.csv",
+          "format": "csv",
+          "media_type": "text/csv",
+          "size_bytes": 444
+        },
+        {
+          "content": "{\n  \"@context\": {\n    \"schema\": \"https://schema.org/\",\n    \"cnr\": \"https://sustainablecatalyst.com/ns/narrative-risk#\"\n  },\n  \"@type\": \"schema:Report\",\n  \"@id\": \"urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0\",\n  \"schema:name\": \"Qualified Energy Performance Narrative\",\n  \"schema:dateCreated\": \"2026-07-17T19:36:00+00:00\",\n  \"schema:about\": {\n    \"@type\": \"schema:Claim\",\n    \"schema:text\": \"The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.\"\n  },\n  \"cnr:riskScore\": 71,\n  \"cnr:riskLevel\": \"High\",\n  \"cnr:publicationReadiness\": \"conditional\",\n  \"cnr:sourceRecord\": \"urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59\"\n}\n",
+          "content_encoding": "utf-8",
+          "content_sha256": "8c850734893512b25b895589df114ed26ce2d6b19eb244c2bf45b1f13073e83b",
+          "filename": "qualified-energy-performance-narrative.jsonld",
+          "format": "jsonld",
+          "media_type": "application/ld+json",
+          "size_bytes": 687
+        }
+      ],
+      "briefing_id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "classification": "public",
+      "generated_at": "2026-07-17T19:37:00+00:00",
+      "generated_by": "release-suite",
+      "idempotency_key": "sample-qualified-energy-performance-v1",
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "package_sha256": "70e432a10f9714c875a6df65a9221c298e2c81533ec9c10e6149bbaec58afa96",
+      "package_version": 1,
+      "public_safe": true,
+      "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+      "slug": "qualified-energy-performance-narrative",
+      "status": "published"
+    }
+  ],
+  "public_embeds": [
+    {
+      "allowed_origins": [
+        "https://sustainablecatalyst.com"
+      ],
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "created_at": "2026-07-17T19:38:30+00:00",
+      "embed_code": "<iframe src=\"/narrative-risk/embed/qualified-energy-performance-narrative-embed\" title=\"Narrative Risk Briefing\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>",
+      "embed_id": "urn:uuid:e8edaf63-9a1c-45bb-bbeb-8d21e16d7d7d",
+      "embed_sha256": "5c21ce149a14826e67b4db19baebd7a52017d559fdfe36d80bad558af31d3cb8",
+      "expires_at": null,
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "show_sections": [
+        "executive_summary",
+        "claim",
+        "risk_summary",
+        "evidence_summary",
+        "narrative_summary",
+        "governance_summary",
+        "disclosures",
+        "citations",
+        "reassessment"
+      ],
+      "slug": "qualified-energy-performance-narrative-embed",
+      "status": "active",
+      "theme": "system"
+    }
+  ],
+  "platform_handoffs": [
+    {
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "external_reference": null,
+      "generated_at": "2026-07-17T19:39:00+00:00",
+      "handoff_id": "urn:uuid:1370a6c4-e4ff-46bb-b0c3-37c1944d7de7",
+      "handoff_sha256": "d9070ce722ba6d571c2840596ed400bac535a2546e78cb3de65bd3c6e78bb215",
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "package_sha256": "70e432a10f9714c875a6df65a9221c298e2c81533ec9c10e6149bbaec58afa96",
+      "payload": {
+        "artifact_manifest": [
+          {
+            "content_sha256": "4778a9d7a5a330e4656e81a76ce62568892a4aad206302afc2668d1bfc9b0f08",
+            "filename": "qualified-energy-performance-narrative.json",
+            "format": "json",
+            "media_type": "application/json",
+            "size_bytes": 3871
+          },
+          {
+            "content_sha256": "65914585d54427d0514c856aa0dea5514b7f93f32ed7f1ec1f82f1ed3ae83abc",
+            "filename": "qualified-energy-performance-narrative.md",
+            "format": "markdown",
+            "media_type": "text/markdown",
+            "size_bytes": 1219
+          },
+          {
+            "content_sha256": "cc04cdd1c75a36f6884614fcc99a64c3561de1a5bbe676b142083b1180beee0c",
+            "filename": "qualified-energy-performance-narrative.html",
+            "format": "html",
+            "media_type": "text/html",
+            "size_bytes": 1687
+          },
+          {
+            "content_sha256": "e3c8f28d141e186397ba9ff6bcfb2084c6ec64dcd7c030dd9e7142de74a3363c",
+            "filename": "qualified-energy-performance-narrative.pdf",
+            "format": "pdf",
+            "media_type": "application/pdf",
+            "size_bytes": 2079
+          },
+          {
+            "content_sha256": "1a5f68788ec0cc179180a865f1ff989081893c94880e9cfc615e26fdecfd6a2c",
+            "filename": "qualified-energy-performance-narrative.csv",
+            "format": "csv",
+            "media_type": "text/csv",
+            "size_bytes": 444
+          },
+          {
+            "content_sha256": "8c850734893512b25b895589df114ed26ce2d6b19eb244c2bf45b1f13073e83b",
+            "filename": "qualified-energy-performance-narrative.jsonld",
+            "format": "jsonld",
+            "media_type": "application/ld+json",
+            "size_bytes": 687
+          }
+        ],
+        "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+        "classification": "public",
+        "formats": [
+          "json",
+          "markdown",
+          "html",
+          "pdf",
+          "csv",
+          "jsonld"
+        ],
+        "handoff_type": "catalyst_narrative_risk_publication",
+        "handoff_version": "1.9.0",
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "public_safe": true,
+        "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+        "status": "published"
+      },
+      "target": "research_librarian"
+    },
+    {
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "external_reference": null,
+      "generated_at": "2026-07-17T19:39:00+00:00",
+      "handoff_id": "urn:uuid:78292a80-22cd-4dbf-b3b9-986c9f76c029",
+      "handoff_sha256": "a0da8d3d8b0831e6700071e6785606406eafb8806a2d3d60ac7efc140a6c5c43",
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "package_sha256": "70e432a10f9714c875a6df65a9221c298e2c81533ec9c10e6149bbaec58afa96",
+      "payload": {
+        "artifact_manifest": [
+          {
+            "content_sha256": "4778a9d7a5a330e4656e81a76ce62568892a4aad206302afc2668d1bfc9b0f08",
+            "filename": "qualified-energy-performance-narrative.json",
+            "format": "json",
+            "media_type": "application/json",
+            "size_bytes": 3871
+          },
+          {
+            "content_sha256": "65914585d54427d0514c856aa0dea5514b7f93f32ed7f1ec1f82f1ed3ae83abc",
+            "filename": "qualified-energy-performance-narrative.md",
+            "format": "markdown",
+            "media_type": "text/markdown",
+            "size_bytes": 1219
+          },
+          {
+            "content_sha256": "cc04cdd1c75a36f6884614fcc99a64c3561de1a5bbe676b142083b1180beee0c",
+            "filename": "qualified-energy-performance-narrative.html",
+            "format": "html",
+            "media_type": "text/html",
+            "size_bytes": 1687
+          },
+          {
+            "content_sha256": "e3c8f28d141e186397ba9ff6bcfb2084c6ec64dcd7c030dd9e7142de74a3363c",
+            "filename": "qualified-energy-performance-narrative.pdf",
+            "format": "pdf",
+            "media_type": "application/pdf",
+            "size_bytes": 2079
+          },
+          {
+            "content_sha256": "1a5f68788ec0cc179180a865f1ff989081893c94880e9cfc615e26fdecfd6a2c",
+            "filename": "qualified-energy-performance-narrative.csv",
+            "format": "csv",
+            "media_type": "text/csv",
+            "size_bytes": 444
+          },
+          {
+            "content_sha256": "8c850734893512b25b895589df114ed26ce2d6b19eb244c2bf45b1f13073e83b",
+            "filename": "qualified-energy-performance-narrative.jsonld",
+            "format": "jsonld",
+            "media_type": "application/ld+json",
+            "size_bytes": 687
+          }
+        ],
+        "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+        "classification": "public",
+        "formats": [
+          "json",
+          "markdown",
+          "html",
+          "pdf",
+          "csv",
+          "jsonld"
+        ],
+        "handoff_type": "catalyst_narrative_risk_publication",
+        "handoff_version": "1.9.0",
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "public_safe": true,
+        "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+        "status": "published"
+      },
+      "target": "site_intelligence"
+    },
+    {
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "external_reference": null,
+      "generated_at": "2026-07-17T19:39:00+00:00",
+      "handoff_id": "urn:uuid:dbe3730a-42c8-4921-8edb-4e525ad55999",
+      "handoff_sha256": "63fe90a963134ad49759327c3b965e2de1336182544e4b99346a706c364efbf4",
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "package_sha256": "70e432a10f9714c875a6df65a9221c298e2c81533ec9c10e6149bbaec58afa96",
+      "payload": {
+        "artifact_manifest": [
+          {
+            "content_sha256": "4778a9d7a5a330e4656e81a76ce62568892a4aad206302afc2668d1bfc9b0f08",
+            "filename": "qualified-energy-performance-narrative.json",
+            "format": "json",
+            "media_type": "application/json",
+            "size_bytes": 3871
+          },
+          {
+            "content_sha256": "65914585d54427d0514c856aa0dea5514b7f93f32ed7f1ec1f82f1ed3ae83abc",
+            "filename": "qualified-energy-performance-narrative.md",
+            "format": "markdown",
+            "media_type": "text/markdown",
+            "size_bytes": 1219
+          },
+          {
+            "content_sha256": "cc04cdd1c75a36f6884614fcc99a64c3561de1a5bbe676b142083b1180beee0c",
+            "filename": "qualified-energy-performance-narrative.html",
+            "format": "html",
+            "media_type": "text/html",
+            "size_bytes": 1687
+          },
+          {
+            "content_sha256": "e3c8f28d141e186397ba9ff6bcfb2084c6ec64dcd7c030dd9e7142de74a3363c",
+            "filename": "qualified-energy-performance-narrative.pdf",
+            "format": "pdf",
+            "media_type": "application/pdf",
+            "size_bytes": 2079
+          },
+          {
+            "content_sha256": "1a5f68788ec0cc179180a865f1ff989081893c94880e9cfc615e26fdecfd6a2c",
+            "filename": "qualified-energy-performance-narrative.csv",
+            "format": "csv",
+            "media_type": "text/csv",
+            "size_bytes": 444
+          },
+          {
+            "content_sha256": "8c850734893512b25b895589df114ed26ce2d6b19eb244c2bf45b1f13073e83b",
+            "filename": "qualified-energy-performance-narrative.jsonld",
+            "format": "jsonld",
+            "media_type": "application/ld+json",
+            "size_bytes": 687
+          }
+        ],
+        "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+        "classification": "public",
+        "formats": [
+          "json",
+          "markdown",
+          "html",
+          "pdf",
+          "csv",
+          "jsonld"
+        ],
+        "handoff_type": "catalyst_narrative_risk_publication",
+        "handoff_version": "1.9.0",
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "public_safe": true,
+        "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+        "status": "published"
+      },
+      "target": "knowledge_library"
+    },
+    {
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "external_reference": null,
+      "generated_at": "2026-07-17T19:39:00+00:00",
+      "handoff_id": "urn:uuid:f2c4bee6-4ef2-4662-930a-1c557c4b4994",
+      "handoff_sha256": "daf0918e658f7961d6ded3919912634d11e84e839a74beea0dfb34b89ac298b8",
+      "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "package_sha256": "70e432a10f9714c875a6df65a9221c298e2c81533ec9c10e6149bbaec58afa96",
+      "payload": {
+        "artifact_manifest": [
+          {
+            "content_sha256": "4778a9d7a5a330e4656e81a76ce62568892a4aad206302afc2668d1bfc9b0f08",
+            "filename": "qualified-energy-performance-narrative.json",
+            "format": "json",
+            "media_type": "application/json",
+            "size_bytes": 3871
+          },
+          {
+            "content_sha256": "65914585d54427d0514c856aa0dea5514b7f93f32ed7f1ec1f82f1ed3ae83abc",
+            "filename": "qualified-energy-performance-narrative.md",
+            "format": "markdown",
+            "media_type": "text/markdown",
+            "size_bytes": 1219
+          },
+          {
+            "content_sha256": "cc04cdd1c75a36f6884614fcc99a64c3561de1a5bbe676b142083b1180beee0c",
+            "filename": "qualified-energy-performance-narrative.html",
+            "format": "html",
+            "media_type": "text/html",
+            "size_bytes": 1687
+          },
+          {
+            "content_sha256": "e3c8f28d141e186397ba9ff6bcfb2084c6ec64dcd7c030dd9e7142de74a3363c",
+            "filename": "qualified-energy-performance-narrative.pdf",
+            "format": "pdf",
+            "media_type": "application/pdf",
+            "size_bytes": 2079
+          },
+          {
+            "content_sha256": "1a5f68788ec0cc179180a865f1ff989081893c94880e9cfc615e26fdecfd6a2c",
+            "filename": "qualified-energy-performance-narrative.csv",
+            "format": "csv",
+            "media_type": "text/csv",
+            "size_bytes": 444
+          },
+          {
+            "content_sha256": "8c850734893512b25b895589df114ed26ce2d6b19eb244c2bf45b1f13073e83b",
+            "filename": "qualified-energy-performance-narrative.jsonld",
+            "format": "jsonld",
+            "media_type": "application/ld+json",
+            "size_bytes": 687
+          }
+        ],
+        "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+        "classification": "public",
+        "formats": [
+          "json",
+          "markdown",
+          "html",
+          "pdf",
+          "csv",
+          "jsonld"
+        ],
+        "handoff_type": "catalyst_narrative_risk_publication",
+        "handoff_version": "1.9.0",
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "public_safe": true,
+        "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+        "status": "published"
+      },
+      "target": "decision_studio"
     }
   ],
   "activity": [
@@ -6069,10 +6663,10 @@
       "activity_id": 2,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "revision_added",
-      "entity_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+      "entity_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
       "payload": {
-        "record_id": "urn:uuid:5f60bb3a-1f9e-4e55-a10c-fd91db156a30",
-        "record_sha256": "59ac0d6f969d7173a5ffe31839646f051b2cfbcee4851c82da8868ca04082a91",
+        "record_id": "urn:uuid:b2c1cda8-51b8-4bbf-93bd-dd77b0708841",
+        "record_sha256": "fba5f7060e7d26d48916a5e2e78a1a2b46bcb90cf940cb4f01fa3d9f88e9370c",
         "revision_number": 1
       },
       "created_at": "2026-07-17T12:00:00+00:00"
@@ -6081,10 +6675,10 @@
       "activity_id": 3,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_snapshot_captured",
-      "entity_id": "urn:uuid:d9c5ee52-64d0-468d-bfd9-f92f135d412b",
+      "entity_id": "urn:uuid:899e2273-861c-4694-832a-7dad22c02c91",
       "payload": {
         "freshness": "current",
-        "revision_id": "urn:uuid:e8f43acb-aa8f-40dd-bbb0-30fa9b70da22",
+        "revision_id": "urn:uuid:442f895b-8c88-49e1-9626-a6f6fbf9517d",
         "trigger": "revision_created"
       },
       "created_at": "2026-07-17T12:30:00+00:00"
@@ -6093,10 +6687,10 @@
       "activity_id": 4,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "revision_added",
-      "entity_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+      "entity_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
       "payload": {
-        "record_id": "urn:uuid:1de9249e-440e-4d97-8adf-5964b42895c7",
-        "record_sha256": "b1db011fae47a6b0ec9ca1405aa77da4b3c17789dde5988ecc1228d669a23532",
+        "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+        "record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
         "revision_number": 2
       },
       "created_at": "2026-07-17T13:00:00+00:00"
@@ -6105,10 +6699,10 @@
       "activity_id": 5,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_snapshot_captured",
-      "entity_id": "urn:uuid:589a999c-47ee-40e1-97c0-ad36a8aef2a7",
+      "entity_id": "urn:uuid:3669ea33-2dfe-4397-b35e-64f21150f908",
       "payload": {
         "freshness": "current",
-        "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+        "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
         "trigger": "revision_created"
       },
       "created_at": "2026-07-17T13:30:00+00:00"
@@ -6117,7 +6711,7 @@
       "activity_id": 6,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_snapshots_compared",
-      "entity_id": "urn:uuid:3c24841c-5b23-483a-a5d8-df5961479e90",
+      "entity_id": "urn:uuid:2fe1f1b9-7847-4a27-9041-679f2a9a450b",
       "payload": {
         "material_change": true,
         "materiality_score": 97,
@@ -6129,7 +6723,7 @@
       "activity_id": 7,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "review_event_added",
-      "entity_id": "urn:uuid:b9369dd9-b2bf-441f-8b59-759a816c08d5",
+      "entity_id": "urn:uuid:e77aef72-692c-4bd1-98b0-1029a5c7225f",
       "payload": {
         "event_type": "comment",
         "revision_id": null
@@ -6140,10 +6734,10 @@
       "activity_id": 8,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_workflow_started",
-      "entity_id": "urn:uuid:4c88ae61-330d-432a-805d-75b784ffeafb",
+      "entity_id": "urn:uuid:7dd3bc16-dc49-496f-80c0-b313c4fc9fa5",
       "payload": {
         "current_stage": "intake",
-        "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee"
+        "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b"
       },
       "created_at": "2026-07-17T14:05:00+00:00"
     },
@@ -6151,7 +6745,7 @@
       "activity_id": 9,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "reviewer_assigned",
-      "entity_id": "urn:uuid:c9b5fb3f-6a80-452d-80d2-f3bd852b8a2f",
+      "entity_id": "urn:uuid:080dff6b-adde-46f3-9962-e9956158af5c",
       "payload": {
         "required": true,
         "reviewer_id": "intake-reviewer",
@@ -6163,7 +6757,7 @@
       "activity_id": 10,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "reviewer_assigned",
-      "entity_id": "urn:uuid:67266cf3-68a9-4eee-853e-d15e5eff6cc0",
+      "entity_id": "urn:uuid:f3b8a621-daab-44e2-83cb-0dea3b89a9ce",
       "payload": {
         "required": true,
         "reviewer_id": "domain-reviewer",
@@ -6175,7 +6769,7 @@
       "activity_id": 11,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "reviewer_assigned",
-      "entity_id": "urn:uuid:c8c0b64a-53cc-4ef1-88f4-53fd1e809ca4",
+      "entity_id": "urn:uuid:15454455-00ed-405a-9db9-3192cb474e66",
       "payload": {
         "required": true,
         "reviewer_id": "editorial-reviewer",
@@ -6187,7 +6781,7 @@
       "activity_id": 12,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "reviewer_assigned",
-      "entity_id": "urn:uuid:fd5d3a9c-6385-4076-bd76-a10b3869d6e7",
+      "entity_id": "urn:uuid:3843ea33-d83d-4d83-9b68-5218e62931fc",
       "payload": {
         "required": true,
         "reviewer_id": "final-approver",
@@ -6199,7 +6793,7 @@
       "activity_id": 13,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:d81da2d1-0eff-457e-8b67-45090580f608",
+      "entity_id": "urn:uuid:3032f800-6de5-4d11-a1d8-a95720acca6b",
       "payload": {
         "disposition": "approve",
         "stage": "intake",
@@ -6211,7 +6805,7 @@
       "activity_id": 14,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:ea0e378e-63e9-4983-a46e-c242c92e1b28",
+      "entity_id": "urn:uuid:706767d0-514e-4019-aeb0-e0e07988bd85",
       "payload": {
         "disposition": "approve",
         "stage": "domain",
@@ -6223,7 +6817,7 @@
       "activity_id": 15,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:a38492ce-2345-4211-9631-b0ed05b46ddf",
+      "entity_id": "urn:uuid:1bc7e21f-f5e2-4aa2-853a-504c82b808d1",
       "payload": {
         "disposition": "approve",
         "stage": "editorial",
@@ -6235,7 +6829,7 @@
       "activity_id": 16,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:402850c5-f250-400a-9150-109559c4c99c",
+      "entity_id": "urn:uuid:b013d7c9-6c75-4c53-9fff-792070290811",
       "payload": {
         "disposition": "waive",
         "stage": "legal",
@@ -6247,7 +6841,7 @@
       "activity_id": 17,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:84b43118-c7e8-4bcc-b775-2b0d5976cd6a",
+      "entity_id": "urn:uuid:54f4800d-e470-44bb-8b01-bcf242bfab02",
       "payload": {
         "disposition": "waive",
         "stage": "compliance",
@@ -6259,7 +6853,7 @@
       "activity_id": 18,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "governance_decision_added",
-      "entity_id": "urn:uuid:bdb00705-9aee-4350-b1e4-bd9767a393a7",
+      "entity_id": "urn:uuid:a72fa45f-c3fd-4ec3-89b9-fedfa33fff08",
       "payload": {
         "disposition": "approve_with_conditions",
         "stage": "final",
@@ -6271,7 +6865,7 @@
       "activity_id": 19,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "watchlist_created",
-      "entity_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
+      "entity_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
       "payload": {
         "cadence": "daily",
         "name": "Comparative narrative watch",
@@ -6288,10 +6882,10 @@
       "activity_id": 20,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_snapshot_captured",
-      "entity_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491",
+      "entity_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad",
       "payload": {
         "freshness": "stale",
-        "revision_id": "urn:uuid:82eb4a51-b826-416c-9638-ca18a46d02ee",
+        "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
         "trigger": "scheduled"
       },
       "created_at": "2028-07-18T12:00:00+00:00"
@@ -6300,7 +6894,7 @@
       "activity_id": 21,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_snapshots_compared",
-      "entity_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
+      "entity_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
       "payload": {
         "material_change": true,
         "materiality_score": 76,
@@ -6312,7 +6906,7 @@
       "activity_id": 22,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_alert_created",
-      "entity_id": "urn:uuid:22df761c-b216-4c69-b56b-7c87f1a86da7",
+      "entity_id": "urn:uuid:f3e902ea-fb55-4b5c-b7e0-a3f79534af13",
       "payload": {
         "alert_type": "source_stale",
         "severity": "high"
@@ -6323,7 +6917,7 @@
       "activity_id": 23,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_alert_created",
-      "entity_id": "urn:uuid:edf9c17d-ae83-4736-b1b5-c0995acd778e",
+      "entity_id": "urn:uuid:b1ac1a1b-5846-46cb-879f-a21e2025faa9",
       "payload": {
         "alert_type": "material_change",
         "severity": "critical"
@@ -6334,7 +6928,7 @@
       "activity_id": 24,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "monitoring_alert_created",
-      "entity_id": "urn:uuid:1d50c083-cc3c-4394-9f79-9461b1ab1555",
+      "entity_id": "urn:uuid:a347f218-ec20-4fbb-b0fe-9a07f658b380",
       "payload": {
         "alert_type": "approval_expired",
         "severity": "critical"
@@ -6345,11 +6939,11 @@
       "activity_id": 25,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "watchlist_checked",
-      "entity_id": "urn:uuid:241060c9-13b3-4820-9c6f-ef05646552d1",
+      "entity_id": "urn:uuid:1c0f1198-2f09-4d81-8ccf-051930967940",
       "payload": {
         "alert_count": 3,
-        "comparison_id": "urn:uuid:5481800b-fa89-45a5-aac5-fad06e84b1ce",
-        "snapshot_id": "urn:uuid:6ac343c0-51a9-4886-a3e0-ce53c7569491"
+        "comparison_id": "urn:uuid:ab884053-a3f8-4a91-bd28-edf9be27dc86",
+        "snapshot_id": "urn:uuid:38c85126-14c0-47a5-bc18-a0265ae979ad"
       },
       "created_at": "2028-07-18T12:00:00+00:00"
     },
@@ -6361,7 +6955,7 @@
       "payload": {
         "confidence": "high",
         "event_type": "material_change",
-        "handoff_sha256": "6f4a204915f7863e4c4fa223eedfc7264ce36dfcc9af5cf0f73c93e15c2baae0"
+        "handoff_sha256": "59df404dcf629e0d1138725a92d3329d56ee952b6485e63d016c377d9e592156"
       },
       "created_at": "2026-07-20T12:01:00+00:00"
     },
@@ -6422,7 +7016,7 @@
       "activity_id": 32,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "catalyst_canvas_stakeholders_imported",
-      "entity_id": "urn:uuid:12b89060-d2e7-4226-b69d-bcbfd0ffaa09",
+      "entity_id": "urn:uuid:4b110f52-13d6-4d75-a8a7-e6cecad82f95",
       "payload": {
         "actor_count": 3,
         "canvas_id": "canvas:energy-pilot",
@@ -6468,7 +7062,7 @@
       "activity_id": 36,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "comparison_set_created",
-      "entity_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+      "entity_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
       "payload": {
         "member_count": 2,
         "title": "Measured reduction versus qualified attribution"
@@ -6479,16 +7073,16 @@
       "activity_id": 37,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "comparative_evidence_matrix_generated",
-      "entity_id": "urn:uuid:e9451aca-f3c3-5586-806a-bb9f93f06645",
+      "entity_id": "urn:uuid:944445d6-bafe-5c21-ba88-f34e73ecd7f9",
       "payload": {
         "claim_count": 3,
         "coverage_by_member": {
-          "urn:uuid:53bd5f26-0e9c-56cb-9664-e3bce007bfcc": {
+          "urn:uuid:7e7beee2-160e-5f26-88c4-97bf7f49364e": {
             "contested_claims": 0,
             "covered_claims": 2,
             "source_count": 2
           },
-          "urn:uuid:c68e414a-a94b-5649-9004-eaaba9b70366": {
+          "urn:uuid:846c0d6c-c09a-5907-9fda-e6a56852c854": {
             "contested_claims": 0,
             "covered_claims": 2,
             "source_count": 2
@@ -6503,7 +7097,7 @@
       "activity_id": 38,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_created",
-      "entity_id": "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba",
+      "entity_id": "urn:uuid:367655eb-8984-56de-a622-b268a643d685",
       "payload": {
         "name": "Best case",
         "scenario_type": "best_case"
@@ -6514,10 +7108,10 @@
       "activity_id": 39,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_evaluated",
-      "entity_id": "urn:uuid:8b82946a-dee5-5ef7-b5b8-cc7d6ec9aea7",
+      "entity_id": "urn:uuid:06916fc9-49c9-52da-b0ba-9df2772fb25f",
       "payload": {
         "risk_score_delta": -15,
-        "scenario_id": "urn:uuid:2282e20a-6425-57df-acef-cfe9e52839ba"
+        "scenario_id": "urn:uuid:367655eb-8984-56de-a622-b268a643d685"
       },
       "created_at": "2026-07-17T19:10:00+00:00"
     },
@@ -6525,7 +7119,7 @@
       "activity_id": 40,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_created",
-      "entity_id": "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0",
+      "entity_id": "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b",
       "payload": {
         "name": "Worst case",
         "scenario_type": "worst_case"
@@ -6536,10 +7130,10 @@
       "activity_id": 41,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_evaluated",
-      "entity_id": "urn:uuid:f8b5b418-f581-5b52-b703-de4f18b179cb",
+      "entity_id": "urn:uuid:7cd79910-426c-587a-8b85-42737c2bad33",
       "payload": {
         "risk_score_delta": 35,
-        "scenario_id": "urn:uuid:5765b046-fbff-5db9-b88f-9fe14d632ba0"
+        "scenario_id": "urn:uuid:d5ec69ef-53ec-5b0b-9175-fe5d84b94b4b"
       },
       "created_at": "2026-07-17T19:15:00+00:00"
     },
@@ -6547,7 +7141,7 @@
       "activity_id": 42,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_created",
-      "entity_id": "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787",
+      "entity_id": "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6",
       "payload": {
         "name": "Counterfactual without primary evidence",
         "scenario_type": "counterfactual"
@@ -6558,10 +7152,10 @@
       "activity_id": 43,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_evaluated",
-      "entity_id": "urn:uuid:4a1ab062-a54e-5729-9b28-4430642841cb",
+      "entity_id": "urn:uuid:5b7f4dba-e72c-553d-95ed-8b21c2e9ddc8",
       "payload": {
         "risk_score_delta": 31,
-        "scenario_id": "urn:uuid:d650123a-f6fa-594c-9b08-e6aa7c1c1787"
+        "scenario_id": "urn:uuid:35353b71-e0ec-52bb-85ca-2030f05162a6"
       },
       "created_at": "2026-07-17T19:20:00+00:00"
     },
@@ -6569,7 +7163,7 @@
       "activity_id": 44,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_created",
-      "entity_id": "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3",
+      "entity_id": "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1",
       "payload": {
         "name": "Adversarial public challenge",
         "scenario_type": "adversarial"
@@ -6580,10 +7174,10 @@
       "activity_id": 45,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "scenario_evaluated",
-      "entity_id": "urn:uuid:b235ff03-f0a8-57b3-a5dc-f3533e956c74",
+      "entity_id": "urn:uuid:2bc38c61-5537-5643-91e8-0e70b6d3c894",
       "payload": {
         "risk_score_delta": 21,
-        "scenario_id": "urn:uuid:b84574c8-3b1c-551e-bf1b-2cbc3fcc1ad3"
+        "scenario_id": "urn:uuid:fd3362ef-2b6f-55cb-9dff-9fa0a3760aa1"
       },
       "created_at": "2026-07-17T19:25:00+00:00"
     },
@@ -6591,7 +7185,7 @@
       "activity_id": 46,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "sensitivity_analysis_run",
-      "entity_id": "urn:uuid:45520c73-9f74-5da6-92de-8c5b45f386d0",
+      "entity_id": "urn:uuid:5fe6a838-be7a-533e-b7dc-d940b42ed918",
       "payload": {
         "dimensions": [
           "evidence_strength",
@@ -6607,13 +7201,110 @@
       "activity_id": 47,
       "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
       "event_type": "decision_studio_handoff_created",
-      "entity_id": "urn:uuid:335c340e-eb4d-5291-8e63-4c1713f8612c",
+      "entity_id": "urn:uuid:5229c36d-9e75-529c-ad0a-c56911e0099d",
       "payload": {
-        "comparison_id": "urn:uuid:d9e490cb-0f71-51aa-b95a-044e6226dece",
+        "comparison_id": "urn:uuid:886b7d46-10de-5e15-93a1-ef3de927b7f2",
         "scenario_count": 4
       },
       "created_at": "2026-07-17T19:35:00+00:00"
+    },
+    {
+      "activity_id": 48,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "publication_briefing_created",
+      "entity_id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
+      "payload": {
+        "audience": "public",
+        "classification": "public",
+        "public_safe": true
+      },
+      "created_at": "2026-07-17T19:36:00+00:00"
+    },
+    {
+      "activity_id": 49,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "publication_package_created",
+      "entity_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "payload": {
+        "formats": [
+          "json",
+          "markdown",
+          "html",
+          "pdf",
+          "csv",
+          "jsonld"
+        ],
+        "package_sha256": "dc66aace486d11eaa1eb15413063474b4b21a133bf04ca5d56a16fb5105e8011",
+        "status": "ready"
+      },
+      "created_at": "2026-07-17T19:37:00+00:00"
+    },
+    {
+      "activity_id": 50,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "publication_package_status_changed",
+      "entity_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+      "payload": {
+        "public_url": "https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+        "status": "published"
+      },
+      "created_at": "2026-07-17T19:38:00+00:00"
+    },
+    {
+      "activity_id": 51,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "public_embed_created",
+      "entity_id": "urn:uuid:e8edaf63-9a1c-45bb-bbeb-8d21e16d7d7d",
+      "payload": {
+        "slug": "qualified-energy-performance-narrative-embed",
+        "status": "active"
+      },
+      "created_at": "2026-07-17T19:38:30+00:00"
+    },
+    {
+      "activity_id": 52,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "platform_handoff_created",
+      "entity_id": "urn:uuid:dbe3730a-42c8-4921-8edb-4e525ad55999",
+      "payload": {
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "target": "knowledge_library"
+      },
+      "created_at": "2026-07-17T19:39:00+00:00"
+    },
+    {
+      "activity_id": 53,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "platform_handoff_created",
+      "entity_id": "urn:uuid:1370a6c4-e4ff-46bb-b0c3-37c1944d7de7",
+      "payload": {
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "target": "research_librarian"
+      },
+      "created_at": "2026-07-17T19:39:00+00:00"
+    },
+    {
+      "activity_id": 54,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "platform_handoff_created",
+      "entity_id": "urn:uuid:78292a80-22cd-4dbf-b3b9-986c9f76c029",
+      "payload": {
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "target": "site_intelligence"
+      },
+      "created_at": "2026-07-17T19:39:00+00:00"
+    },
+    {
+      "activity_id": 55,
+      "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+      "event_type": "platform_handoff_created",
+      "entity_id": "urn:uuid:f2c4bee6-4ef2-4662-930a-1c557c4b4994",
+      "payload": {
+        "package_id": "urn:uuid:79faa387-83cf-461a-9e9a-7b27642181ea",
+        "target": "decision_studio"
+      },
+      "created_at": "2026-07-17T19:39:00+00:00"
     }
   ],
-  "bundle_sha256": "914951c021405409d7fee903cba8619bee8f185fbe025a06e6978709fce58e0d"
+  "bundle_sha256": "7c0dd2b2c5a067826fb07295d577998f1b7c7fe66cb1af40cfb3274c8a2c6de5"
 }

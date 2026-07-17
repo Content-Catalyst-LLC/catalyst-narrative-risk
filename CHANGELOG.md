@@ -1,15 +1,15 @@
 # Changelog
 
-## 1.8.0 — Comparative Narratives and Scenario Analysis
+## 1.9.0 — Briefing, Publication, API, and Platform Integration
 
-- Added persistent comparison sets with explicit baselines, frames, assumptions, and immutable record references.
-- Added claim-by-claim comparative evidence matrices and coverage-divergence summaries.
-- Added best-case, base-case, worst-case, counterfactual, adversarial, and custom scenarios.
-- Added checksummed scenario evaluation without modifying baseline records.
-- Added sensitivity analysis, ranked score drivers, comparative portfolios, and Decision Studio handoffs.
-- Added SQLite, REST, CLI, WordPress, and portable-bundle support.
-- Added deterministic v1.7.0 migration without inventing comparison history.
-- Preserved v1.7.0 scoring, evidence, narrative, governance, monitoring, and stakeholder behavior.
+- Added governance-aware briefing records tied to immutable revisions.
+- Added public-safety gates, conditions, required wording, restrictions, disclosures, redactions, validity, and reassessment metadata.
+- Added checksummed JSON, Markdown, HTML, PDF, CSV, and JSON-LD publication packages.
+- Added idempotency, package lifecycle status, public URLs, revocable embeds, and artifact manifests.
+- Added hashed scoped API keys, expiry, rate limiting, OpenAPI 3.1 discovery, and publication REST endpoints.
+- Added checksummed publication handoffs to Sustainable Catalyst products and external systems.
+- Added WordPress publication and public-display shortcodes.
+- Added deterministic v1.8.0 migration and preserved v1.8.0 analytical and governance behavior.
 
 ## 1.7.0 — Stakeholder, Incentive, and Pressure Intelligence
 

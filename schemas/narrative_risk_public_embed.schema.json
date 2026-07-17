@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/public-embed/1.9.0",
+  "title": "Narrative Risk Public Embed 1.9.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "embed_id",
+    "case_id",
+    "package_id",
+    "slug",
+    "status",
+    "created_at",
+    "allowed_origins",
+    "theme",
+    "show_sections",
+    "embed_code",
+    "embed_sha256"
+  ],
+  "properties": {
+    "embed_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "package_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "disabled",
+        "expired",
+        "revoked"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "allowed_origins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50
+    },
+    "theme": {
+      "enum": [
+        "light",
+        "dark",
+        "system"
+      ]
+    },
+    "show_sections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "embed_code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "embed_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

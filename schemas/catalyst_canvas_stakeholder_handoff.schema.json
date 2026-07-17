@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/catalyst-canvas-stakeholders/1.8.0",
-  "title": "Catalyst Canvas Stakeholder Handoff 1.8.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/catalyst-canvas-stakeholders/1.9.0",
+  "title": "Catalyst Canvas Stakeholder Handoff 1.9.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,7 +17,7 @@
       "const": "catalyst_canvas_stakeholder_handoff"
     },
     "handoff_version": {
-      "const": "1.8.0"
+      "const": "1.9.0"
     },
     "canvas_id": {
       "type": "string",

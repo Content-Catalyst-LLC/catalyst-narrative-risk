@@ -1,0 +1,100 @@
+{
+  "audience": "public",
+  "briefing_id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
+  "briefing_sha256": "a98a2ea435d9cc762d4b66b7a54dd82fd9e860116f48e10da31c46b2d4312118",
+  "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+  "classification": "public",
+  "disclosures": [
+    "Scenarios are explicit assumption tests and do not certify truth."
+  ],
+  "generated_at": "2026-07-17T19:36:00+00:00",
+  "generated_by": "release-suite",
+  "public_safe": true,
+  "publication_readiness": "conditional",
+  "publication_restrictions": [
+    "attribution_required",
+    "disclosure_required"
+  ],
+  "reassessment_at": "2026-10-17T12:00:00+00:00",
+  "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+  "redactions": [
+    "reviewer_id",
+    "reviewer_name",
+    "author_id",
+    "author_name",
+    "created_by",
+    "decided_by",
+    "decided_by_name",
+    "body",
+    "notes",
+    "method_notes"
+  ],
+  "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+  "sections": {
+    "citations": [
+      "Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).",
+      "City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17)."
+    ],
+    "claim": "The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review.",
+    "disclosures": [
+      "Scenarios are explicit assumption tests and do not certify truth."
+    ],
+    "evidence_summary": {
+      "claim_count": 2,
+      "contested_claim_count": 0,
+      "coverage_status": "partial",
+      "evidence_count": 2,
+      "independent_source_count": 2,
+      "source_count": 2,
+      "stale_source_count": 0
+    },
+    "executive_summary": "Comparative public-impact narrative: Do not use as a confident public claim without additional review, source support, and narrowed language.",
+    "governance_summary": {
+      "conditions": [
+        "Preserve the advisory method boundary and publish the competing frame."
+      ],
+      "final_disposition": "approve_with_conditions",
+      "publication_allowed": true,
+      "publication_restrictions": [
+        "attribution_required",
+        "disclosure_required"
+      ],
+      "required_wording": [
+        "Available evidence indicates; alternative attribution remains possible."
+      ],
+      "status": "approved"
+    },
+    "narrative_summary": {
+      "diagnostic_count": 0,
+      "diagnostics": [],
+      "link_count": 0,
+      "node_count": 0
+    },
+    "reassessment": {
+      "reassessment_at": "2026-10-17T12:00:00+00:00",
+      "valid_until": "2027-01-17T23:59:59+00:00"
+    },
+    "risk_summary": {
+      "flags": [
+        "High uncertainty should be stated explicitly",
+        "Narrative may be changing quickly",
+        "Stakeholder pressure may be influencing interpretation",
+        "High-consequence claim needs stricter review"
+      ],
+      "level": "High",
+      "review_actions": [
+        "Add at least one independent source or primary reference.",
+        "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+        "Re-check source freshness before publication or decision use.",
+        "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+        "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+        "Record a reviewer, date, and decision before treating the claim as approved.",
+        "Replace or define vague terms using measurable criteria, scope, and timeframe."
+      ],
+      "score": 71
+    }
+  },
+  "source_record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
+  "title": "Qualified Energy Performance Narrative",
+  "valid_until": "2027-01-17T23:59:59+00:00"
+}

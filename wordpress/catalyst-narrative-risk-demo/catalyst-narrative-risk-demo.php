@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Catalyst Narrative Risk
- * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, monitoring, stakeholder intelligence, comparative scenarios, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.8.0
+ * Description: Narrative-risk scoring, evidence, mapping, governance, monitoring, comparative analysis, publication briefings, public embeds, and persistent review workspaces for Sustainable Catalyst.
+ * Version: 1.9.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,13 +13,15 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.8.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.8.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.8.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.8.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.8.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.8.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.8.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.9.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.9.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.9.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.9.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.9.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.9.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.9.0', true);
+    wp_register_style('cnrisk-publication-css', $base . 'assets/catalyst-narrative-risk-publication.css', array(), '1.9.0');
+    wp_register_script('cnrisk-publication-js', $base . 'assets/catalyst-narrative-risk-publication.js', array(), '1.9.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -273,7 +275,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.8.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.9.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -412,3 +414,63 @@ function cnrisk_workspace_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('catalyst_narrative_risk_workspace', 'cnrisk_workspace_shortcode');
+
+
+function cnrisk_public_brief_shortcode($atts = array()) {
+    $atts = shortcode_atts(array(
+        'title' => 'Narrative Risk Briefing',
+        'claim' => 'No public claim was supplied.',
+        'score' => '—',
+        'level' => 'Not assessed',
+        'evidence' => 'See the governed publication package for evidence details.',
+        'governance' => 'Publication-approved narrative risk briefing.',
+        'disclosure' => '',
+        'reassessment' => 'Not scheduled',
+    ), $atts, 'catalyst_narrative_risk_public_brief');
+    wp_enqueue_style('cnrisk-publication-css');
+    ob_start();
+    ?>
+    <article class="cnrisk-public-brief" data-cnrisk-public-brief>
+      <header class="cnrisk-public-brief__head">
+        <p class="cnrisk-publication__eyebrow">Governed public briefing</p>
+        <h2><?php echo esc_html($atts['title']); ?></h2>
+        <div class="cnrisk-public-brief__meta"><span>Risk score: <?php echo esc_html($atts['score']); ?></span><span>Level: <?php echo esc_html($atts['level']); ?></span></div>
+      </header>
+      <section class="cnrisk-public-brief__section"><h3>Claim</h3><p><?php echo esc_html($atts['claim']); ?></p></section>
+      <section class="cnrisk-public-brief__section"><h3>Evidence</h3><p><?php echo esc_html($atts['evidence']); ?></p></section>
+      <section class="cnrisk-public-brief__section"><h3>Governance</h3><p><?php echo esc_html($atts['governance']); ?></p></section>
+      <?php if ($atts['disclosure'] !== '') : ?><section class="cnrisk-public-brief__section"><h3>Disclosure</h3><p><?php echo esc_html($atts['disclosure']); ?></p></section><?php endif; ?>
+      <section class="cnrisk-public-brief__section"><h3>Reassessment</h3><p><?php echo esc_html($atts['reassessment']); ?></p></section>
+    </article>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('catalyst_narrative_risk_public_brief', 'cnrisk_public_brief_shortcode');
+
+function cnrisk_publication_workspace_shortcode() {
+    wp_enqueue_style('cnrisk-publication-css');
+    wp_enqueue_script('cnrisk-publication-js');
+    ob_start();
+    ?>
+    <section class="cnrisk-publication" data-cnrisk-publication>
+      <header class="cnrisk-publication__head"><p class="cnrisk-publication__eyebrow">Publication studio</p><h3>Narrative Risk Briefing and Publication</h3><p>Prepare a public-safe preview after the institutional API has confirmed governance approval, conditions, disclosures, and reassessment dates.</p></header>
+      <div class="cnrisk-publication__grid">
+        <form>
+          <label><span>Briefing title</span><input name="title" value="Governed Narrative Risk Briefing" required /></label>
+          <label><span>Reviewed claim</span><textarea name="claim" rows="4" required>Available evidence indicates the initiative may improve public trust.</textarea></label>
+          <div class="cnrisk-publication__grid"><label><span>Risk score</span><input name="risk_score" type="number" min="0" value="18" /></label><label><span>Risk level</span><select name="risk_level"><option>low</option><option selected>moderate</option><option>high</option><option>critical</option></select></label></div>
+          <label><span>Evidence summary</span><textarea name="evidence_summary" rows="3">Evidence coverage, source independence, contradictions, and freshness are described in the checksummed publication package.</textarea></label>
+          <label><span>Governance status</span><input name="governance_status" value="Approved with conditions; publication allowed." /></label>
+          <label><span>Required wording, one per line</span><textarea name="required_wording" rows="2">Available evidence indicates</textarea></label>
+          <label><span>Disclosures, one per line</span><textarea name="disclosures" rows="2">This assessment reflects evidence available on July 17, 2026.</textarea></label>
+          <label><span>Reassessment date</span><input name="reassessment_at" type="datetime-local" /></label>
+          <div class="cnrisk-publication__actions"><button type="submit">Build preview</button><button type="button" data-cnrisk-download-format="markdown">Markdown</button><button type="button" data-cnrisk-download-format="html">HTML</button><button type="button" data-cnrisk-download-format="json">JSON</button></div>
+        </form>
+        <div class="cnrisk-publication__preview" data-cnrisk-publication-preview aria-live="polite"></div>
+      </div>
+      <p class="cnrisk-publication__notice">Browser preview mode does not approve publication. Production publishing, PDF/CSV/JSON-LD exports, API scopes, embeds, and platform handoffs are governed by the v1.9.0 REST workspace.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('catalyst_narrative_risk_publication_workspace', 'cnrisk_publication_workspace_shortcode');

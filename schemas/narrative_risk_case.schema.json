@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.8.0",
-  "title": "Catalyst Narrative Risk Case 1.8.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.9.0",
+  "title": "Catalyst Narrative Risk Case 1.9.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -45,7 +45,12 @@
     "evaluated_scenario_count",
     "sensitivity_analysis_count",
     "decision_studio_handoff_count",
-    "comparative_status"
+    "comparative_status",
+    "publication_briefing_count",
+    "publication_package_count",
+    "public_embed_count",
+    "platform_handoff_count",
+    "publication_status"
   ],
   "properties": {
     "case_id": {
@@ -294,6 +299,30 @@
         "not_started",
         "comparison_ready",
         "scenario_ready"
+      ]
+    },
+    "publication_briefing_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "publication_package_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "public_embed_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "platform_handoff_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "publication_status": {
+      "enum": [
+        "not_started",
+        "briefing_ready",
+        "package_ready",
+        "published"
       ]
     }
   }

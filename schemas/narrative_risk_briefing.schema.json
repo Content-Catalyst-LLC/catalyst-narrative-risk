@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/briefing/1.9.0",
+  "title": "Narrative Risk Briefing 1.9.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "briefing_id",
+    "case_id",
+    "revision_id",
+    "record_id",
+    "audience",
+    "classification",
+    "title",
+    "generated_at",
+    "public_safe",
+    "publication_readiness",
+    "redactions",
+    "sections",
+    "disclosures",
+    "publication_restrictions",
+    "briefing_sha256"
+  ],
+  "properties": {
+    "briefing_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "revision_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "audience": {
+      "enum": [
+        "internal",
+        "executive",
+        "technical",
+        "public",
+        "regulatory",
+        "media"
+      ]
+    },
+    "classification": {
+      "enum": [
+        "internal",
+        "confidential",
+        "restricted",
+        "public"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "public_safe": {
+      "type": "boolean"
+    },
+    "publication_readiness": {
+      "enum": [
+        "not_assessed",
+        "blocked",
+        "conditional",
+        "ready"
+      ]
+    },
+    "redactions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 200
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executive_summary",
+        "claim",
+        "risk_summary",
+        "evidence_summary",
+        "narrative_summary",
+        "governance_summary",
+        "disclosures",
+        "citations",
+        "reassessment"
+      ],
+      "properties": {
+        "executive_summary": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        },
+        "risk_summary": {
+          "type": "object"
+        },
+        "evidence_summary": {
+          "type": "object"
+        },
+        "narrative_summary": {
+          "type": "object"
+        },
+        "governance_summary": {
+          "type": "object"
+        },
+        "disclosures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reassessment": {
+          "type": "object"
+        }
+      }
+    },
+    "disclosures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "publication_restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "valid_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "reassessment_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "source_record_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "briefing_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

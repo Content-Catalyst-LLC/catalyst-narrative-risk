@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/api-key/1.9.0",
+  "title": "Narrative Risk API Key 1.9.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_key_id",
+    "name",
+    "key_prefix",
+    "key_sha256",
+    "scopes",
+    "status",
+    "rate_limit_per_minute",
+    "created_at"
+  ],
+  "properties": {
+    "api_key_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "key_prefix": {
+      "type": "string",
+      "pattern": "^cnr_[a-zA-Z0-9]{8}$"
+    },
+    "key_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "scopes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "records:read",
+          "cases:read",
+          "cases:write",
+          "publication:read",
+          "publication:write",
+          "embeds:read",
+          "embeds:write",
+          "handoffs:write",
+          "admin"
+        ]
+      }
+    },
+    "status": {
+      "enum": [
+        "active",
+        "revoked",
+        "expired"
+      ]
+    },
+    "rate_limit_per_minute": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "last_used_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

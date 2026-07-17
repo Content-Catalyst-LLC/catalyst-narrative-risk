@@ -1,20 +1,22 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.8.0 — Comparative Narratives and Scenario Analysis**
+**Current release: v1.9.0 — Briefing, Publication, API, and Platform Integration**
 
 Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, stakeholder intelligence, and comparative scenario analysis. It does not certify truth, infer intent, or select a preferred narrative automatically.
 
-## What v1.8.0 adds
+## What v1.9.0 adds
 
-- Persistent comparison sets for multiple immutable revisions and records.
-- Claim-by-claim evidence matrices for competing narratives.
-- Best, base, worst, counterfactual, adversarial, and custom scenarios.
-- Explicit scenario assumptions and checksummed evaluations.
-- Multi-dimensional sensitivity analysis and ranked score drivers.
-- Comparative portfolio dashboards and Decision Studio handoffs.
-- SQLite, REST, CLI, WordPress, and portable-bundle support.
+- Governance-aware internal, executive, technical, regulatory, media, and public briefings.
+- Public-safety gates, required wording, restrictions, disclosures, redactions, validity, and reassessment metadata.
+- Checksummed JSON, Markdown, HTML, PDF, CSV, and JSON-LD publication packages.
+- Idempotent package creation, lifecycle status, public URLs, and artifact manifests.
+- Revocable public embeds.
+- Hashed and scoped API keys with expiry and per-minute rate limits.
+- OpenAPI 3.1 discovery and publication endpoints.
+- Checksummed handoffs to Sustainable Catalyst products and external systems.
+- WordPress publication workspace and governed public-brief shortcode.
 
-The v1.7.0 scoring, evidence, narrative, governance, monitoring, and stakeholder behavior remains unchanged. Comparative analysis does not identify a true or preferred narrative automatically.
+The v1.8.0 analytical, governance, monitoring, stakeholder, and comparative behavior remains unchanged. Publication approval is never inferred from the heuristic score.
 
 ## Repository layout
 
@@ -40,7 +42,7 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 PYTHON=.venv/bin/python bash scripts/release_check.sh
 ```
 
-The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all eight legacy migrations, JavaScript syntax, and WordPress PHP syntax.
+The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all nine legacy migrations, JavaScript syntax, and WordPress PHP syntax.
 
 ## Generate a canonical record
 
@@ -106,6 +108,8 @@ See `docs/narrative-change-freshness-monitoring.md` and `docs/site-intelligence-
 ```text
 [catalyst_narrative_risk_demo]
 [catalyst_narrative_risk_workspace]
+[catalyst_narrative_risk_publication_workspace]
+[catalyst_narrative_risk_public_brief]
 ```
 
 Browser workspace storage is a local demonstration. Shared institutional persistence should use the SQLite-backed REST workspace API.
@@ -141,3 +145,16 @@ python python/narrative_risk_workspace.py --database "$DB" decision-studio-hando
 ```
 
 See `docs/comparative-narratives-scenario-analysis.md` and `docs/decision-studio-handoff.md`.
+
+## Publication workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" create-briefing CASE_ID --audience public --classification public
+python python/narrative_risk_workspace.py --database "$DB" create-publication BRIEFING_ID --format json --format markdown --format html --format pdf --format csv --format jsonld --slug reviewed-narrative --status ready
+python python/narrative_risk_workspace.py --database "$DB" publication-status PACKAGE_ID --status published --public-url https://example.org/reviewed-narrative
+python python/narrative_risk_workspace.py --database "$DB" create-embed PACKAGE_ID
+python python/narrative_risk_workspace.py --database "$DB" platform-handoff PACKAGE_ID --target knowledge_library
+```
+
+See `docs/briefing-publication-api-platform-integration.md`, `docs/openapi.md`, and `docs/wordpress-publication.md`.

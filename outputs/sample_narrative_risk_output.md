@@ -10,11 +10,11 @@
 **Narrative map:** partial · 3 nodes · 2 links · 1 issues
 **Record ID:** urn:uuid:30000000-0000-4000-8000-000000000001
 **Case ID:** urn:uuid:30000000-0000-4000-8000-000000000002
-**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.8.0
-**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.8.0
-**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.8.0
-**Narrative map schema:** https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.8.0
-**Method snapshot SHA-256:** `b2d6eab838e2a4c19a8846571debd93366922dd2cdb9bef2cd8860374dcc2b6f`
+**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.9.0
+**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.9.0
+**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.9.0
+**Narrative map schema:** https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.9.0
+**Method snapshot SHA-256:** `0b4b142e844e66897caac7cf97b9eb6f5172f6be32af6be095100e0339ba8413`
 
 ## Decision note
 

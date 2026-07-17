@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record, migrate_v1_8_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -61,11 +61,24 @@ def create_app(config: dict | None = None):
         "CNRISK_DATABASE_PATH",
         str(Path(app.instance_path) / "catalyst-narrative-risk.sqlite3"),
     )
-    app.config.update(NARRATIVE_RISK_DATABASE=default_db)
+    app.config.update(NARRATIVE_RISK_DATABASE=default_db, NARRATIVE_RISK_REQUIRE_API_KEY=False, NARRATIVE_RISK_ADMIN_TOKEN=None)
     if config:
         app.config.update(config)
     repository = SQLiteCaseRepository(app.config["NARRATIVE_RISK_DATABASE"])
     app.extensions["narrative_risk_repository"] = repository
+
+    def require_scope(scope: str):
+        if not app.config.get("NARRATIVE_RISK_REQUIRE_API_KEY"):
+            return None
+        header = request.headers.get("Authorization", "")
+        if not header.startswith("Bearer "):
+            return jsonify({"error": "api_key_required", "message": "Authorization: Bearer API key is required"}), 401
+        try:
+            repository.authenticate_api_key(header[7:].strip(), scope)
+        except NarrativeRiskValidationError as exc:
+            status = 429 if "rate limit" in str(exc).lower() else 403
+            return jsonify({"error": "api_key_denied", "message": str(exc)}), status
+        return None
 
     @app.get("/healthz")
     def healthz():
@@ -82,6 +95,11 @@ def create_app(config: dict | None = None):
             "site_intelligence_handoff": True,
             "stakeholder_intelligence": True,
             "catalyst_canvas_handoff": True,
+            "comparative_analysis": True,
+            "publication_briefings": True,
+            "public_embeds": True,
+            "scoped_api_keys": True,
+            "platform_publication_handoffs": True,
             "workspace": repository.health(),
         }, 200
 
@@ -197,6 +215,22 @@ def create_app(config: dict | None = None):
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
 
+    @app.post("/api/narrative-risk/migrate/v1.7.0")
+    def narrative_risk_migrate_v170():
+        try:
+            migrated = migrate_v1_7_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+    @app.post("/api/narrative-risk/migrate/v1.8.0")
+    def narrative_risk_migrate_v180():
+        try:
+            migrated = migrate_v1_8_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
     @app.post("/api/narrative-risk/import/knowledge-library")
     def narrative_risk_import_knowledge_library():
         try:
@@ -212,6 +246,44 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_catalyst_data_handoff", exc)
         return jsonify({"source": source}), 200
+
+    @app.get("/api/narrative-risk/openapi.json")
+    def narrative_risk_openapi():
+        paths = {
+            "/api/narrative-risk/cases/{case_id}/briefings": {"post": {"summary": "Create a governance-aware briefing", "security": [{"bearerAuth": ["publication:write"]}]}},
+            "/api/narrative-risk/briefings/{briefing_id}/packages": {"post": {"summary": "Create a multi-format publication package", "security": [{"bearerAuth": ["publication:write"]}]}},
+            "/api/narrative-risk/packages/{package_id}/artifacts/{format}": {"get": {"summary": "Read a publication artifact", "security": [{"bearerAuth": ["publication:read"]}]}},
+            "/api/narrative-risk/packages/{package_id}/embeds": {"post": {"summary": "Create a public embed", "security": [{"bearerAuth": ["embeds:write"]}]}},
+            "/api/narrative-risk/packages/{package_id}/handoffs": {"post": {"summary": "Create a platform publication handoff", "security": [{"bearerAuth": ["handoffs:write"]}]}},
+        }
+        return jsonify({"openapi": "3.1.0", "info": {"title": "Catalyst Narrative Risk API", "version": VERSION}, "paths": paths, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}}}}), 200
+
+    @app.post("/api/narrative-risk/api-keys")
+    def create_api_key():
+        admin_token = app.config.get("NARRATIVE_RISK_ADMIN_TOKEN")
+        if admin_token and request.headers.get("X-CNRISK-Admin-Token") != admin_token:
+            return jsonify({"error": "admin_token_required", "message": "A valid administrator token is required"}), 403
+        try:
+            result = repository.create_api_key(**_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_api_key", exc)
+        return jsonify(result), 201
+
+    @app.get("/api/narrative-risk/api-keys")
+    def list_api_keys():
+        denied = require_scope("admin")
+        if denied: return denied
+        return jsonify({"api_keys": repository.list_api_keys(), "count": len(repository.list_api_keys())}), 200
+
+    @app.post("/api/narrative-risk/api-keys/<api_key_id>/revoke")
+    def revoke_api_key(api_key_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try:
+            value = repository.revoke_api_key(api_key_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_api_key_revocation", exc)
+        return jsonify(value), 200
 
     @app.get("/api/narrative-risk/workspaces/health")
     def workspace_health():
@@ -503,6 +575,102 @@ def create_app(config: dict | None = None):
     def decision_studio_handoff(comparison_id: str):
         try: value = repository.create_decision_studio_handoff(comparison_id, **_json_object())
         except NarrativeRiskValidationError as exc: return _bad_request("invalid_decision_studio_handoff", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/briefings")
+    def create_publication_briefing(case_id: str):
+        denied = require_scope("publication:write")
+        if denied: return denied
+        try: value = repository.create_publication_briefing(case_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_publication_briefing", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/briefings")
+    def list_publication_briefings(case_id: str):
+        denied = require_scope("publication:read")
+        if denied: return denied
+        try: values = repository.list_publication_briefings(case_id)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_publication_query", exc)
+        return jsonify({"publication_briefings": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/briefings/<briefing_id>/packages")
+    def create_publication_package(briefing_id: str):
+        denied = require_scope("publication:write")
+        if denied: return denied
+        try: value = repository.create_publication_package(briefing_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_publication_package", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/publications")
+    def list_publication_packages(case_id: str):
+        denied = require_scope("publication:read")
+        if denied: return denied
+        try:
+            values = repository.list_publication_packages(case_id, status=request.args.get("status"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_publication_query", exc)
+        return jsonify({"publication_packages": values, "count": len(values)}), 200
+
+    @app.get("/api/narrative-risk/cases/<case_id>/embeds")
+    def list_public_embeds(case_id: str):
+        denied = require_scope("embeds:read")
+        if denied: return denied
+        try:
+            values = repository.list_public_embeds(case_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_embed_query", exc)
+        return jsonify({"public_embeds": values, "count": len(values)}), 200
+
+    @app.get("/api/narrative-risk/cases/<case_id>/publication-handoffs")
+    def list_platform_handoffs(case_id: str):
+        denied = require_scope("publication:read")
+        if denied: return denied
+        try:
+            values = repository.list_platform_handoffs(case_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_platform_handoff_query", exc)
+        return jsonify({"platform_handoffs": values, "count": len(values)}), 200
+
+    @app.patch("/api/narrative-risk/packages/<package_id>")
+    def update_publication_package(package_id: str):
+        denied = require_scope("publication:write")
+        if denied: return denied
+        try: value = repository.update_publication_package_status(package_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_publication_package_update", exc)
+        return jsonify(value), 200
+
+    @app.get("/api/narrative-risk/packages/<package_id>/artifacts/<format_name>")
+    def get_publication_artifact(package_id: str, format_name: str):
+        denied = require_scope("publication:read")
+        if denied: return denied
+        try: value = repository.get_publication_artifact(package_id, format_name)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_publication_artifact", exc)
+        return jsonify(value), 200
+
+    @app.post("/api/narrative-risk/packages/<package_id>/embeds")
+    def create_public_embed(package_id: str):
+        denied = require_scope("embeds:write")
+        if denied: return denied
+        try: value = repository.create_public_embed(package_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_public_embed", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/embed/<slug>")
+    def read_public_embed(slug: str):
+        try:
+            embed = repository.get_public_embed(slug)
+            if embed["status"] != "active": raise NarrativeRiskValidationError("public embed is not active")
+            package = repository.get_publication_package(embed["package_id"])
+            artifact = next((item for item in package["artifacts"] if item["format"] == "html"), package["artifacts"][0])
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_public_embed", exc)
+        return jsonify({"embed": embed, "artifact": artifact}), 200
+
+    @app.post("/api/narrative-risk/packages/<package_id>/handoffs")
+    def create_platform_handoff(package_id: str):
+        denied = require_scope("handoffs:write")
+        if denied: return denied
+        try: value = repository.create_platform_handoff(package_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_platform_handoff", exc)
         return jsonify(value), 201
 
     @app.post("/api/narrative-risk/cases/<case_id>/monitoring/snapshots")

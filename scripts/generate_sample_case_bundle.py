@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
-"""Generate the canonical v1.8.0 governed, monitored, stakeholder-aware comparative case bundle."""
+"""Generate the canonical v1.9.0 governed, monitored, stakeholder-aware comparative case bundle."""
 from __future__ import annotations
 
 from copy import deepcopy
 import json
 from pathlib import Path
 import tempfile
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from narrative_risk.workspaces import SQLiteCaseRepository
 
-ROOT = Path(__file__).resolve().parents[1]
 CASE_ID = "urn:uuid:70000000-0000-4000-8000-000000000001"
 
 
@@ -196,6 +200,37 @@ def main() -> int:
             comparison["comparison_id"], selected_scenario_ids=[item["scenario_id"] for item in scenarios],
             generated_at="2026-07-17T19:35:00+00:00",
         )
+
+        briefing = repo.create_publication_briefing(
+            CASE_ID, revision_id=revisions[1]["revision_id"], audience="public", classification="public",
+            title="Qualified Energy Performance Narrative", generated_at="2026-07-17T19:36:00+00:00",
+            generated_by="release-suite",
+        )
+        publication = repo.create_publication_package(
+            briefing["briefing_id"], formats=["json", "markdown", "html", "pdf", "csv", "jsonld"],
+            slug="qualified-energy-performance-narrative", status="ready",
+            generated_at="2026-07-17T19:37:00+00:00", generated_by="release-suite",
+            idempotency_key="sample-qualified-energy-performance-v1",
+        )
+        publication = repo.update_publication_package_status(
+            publication["package_id"], status="published",
+            public_url="https://sustainablecatalyst.com/publications/qualified-energy-performance-narrative/",
+            changed_at="2026-07-17T19:38:00+00:00",
+        )
+        repo.create_public_embed(
+            publication["package_id"], slug="qualified-energy-performance-narrative-embed",
+            allowed_origins=["https://sustainablecatalyst.com"], theme="system",
+            created_at="2026-07-17T19:38:30+00:00",
+        )
+        for target in ("knowledge_library", "research_librarian", "site_intelligence", "decision_studio"):
+            repo.create_platform_handoff(
+                publication["package_id"], target=target,
+                generated_at="2026-07-17T19:39:00+00:00",
+            )
+        for artifact in publication["artifacts"]:
+            import base64
+            raw = base64.b64decode(artifact["content"]) if artifact["content_encoding"] == "base64" else artifact["content"].encode("utf-8")
+            (ROOT / "outputs" / f"sample_public_brief.{artifact['filename'].split('.',1)[1]}").write_bytes(raw)
 
         bundle = repo.export_case_bundle(CASE_ID, exported_at="2026-07-17T19:40:00+00:00")
         output = ROOT / "outputs/sample_case_bundle.json"

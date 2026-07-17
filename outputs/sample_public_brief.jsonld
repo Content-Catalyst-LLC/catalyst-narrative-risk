@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "cnr": "https://sustainablecatalyst.com/ns/narrative-risk#"
+  },
+  "@type": "schema:Report",
+  "@id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
+  "schema:name": "Qualified Energy Performance Narrative",
+  "schema:dateCreated": "2026-07-17T19:36:00+00:00",
+  "schema:about": {
+    "@type": "schema:Claim",
+    "schema:text": "The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review."
+  },
+  "cnr:riskScore": 71,
+  "cnr:riskLevel": "High",
+  "cnr:publicationReadiness": "conditional",
+  "cnr:sourceRecord": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59"
+}

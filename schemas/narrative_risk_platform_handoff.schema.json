@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/platform-handoff/1.9.0",
+  "title": "Narrative Risk Platform Publication Handoff 1.9.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_id",
+    "case_id",
+    "package_id",
+    "target",
+    "generated_at",
+    "payload",
+    "package_sha256",
+    "handoff_sha256"
+  ],
+  "properties": {
+    "handoff_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "package_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "target": {
+      "enum": [
+        "knowledge_library",
+        "research_librarian",
+        "site_intelligence",
+        "catalyst_data",
+        "catalyst_canvas",
+        "decision_studio",
+        "external"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "external_reference": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "package_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "handoff_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

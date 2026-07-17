@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-decision/1.8.0",
-  "title": "Catalyst Narrative Risk Governance Decision 1.8.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-decision/1.9.0",
+  "title": "Catalyst Narrative Risk Governance Decision 1.9.0",
   "type": "object",
   "additionalProperties": false,
   "required": [

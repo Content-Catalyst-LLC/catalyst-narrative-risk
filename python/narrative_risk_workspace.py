@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from base64 import b64decode
 import json
 from pathlib import Path
 import sys
@@ -231,6 +232,68 @@ def parser() -> argparse.ArgumentParser:
     portfolio.add_argument("case_id"); portfolio.add_argument("--generated-at")
     decision = commands.add_parser("decision-studio-handoff")
     decision.add_argument("comparison_id"); decision.add_argument("--scenario-id", action="append", default=[]); decision.add_argument("--generated-at")
+
+    briefing = commands.add_parser("create-briefing")
+    briefing.add_argument("case_id")
+    briefing.add_argument("--revision-id")
+    briefing.add_argument("--audience", default="internal")
+    briefing.add_argument("--classification", default="internal")
+    briefing.add_argument("--title")
+    briefing.add_argument("--generated-at")
+    briefing.add_argument("--generated-by")
+
+    briefings = commands.add_parser("list-briefings")
+    briefings.add_argument("case_id")
+
+    publication = commands.add_parser("create-publication")
+    publication.add_argument("briefing_id")
+    publication.add_argument("--format", action="append", dest="formats", default=[])
+    publication.add_argument("--slug")
+    publication.add_argument("--status")
+    publication.add_argument("--generated-at")
+    publication.add_argument("--generated-by")
+    publication.add_argument("--package-version", type=int, default=1)
+    publication.add_argument("--public-url")
+    publication.add_argument("--idempotency-key")
+
+    publications = commands.add_parser("list-publications")
+    publications.add_argument("case_id")
+    publications.add_argument("--status")
+
+    publication_status = commands.add_parser("publication-status")
+    publication_status.add_argument("package_id")
+    publication_status.add_argument("--status", required=True)
+    publication_status.add_argument("--public-url")
+    publication_status.add_argument("--changed-at")
+
+    artifact = commands.add_parser("publication-artifact")
+    artifact.add_argument("package_id")
+    artifact.add_argument("format")
+    artifact.add_argument("--output")
+
+    embed = commands.add_parser("create-embed")
+    embed.add_argument("package_id")
+    embed.add_argument("--slug")
+    embed.add_argument("--expires-at")
+    embed.add_argument("--created-at")
+
+    api_key = commands.add_parser("create-api-key")
+    api_key.add_argument("--name", required=True)
+    api_key.add_argument("--scope", action="append", required=True)
+    api_key.add_argument("--rate-limit-per-minute", type=int)
+    api_key.add_argument("--expires-at")
+    api_key.add_argument("--created-at")
+    api_key.add_argument("--created-by")
+
+    commands.add_parser("list-api-keys")
+    revoke_key = commands.add_parser("revoke-api-key")
+    revoke_key.add_argument("api_key_id")
+
+    platform = commands.add_parser("platform-handoff")
+    platform.add_argument("package_id")
+    platform.add_argument("--target", required=True)
+    platform.add_argument("--generated-at")
+    platform.add_argument("--external-reference")
     return root
 
 
@@ -392,6 +455,57 @@ def main() -> int:
             write_json(repository.get_comparative_portfolio(args.case_id, generated_at=args.generated_at))
         elif args.command == "decision-studio-handoff":
             write_json(repository.create_decision_studio_handoff(args.comparison_id, selected_scenario_ids=args.scenario_id or None, generated_at=args.generated_at))
+        elif args.command == "create-briefing":
+            write_json(repository.create_publication_briefing(
+                args.case_id, revision_id=args.revision_id, audience=args.audience,
+                classification=args.classification, title=args.title,
+                generated_at=args.generated_at, generated_by=args.generated_by,
+            ))
+        elif args.command == "list-briefings":
+            values = repository.list_publication_briefings(args.case_id)
+            write_json({"publication_briefings": values, "count": len(values)})
+        elif args.command == "create-publication":
+            write_json(repository.create_publication_package(
+                args.briefing_id, formats=args.formats or None, slug=args.slug,
+                status=args.status, generated_at=args.generated_at,
+                generated_by=args.generated_by, package_version=args.package_version,
+                public_url=args.public_url, idempotency_key=args.idempotency_key,
+            ))
+        elif args.command == "list-publications":
+            values = repository.list_publication_packages(args.case_id, status=args.status)
+            write_json({"publication_packages": values, "count": len(values)})
+        elif args.command == "publication-status":
+            write_json(repository.update_publication_package_status(
+                args.package_id, status=args.status, public_url=args.public_url, changed_at=args.changed_at,
+            ))
+        elif args.command == "publication-artifact":
+            artifact = repository.get_publication_artifact(args.package_id, args.format)
+            if args.output:
+                raw = b64decode(artifact["content"]) if artifact["content_encoding"] == "base64" else artifact["content"].encode("utf-8")
+                Path(args.output).write_bytes(raw)
+                print(f"Wrote {args.output}", file=sys.stderr)
+            else:
+                write_json(artifact)
+        elif args.command == "create-embed":
+            write_json(repository.create_public_embed(
+                args.package_id, slug=args.slug, expires_at=args.expires_at,
+                created_at=args.created_at,
+            ))
+        elif args.command == "create-api-key":
+            write_json(repository.create_api_key(
+                name=args.name, scopes=args.scope, rate_limit_per_minute=args.rate_limit_per_minute,
+                expires_at=args.expires_at, created_at=args.created_at, created_by=args.created_by,
+            ))
+        elif args.command == "list-api-keys":
+            values = repository.list_api_keys()
+            write_json({"api_keys": values, "count": len(values)})
+        elif args.command == "revoke-api-key":
+            write_json(repository.revoke_api_key(args.api_key_id))
+        elif args.command == "platform-handoff":
+            write_json(repository.create_platform_handoff(
+                args.package_id, target=args.target, generated_at=args.generated_at,
+                external_reference=args.external_reference,
+            ))
         else:  # pragma: no cover
             raise AssertionError(args.command)
     finally:

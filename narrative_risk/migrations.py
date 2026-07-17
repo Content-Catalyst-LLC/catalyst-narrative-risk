@@ -1,4 +1,4 @@
-"""Migration support for Catalyst Narrative Risk records through v1.4.0 into v1.8.0."""
+"""Migration support for Catalyst Narrative Risk records through v1.4.0 into v1.9.0."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from .contracts import (
     LEGACY_V150_RECORD_SCHEMA_PATH,
     LEGACY_V160_RECORD_SCHEMA_PATH,
     LEGACY_V170_RECORD_SCHEMA_PATH,
+    LEGACY_V180_RECORD_SCHEMA_PATH,
     sha256_digest,
     validate_against_schema,
 )
@@ -59,7 +60,7 @@ def migrate_v1_0_1_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.0.1 record into the v1.8.0 contract."""
+    """Migrate a schema-valid v1.0.1 record into the v1.9.0 contract."""
     _validate_legacy(legacy_record, LEGACY_V101_RECORD_SCHEMA_PATH, "v1.0.1")
     if legacy_record.get("schema_version") != "1.0.1" or legacy_record.get("method_version") != "1.0.1":
         raise NarrativeRiskValidationError("only v1.0.1 records can be migrated by this function")
@@ -101,7 +102,7 @@ def migrate_v1_1_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.1.0 canonical record into v1.8.0."""
+    """Migrate a schema-valid v1.1.0 canonical record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V110_RECORD_SCHEMA_PATH, "v1.1.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.1.0":
         raise NarrativeRiskValidationError("only v1.1.0 records can be migrated by this function")
@@ -138,7 +139,7 @@ def migrate_v1_2_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.2.0 evidence-ledger record into v1.8.0."""
+    """Migrate a schema-valid v1.2.0 evidence-ledger record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V120_RECORD_SCHEMA_PATH, "v1.2.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.2.0":
         raise NarrativeRiskValidationError("only v1.2.0 records can be migrated by this function")
@@ -177,7 +178,7 @@ def migrate_v1_3_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.3.0 workspace-era record into v1.8.0."""
+    """Migrate a schema-valid v1.3.0 workspace-era record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V130_RECORD_SCHEMA_PATH, "v1.3.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.3.0":
         raise NarrativeRiskValidationError("only v1.3.0 records can be migrated by this function")
@@ -210,7 +211,7 @@ def migrate_v1_4_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.4.0 narrative-map record into v1.8.0."""
+    """Migrate a schema-valid v1.4.0 narrative-map record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V140_RECORD_SCHEMA_PATH, "v1.4.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.4.0":
         raise NarrativeRiskValidationError("only v1.4.0 records can be migrated by this function")
@@ -223,7 +224,7 @@ def migrate_v1_4_0_record(
         "migrated_at": migrated_at or _iso_now(),
         "warnings": [
             "The v1.4.0 analytical result, evidence ledger, narrative map, and human decision were preserved.",
-            "Governance workflow state is stored in the v1.8.0 workspace and is not inferred from the analytical score or legacy human decision.",
+            "Governance workflow state is stored in the v1.9.0 workspace and is not inferred from the analytical score or legacy human decision.",
             "An authorized reviewer must start a staged workflow and issue explicit governance decisions before publication approval.",
         ],
     }
@@ -242,7 +243,7 @@ def migrate_v1_5_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.5.0 governed record into v1.8.0."""
+    """Migrate a schema-valid v1.5.0 governed record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V150_RECORD_SCHEMA_PATH, "v1.5.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.5.0":
         raise NarrativeRiskValidationError("only v1.5.0 records can be migrated by this function")
@@ -256,7 +257,7 @@ def migrate_v1_5_0_record(
         "warnings": [
             "The v1.5.0 analytical result, evidence ledger, narrative map, and human decision were preserved.",
             "Governance workflow records remain workspace artifacts and are not inferred into the analytical record.",
-            "Monitoring snapshots begin only when v1.8.0 captures an explicit point-in-time state; no historical snapshot was fabricated.",
+            "Monitoring snapshots begin only when v1.9.0 captures an explicit point-in-time state; no historical snapshot was fabricated.",
         ],
     }
     migrated = build_narrative_risk_record(
@@ -274,7 +275,7 @@ def migrate_v1_6_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.6.0 monitored record into v1.8.0."""
+    """Migrate a schema-valid v1.6.0 monitored record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V160_RECORD_SCHEMA_PATH, "v1.6.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.6.0":
         raise NarrativeRiskValidationError("only v1.6.0 records can be migrated by this function")
@@ -306,7 +307,7 @@ def migrate_v1_7_0_record(
     *,
     migrated_at: str | None = None,
 ) -> Dict[str, Any]:
-    """Migrate a schema-valid v1.7.0 stakeholder-aware record into v1.8.0."""
+    """Migrate a schema-valid v1.7.0 stakeholder-aware record into v1.9.0."""
     _validate_legacy(legacy_record, LEGACY_V170_RECORD_SCHEMA_PATH, "v1.7.0")
     if legacy_record.get("contract", {}).get("contract_version") != "1.7.0":
         raise NarrativeRiskValidationError("only v1.7.0 records can be migrated by this function")
@@ -321,6 +322,38 @@ def migrate_v1_7_0_record(
             "The v1.7.0 analytical result, evidence ledger, narrative map, and human decision were preserved.",
             "Stakeholder, monitoring, and governance records remain workspace artifacts and are not inferred into the analytical record.",
             "Comparison sets, scenarios, sensitivity analyses, and Decision Studio handoffs must be created explicitly; no preferred narrative was inferred.",
+        ],
+    }
+    migrated = build_narrative_risk_record(
+        payload, generated_at=legacy_record["generated_at"],
+        record_id=legacy_record["identifiers"]["record_id"],
+        case_id=legacy_record["identifiers"]["case_id"],
+        human_decision=legacy_record["human_decision"], migration=migration,
+    )
+    _assert_preserved(legacy_record["calculations"]["risk_score"], legacy_record["interpretation"]["risk_level"], migrated)
+    return migrated
+
+
+def migrate_v1_8_0_record(
+    legacy_record: Mapping[str, Any],
+    *,
+    migrated_at: str | None = None,
+) -> Dict[str, Any]:
+    """Migrate a schema-valid v1.8.0 comparative record into v1.9.0."""
+    _validate_legacy(legacy_record, LEGACY_V180_RECORD_SCHEMA_PATH, "v1.8.0")
+    if legacy_record.get("contract", {}).get("contract_version") != "1.8.0":
+        raise NarrativeRiskValidationError("only v1.8.0 records can be migrated by this function")
+    payload = dict(legacy_record["normalized_input"])
+    payload.update(ledger_input_from_record(legacy_record))
+    payload.update(narrative_map_input_from_record(legacy_record))
+    migration = {
+        "from_schema_version": "1.8.0",
+        "from_method_version": "1.8.0",
+        "migrated_at": migrated_at or _iso_now(),
+        "warnings": [
+            "The v1.8.0 analytical result, evidence ledger, narrative map, and human decision were preserved.",
+            "Comparative, stakeholder, monitoring, and governance records remain workspace artifacts and are not inferred into the analytical record.",
+            "Briefings, publication packages, embeds, API credentials, and platform publication handoffs must be created explicitly under the v1.9.0 governance policy.",
         ],
     }
     migrated = build_narrative_risk_record(
@@ -350,4 +383,6 @@ def migrate_record(record: Mapping[str, Any], *, migrated_at: str | None = None)
         return migrate_v1_6_0_record(record, migrated_at=migrated_at)
     if record.get("contract", {}).get("contract_version") == "1.7.0":
         return migrate_v1_7_0_record(record, migrated_at=migrated_at)
-    raise NarrativeRiskValidationError("record is not a supported v1.0.1 through v1.7.0 legacy record")
+    if record.get("contract", {}).get("contract_version") == "1.8.0":
+        return migrate_v1_8_0_record(record, migrated_at=migrated_at)
+    raise NarrativeRiskValidationError("record is not a supported v1.0.1 through v1.8.0 legacy record")

@@ -33,6 +33,8 @@ from .contracts import (
     COMPARISON_SET_SCHEMA_PATH, COMPARATIVE_EVIDENCE_MATRIX_SCHEMA_PATH,
     SCENARIO_SCHEMA_PATH, SCENARIO_RESULT_SCHEMA_PATH, SENSITIVITY_ANALYSIS_SCHEMA_PATH,
     COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
+    BRIEFING_SCHEMA_PATH, PUBLICATION_PACKAGE_SCHEMA_PATH, PUBLIC_EMBED_SCHEMA_PATH,
+    API_KEY_SCHEMA_PATH, PLATFORM_HANDOFF_SCHEMA_PATH,
     canonical_json,
     sha256_digest,
     validate_against_schema,
@@ -53,13 +55,17 @@ from .stakeholders import (
     build_stakeholder_intelligence, normalize_actor, normalize_relationship, normalize_incentive,
     normalize_pressure, normalize_consequence, validate_canvas_handoff,
 )
+from .publication import (
+    build_briefing, build_publication_package, build_public_embed, create_api_key_record,
+    authorize_api_key, build_platform_handoff, urn as publication_urn,
+)
 from .comparisons import (
     normalize_comparison_set, build_evidence_matrix, normalize_scenario, evaluate_scenario,
     run_sensitivity_analysis, build_comparative_portfolio, build_decision_studio_handoff,
     urn as comparison_urn,
 )
 
-VERSION = "1.8.0"
+VERSION = "1.9.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
@@ -484,6 +490,41 @@ class SQLiteCaseRepository:
         );
         CREATE INDEX IF NOT EXISTS idx_decision_handoffs_case ON decision_studio_handoffs(case_id, generated_at);
 
+        CREATE TABLE IF NOT EXISTS publication_briefings (
+            briefing_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            revision_id TEXT NOT NULL REFERENCES revisions(revision_id) ON DELETE RESTRICT,
+            briefing_json TEXT NOT NULL, briefing_sha256 TEXT NOT NULL, classification TEXT NOT NULL, audience TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_publication_briefings_case ON publication_briefings(case_id, generated_at);
+        CREATE TABLE IF NOT EXISTS publication_packages (
+            package_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            briefing_id TEXT NOT NULL REFERENCES publication_briefings(briefing_id) ON DELETE RESTRICT,
+            package_json TEXT NOT NULL, package_sha256 TEXT NOT NULL, status TEXT NOT NULL, slug TEXT NOT NULL,
+            package_version INTEGER NOT NULL, idempotency_key TEXT, generated_at TEXT NOT NULL, UNIQUE(case_id, slug, package_version), UNIQUE(idempotency_key)
+        );
+        CREATE INDEX IF NOT EXISTS idx_publication_packages_case ON publication_packages(case_id, status, generated_at);
+        CREATE TABLE IF NOT EXISTS public_embeds (
+            embed_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            package_id TEXT NOT NULL REFERENCES publication_packages(package_id) ON DELETE RESTRICT,
+            embed_json TEXT NOT NULL, embed_sha256 TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, status TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_public_embeds_case ON public_embeds(case_id, status, created_at);
+        CREATE TABLE IF NOT EXISTS api_keys (
+            api_key_id TEXT PRIMARY KEY, name TEXT NOT NULL, key_prefix TEXT NOT NULL UNIQUE, key_sha256 TEXT NOT NULL UNIQUE,
+            scopes_json TEXT NOT NULL, status TEXT NOT NULL, rate_limit_per_minute INTEGER NOT NULL, created_at TEXT NOT NULL,
+            expires_at TEXT, last_used_at TEXT, created_by TEXT
+        );
+        CREATE TABLE IF NOT EXISTS api_key_usage (
+            usage_id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id TEXT NOT NULL REFERENCES api_keys(api_key_id) ON DELETE RESTRICT, used_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_api_key_usage_window ON api_key_usage(api_key_id, used_at);
+        CREATE TABLE IF NOT EXISTS platform_handoffs (
+            handoff_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            package_id TEXT NOT NULL REFERENCES publication_packages(package_id) ON DELETE RESTRICT,
+            target TEXT NOT NULL, handoff_json TEXT NOT NULL, handoff_sha256 TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_platform_handoffs_case ON platform_handoffs(case_id, target, generated_at);
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -520,7 +561,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "publication_briefings", "publication_packages", "public_embeds", "api_keys", "platform_handoffs", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -576,6 +617,14 @@ class SQLiteCaseRepository:
             "decision_studio_handoffs": int(self._connection.execute("SELECT COUNT(*) FROM decision_studio_handoffs WHERE case_id=?", (case_id,)).fetchone()[0]),
         }
         comparative_status = "not_started" if comparative_counts["comparison_sets"] == 0 else "scenario_ready" if comparative_counts["scenario_results"] else "comparison_ready"
+        publication_counts = {
+            "briefings": int(self._connection.execute("SELECT COUNT(*) FROM publication_briefings WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "packages": int(self._connection.execute("SELECT COUNT(*) FROM publication_packages WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "embeds": int(self._connection.execute("SELECT COUNT(*) FROM public_embeds WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "handoffs": int(self._connection.execute("SELECT COUNT(*) FROM platform_handoffs WHERE case_id=?", (case_id,)).fetchone()[0]),
+        }
+        published_count = int(self._connection.execute("SELECT COUNT(*) FROM publication_packages WHERE case_id=? AND status='published'", (case_id,)).fetchone()[0])
+        publication_status = "published" if published_count else "package_ready" if publication_counts["packages"] else "briefing_ready" if publication_counts["briefings"] else "not_started"
         case = {
             "case_id": case_id,
             "organization_id": row["organization_id"],
@@ -618,6 +667,11 @@ class SQLiteCaseRepository:
             "sensitivity_analysis_count": comparative_counts["sensitivity_analyses"],
             "decision_studio_handoff_count": comparative_counts["decision_studio_handoffs"],
             "comparative_status": comparative_status,
+            "publication_briefing_count": publication_counts["briefings"],
+            "publication_package_count": publication_counts["packages"],
+            "public_embed_count": publication_counts["embeds"],
+            "platform_handoff_count": publication_counts["handoffs"],
+            "publication_status": publication_status,
         }
         _schema_error("case", case, CASE_SCHEMA_PATH)
         return case
@@ -1041,6 +1095,10 @@ class SQLiteCaseRepository:
             "sensitivity_analyses": [analysis for comparison in self.list_comparison_sets(case_id=case["case_id"]) for analysis in self.list_sensitivity_analyses(comparison["comparison_id"])],
             "comparative_portfolio": self.get_comparative_portfolio(case["case_id"], generated_at=timestamp),
             "decision_studio_handoffs": self.list_decision_studio_handoffs(case["case_id"]),
+            "publication_briefings": self.list_publication_briefings(case["case_id"]),
+            "publication_packages": self.list_publication_packages(case["case_id"]),
+            "public_embeds": self.list_public_embeds(case["case_id"]),
+            "platform_handoffs": self.list_platform_handoffs(case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -1108,6 +1166,20 @@ class SQLiteCaseRepository:
                     (bundle.get("decision_studio_handoffs", []), "handoff_sha256"),
                 ) for item in values
             ) and sha256_digest({k: v for k, v in bundle["comparative_portfolio"].items() if k != "portfolio_sha256"}) == bundle["comparative_portfolio"]["portfolio_sha256"],
+            "publication_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in list(bundle.get("publication_briefings", [])) + list(bundle.get("publication_packages", []))
+                + list(bundle.get("public_embeds", [])) + list(bundle.get("platform_handoffs", []))
+            ),
+            "publication_hashes_match": all(
+                sha256_digest({k: v for k, v in item.items() if k != hash_field}) == item[hash_field]
+                for values, hash_field in (
+                    (bundle.get("publication_briefings", []), "briefing_sha256"),
+                    (bundle.get("publication_packages", []), "package_sha256"),
+                    (bundle.get("public_embeds", []), "embed_sha256"),
+                    (bundle.get("platform_handoffs", []), "handoff_sha256"),
+                ) for item in values
+            ),
         }
 
     def import_case_bundle(self, bundle: Mapping[str, Any]) -> Dict[str, Any]:
@@ -1134,6 +1206,10 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains comparative records for another case")
         if not report["comparative_hashes_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains a comparative artifact hash mismatch")
+        if not report["publication_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains publication records for another case")
+        if not report["publication_hashes_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a publication artifact hash mismatch")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -1239,6 +1315,14 @@ class SQLiteCaseRepository:
                 connection.execute("INSERT INTO sensitivity_analyses(analysis_id,comparison_id,case_id,analysis_json,analysis_sha256,generated_at) VALUES(?,?,?,?,?,?)", (analysis["analysis_id"], analysis["comparison_id"], analysis["case_id"], _json_dump(analysis), analysis["analysis_sha256"], analysis["generated_at"]))
             for handoff in bundle.get("decision_studio_handoffs", []):
                 connection.execute("INSERT INTO decision_studio_handoffs(handoff_id,comparison_id,case_id,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?)", (handoff["handoff_id"], handoff["comparison_id"], handoff["case_id"], _json_dump(handoff), handoff["handoff_sha256"], handoff["generated_at"]))
+            for briefing in bundle.get("publication_briefings", []):
+                connection.execute("INSERT INTO publication_briefings(briefing_id,case_id,revision_id,briefing_json,briefing_sha256,classification,audience,generated_at) VALUES(?,?,?,?,?,?,?,?)", (briefing["briefing_id"],briefing["case_id"],briefing["revision_id"],_json_dump(briefing),briefing["briefing_sha256"],briefing["classification"],briefing["audience"],briefing["generated_at"]))
+            for package in bundle.get("publication_packages", []):
+                connection.execute("INSERT INTO publication_packages(package_id,case_id,briefing_id,package_json,package_sha256,status,slug,package_version,idempotency_key,generated_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (package["package_id"],package["case_id"],package["briefing_id"],_json_dump(package),package["package_sha256"],package["status"],package["slug"],package["package_version"],package.get("idempotency_key"),package["generated_at"]))
+            for embed in bundle.get("public_embeds", []):
+                connection.execute("INSERT INTO public_embeds(embed_id,case_id,package_id,embed_json,embed_sha256,slug,status,created_at) VALUES(?,?,?,?,?,?,?,?)", (embed["embed_id"],embed["case_id"],embed["package_id"],_json_dump(embed),embed["embed_sha256"],embed["slug"],embed["status"],embed["created_at"]))
+            for handoff in bundle.get("platform_handoffs", []):
+                connection.execute("INSERT INTO platform_handoffs(handoff_id,case_id,package_id,target,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?,?)", (handoff["handoff_id"],handoff["case_id"],handoff["package_id"],handoff["target"],_json_dump(handoff),handoff["handoff_sha256"],handoff["generated_at"]))
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -1248,7 +1332,7 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.8.0 stakeholder, incentive, and pressure intelligence
+    # v1.9.0 stakeholder, incentive, and pressure intelligence
 
     def _ensure_actor(self, actor_id: str, case_id: str) -> None:
         row = self._connection.execute("SELECT case_id FROM stakeholder_actors WHERE actor_id=?", (actor_id,)).fetchone()
@@ -1339,7 +1423,7 @@ class SQLiteCaseRepository:
         rows=self._connection.execute("SELECT * FROM catalyst_canvas_handoffs WHERE case_id=? ORDER BY imported_at,handoff_id",(case_id,)).fetchall(); return [{"handoff_id":r["handoff_id"],"case_id":r["case_id"],"canvas_id":r["canvas_id"],"handoff":_json_load(r["handoff_json"]),"handoff_sha256":r["handoff_sha256"],"imported_at":r["imported_at"]} for r in rows]
 
     # ------------------------------------------------------------------
-    # v1.8.0 comparative narratives and scenario analysis
+    # v1.9.0 comparative narratives and scenario analysis
 
     def _records_for_comparison(self, comparison: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
         records: Dict[str, Dict[str, Any]] = {}
@@ -1527,7 +1611,216 @@ class SQLiteCaseRepository:
 
 
     # ------------------------------------------------------------------
-    # v1.8.0 narrative change, freshness, and monitoring
+    # v1.9.0 briefing, publication, API, embed, and platform integration
+
+    def create_publication_briefing(
+        self, case_id: str, *, revision_id: str | None = None, audience: str = "internal",
+        classification: str = "internal", title: str | None = None, generated_at: str | None = None,
+        generated_by: str | None = None, briefing_id: str | None = None,
+    ) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        revisions = self.list_revisions(case["case_id"])
+        if not revisions:
+            raise NarrativeRiskValidationError("a publication briefing requires at least one immutable revision")
+        revision = self.get_revision(revision_id) if revision_id else revisions[-1]
+        if revision["case_id"] != case["case_id"]:
+            raise NarrativeRiskValidationError("briefing revision does not belong to the case")
+        governance = self.get_case_governance_workflow(case["case_id"], include_details=True, at=generated_at)
+        briefing = build_briefing(
+            case=case, revision=revision, governance=governance, audience=audience,
+            classification=classification, title=title, generated_at=generated_at,
+            generated_by=generated_by, briefing_id=briefing_id,
+        )
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO publication_briefings(briefing_id,case_id,revision_id,briefing_json,briefing_sha256,classification,audience,generated_at) VALUES(?,?,?,?,?,?,?,?)",
+                    (briefing["briefing_id"], briefing["case_id"], briefing["revision_id"], _json_dump(briefing),
+                     briefing["briefing_sha256"], briefing["classification"], briefing["audience"], briefing["generated_at"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"publication briefing already exists: {briefing['briefing_id']}") from exc
+            self._activity(connection, case["case_id"], "publication_briefing_created", entity_id=briefing["briefing_id"],
+                           payload={"classification": briefing["classification"], "audience": briefing["audience"], "public_safe": briefing["public_safe"]},
+                           created_at=briefing["generated_at"])
+        return briefing
+
+    def get_publication_briefing(self, briefing_id: str) -> Dict[str, Any]:
+        normalized = publication_urn(briefing_id, "briefing_id")
+        with self._lock:
+            row = self._connection.execute("SELECT briefing_json FROM publication_briefings WHERE briefing_id=?", (normalized,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"publication briefing not found: {normalized}")
+        value = _json_load(row["briefing_json"])
+        _schema_error("publication briefing", value, BRIEFING_SCHEMA_PATH)
+        if sha256_digest({k: v for k, v in value.items() if k != "briefing_sha256"}) != value["briefing_sha256"]:
+            raise NarrativeRiskValidationError(f"publication briefing hash mismatch: {normalized}")
+        return value
+
+    def list_publication_briefings(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized = _urn_uuid(case_id, "case_id")
+        with self._lock:
+            rows = self._connection.execute("SELECT briefing_id FROM publication_briefings WHERE case_id=? ORDER BY generated_at,briefing_id", (normalized,)).fetchall()
+        return [self.get_publication_briefing(row["briefing_id"]) for row in rows]
+
+    def create_publication_package(
+        self, briefing_id: str, *, formats: Sequence[str] | None = None, slug: str | None = None,
+        status: str | None = None, generated_at: str | None = None, generated_by: str | None = None,
+        package_id: str | None = None, package_version: int = 1, public_url: str | None = None,
+        idempotency_key: str | None = None,
+    ) -> Dict[str, Any]:
+        if idempotency_key:
+            with self._lock:
+                existing = self._connection.execute("SELECT package_json FROM publication_packages WHERE idempotency_key=?", (idempotency_key,)).fetchone()
+            if existing is not None:
+                return _json_load(existing["package_json"])
+        briefing = self.get_publication_briefing(briefing_id)
+        package = build_publication_package(
+            briefing, formats=formats, slug=slug, status=status, generated_at=generated_at,
+            generated_by=generated_by, package_id=package_id, package_version=package_version,
+            public_url=public_url, idempotency_key=idempotency_key,
+        )
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO publication_packages(package_id,case_id,briefing_id,package_json,package_sha256,status,slug,package_version,idempotency_key,generated_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    (package["package_id"], package["case_id"], package["briefing_id"], _json_dump(package), package["package_sha256"],
+                     package["status"], package["slug"], package["package_version"], package["idempotency_key"], package["generated_at"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError("publication package identifier, slug/version, or idempotency key already exists") from exc
+            self._activity(connection, package["case_id"], "publication_package_created", entity_id=package["package_id"],
+                           payload={"status": package["status"], "formats": [item["format"] for item in package["artifacts"]], "package_sha256": package["package_sha256"]},
+                           created_at=package["generated_at"])
+        return package
+
+    def get_publication_package(self, package_id: str) -> Dict[str, Any]:
+        normalized = publication_urn(package_id, "package_id")
+        with self._lock:
+            row = self._connection.execute("SELECT package_json FROM publication_packages WHERE package_id=?", (normalized,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"publication package not found: {normalized}")
+        value = _json_load(row["package_json"])
+        _schema_error("publication package", value, PUBLICATION_PACKAGE_SCHEMA_PATH)
+        if sha256_digest({k: v for k, v in value.items() if k != "package_sha256"}) != value["package_sha256"]:
+            raise NarrativeRiskValidationError(f"publication package hash mismatch: {normalized}")
+        return value
+
+    def list_publication_packages(self, case_id: str, *, status: str | None = None) -> List[Dict[str, Any]]:
+        normalized = _urn_uuid(case_id, "case_id")
+        params: list[Any] = [normalized]; sql = "SELECT package_id FROM publication_packages WHERE case_id=?"
+        if status:
+            sql += " AND status=?"; params.append(status)
+        sql += " ORDER BY generated_at,package_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        return [self.get_publication_package(row["package_id"]) for row in rows]
+
+    def update_publication_package_status(self, package_id: str, *, status: str, public_url: str | None = None, changed_at: str | None = None) -> Dict[str, Any]:
+        package = self.get_publication_package(package_id)
+        normalized_status = _choice(status, "status", {"draft", "ready", "published", "revoked", "superseded"}, "draft")
+        if normalized_status == "published" and (package["classification"] != "public" or not package["public_safe"]):
+            raise NarrativeRiskValidationError("only a public-safe public package can be published")
+        package["status"] = normalized_status
+        if public_url is not None: package["public_url"] = public_url
+        package["package_sha256"] = sha256_digest({k: v for k, v in package.items() if k != "package_sha256"})
+        _schema_error("publication package", package, PUBLICATION_PACKAGE_SCHEMA_PATH)
+        timestamp = _validate_datetime(changed_at, "changed_at") if changed_at else _iso_now()
+        with self._transaction() as connection:
+            connection.execute("UPDATE publication_packages SET package_json=?,package_sha256=?,status=? WHERE package_id=?", (_json_dump(package),package["package_sha256"],normalized_status,package["package_id"]))
+            self._activity(connection, package["case_id"], "publication_package_status_changed", entity_id=package["package_id"], payload={"status": normalized_status, "public_url": package.get("public_url")}, created_at=timestamp)
+        return package
+
+    def get_publication_artifact(self, package_id: str, format_name: str) -> Dict[str, Any]:
+        package = self.get_publication_package(package_id)
+        artifact = next((item for item in package["artifacts"] if item["format"] == format_name), None)
+        if artifact is None:
+            raise NarrativeRiskValidationError(f"publication package does not contain format: {format_name}")
+        return deepcopy(artifact)
+
+    def create_public_embed(self, package_id: str, **payload: Any) -> Dict[str, Any]:
+        package = self.get_publication_package(package_id)
+        embed = build_public_embed(package, **payload)
+        with self._transaction() as connection:
+            try:
+                connection.execute("INSERT INTO public_embeds(embed_id,case_id,package_id,embed_json,embed_sha256,slug,status,created_at) VALUES(?,?,?,?,?,?,?,?)",
+                                   (embed["embed_id"],embed["case_id"],embed["package_id"],_json_dump(embed),embed["embed_sha256"],embed["slug"],embed["status"],embed["created_at"]))
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError("public embed identifier or slug already exists") from exc
+            self._activity(connection, embed["case_id"], "public_embed_created", entity_id=embed["embed_id"], payload={"slug":embed["slug"],"status":embed["status"]}, created_at=embed["created_at"])
+        return embed
+
+    def get_public_embed(self, embed_id_or_slug: str) -> Dict[str, Any]:
+        with self._lock:
+            if isinstance(embed_id_or_slug,str) and embed_id_or_slug.startswith("urn:uuid:"):
+                row=self._connection.execute("SELECT embed_json FROM public_embeds WHERE embed_id=?", (publication_urn(embed_id_or_slug,"embed_id"),)).fetchone()
+            else:
+                row=self._connection.execute("SELECT embed_json FROM public_embeds WHERE slug=?", (embed_id_or_slug,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError(f"public embed not found: {embed_id_or_slug}")
+        value=_json_load(row["embed_json"]); _schema_error("public embed",value,PUBLIC_EMBED_SCHEMA_PATH)
+        if sha256_digest({k:v for k,v in value.items() if k!="embed_sha256"}) != value["embed_sha256"]: raise NarrativeRiskValidationError("public embed hash mismatch")
+        return value
+
+    def list_public_embeds(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized=_urn_uuid(case_id,"case_id")
+        with self._lock: rows=self._connection.execute("SELECT embed_id FROM public_embeds WHERE case_id=? ORDER BY created_at,embed_id",(normalized,)).fetchall()
+        return [self.get_public_embed(row["embed_id"]) for row in rows]
+
+    def create_api_key(self, *, name: str, scopes: Sequence[str], rate_limit_per_minute: int | None = None, expires_at: str | None = None, created_at: str | None = None, created_by: str | None = None, api_key_id: str | None = None) -> Dict[str, Any]:
+        record, secret = create_api_key_record(name=name, scopes=scopes, rate_limit_per_minute=rate_limit_per_minute, expires_at=expires_at, created_at=created_at, created_by=created_by, api_key_id=api_key_id)
+        with self._transaction() as connection:
+            try:
+                connection.execute("INSERT INTO api_keys(api_key_id,name,key_prefix,key_sha256,scopes_json,status,rate_limit_per_minute,created_at,expires_at,last_used_at,created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                                   (record["api_key_id"],record["name"],record["key_prefix"],record["key_sha256"],_json_dump(record["scopes"]),record["status"],record["rate_limit_per_minute"],record["created_at"],record["expires_at"],record["last_used_at"],record["created_by"]))
+            except sqlite3.IntegrityError as exc: raise NarrativeRiskValidationError("API key identifier or prefix already exists") from exc
+        return {"api_key": record, "secret": secret}
+
+    def _api_key_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        value={"api_key_id":row["api_key_id"],"name":row["name"],"key_prefix":row["key_prefix"],"key_sha256":row["key_sha256"],"scopes":_json_load(row["scopes_json"]),"status":row["status"],"rate_limit_per_minute":int(row["rate_limit_per_minute"]),"created_at":row["created_at"],"expires_at":row["expires_at"],"last_used_at":row["last_used_at"],"created_by":row["created_by"]}
+        _schema_error("API key",value,API_KEY_SCHEMA_PATH); return value
+
+    def list_api_keys(self) -> List[Dict[str, Any]]:
+        with self._lock: rows=self._connection.execute("SELECT * FROM api_keys ORDER BY created_at,api_key_id").fetchall()
+        return [self._api_key_from_row(row) for row in rows]
+
+    def authenticate_api_key(self, secret: str, required_scope: str, *, used_at: str | None = None) -> Dict[str, Any]:
+        digest=__import__('hashlib').sha256(secret.encode()).hexdigest(); timestamp=_validate_datetime(used_at,"used_at") if used_at else _iso_now()
+        with self._lock: row=self._connection.execute("SELECT * FROM api_keys WHERE key_sha256=?",(digest,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError("invalid API key")
+        record=self._api_key_from_row(row); authorize_api_key(record,secret,required_scope,at=timestamp)
+        cutoff=(datetime.fromisoformat(timestamp.replace('Z','+00:00'))-timedelta(minutes=1)).isoformat()
+        with self._transaction() as connection:
+            count=int(connection.execute("SELECT COUNT(*) FROM api_key_usage WHERE api_key_id=? AND used_at>=?",(record["api_key_id"],cutoff)).fetchone()[0])
+            if count >= record["rate_limit_per_minute"]: raise NarrativeRiskValidationError("API rate limit exceeded")
+            connection.execute("INSERT INTO api_key_usage(api_key_id,used_at) VALUES(?,?)",(record["api_key_id"],timestamp))
+            connection.execute("UPDATE api_keys SET last_used_at=? WHERE api_key_id=?",(timestamp,record["api_key_id"]))
+        record["last_used_at"]=timestamp; return record
+
+    def revoke_api_key(self, api_key_id: str) -> Dict[str, Any]:
+        normalized=publication_urn(api_key_id,"api_key_id")
+        with self._transaction() as connection:
+            result=connection.execute("UPDATE api_keys SET status='revoked' WHERE api_key_id=?",(normalized,))
+            if result.rowcount==0: raise NarrativeRiskValidationError(f"API key not found: {normalized}")
+        with self._lock: row=self._connection.execute("SELECT * FROM api_keys WHERE api_key_id=?",(normalized,)).fetchone()
+        return self._api_key_from_row(row)
+
+    def create_platform_handoff(self, package_id: str, *, target: str, generated_at: str | None = None, external_reference: str | None = None, handoff_id: str | None = None) -> Dict[str, Any]:
+        package=self.get_publication_package(package_id); handoff=build_platform_handoff(package,target=target,generated_at=generated_at,external_reference=external_reference,handoff_id=handoff_id)
+        with self._transaction() as connection:
+            try: connection.execute("INSERT INTO platform_handoffs(handoff_id,case_id,package_id,target,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?,?)",(handoff["handoff_id"],handoff["case_id"],handoff["package_id"],handoff["target"],_json_dump(handoff),handoff["handoff_sha256"],handoff["generated_at"]))
+            except sqlite3.IntegrityError as exc: raise NarrativeRiskValidationError(f"platform handoff already exists: {handoff['handoff_id']}") from exc
+            self._activity(connection,handoff["case_id"],"platform_handoff_created",entity_id=handoff["handoff_id"],payload={"target":handoff["target"],"package_id":handoff["package_id"]},created_at=handoff["generated_at"])
+        return handoff
+
+    def list_platform_handoffs(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized=_urn_uuid(case_id,"case_id")
+        with self._lock: rows=self._connection.execute("SELECT handoff_json FROM platform_handoffs WHERE case_id=? ORDER BY generated_at,handoff_id",(normalized,)).fetchall()
+        values=[_json_load(row["handoff_json"]) for row in rows]
+        for value in values: _schema_error("platform handoff",value,PLATFORM_HANDOFF_SCHEMA_PATH)
+        return values
+
+    # ------------------------------------------------------------------
+    # v1.9.0 narrative change, freshness, and monitoring
 
     def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         snapshot = _json_load(row["snapshot_json"])
@@ -1889,7 +2182,7 @@ class SQLiteCaseRepository:
         return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
 
     # ------------------------------------------------------------------
-    # v1.8.0 governed review workflow
+    # v1.9.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {

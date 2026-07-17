@@ -1,0 +1,11 @@
+field,value
+briefing_id,urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0
+case_id,urn:uuid:70000000-0000-4000-8000-000000000001
+title,Qualified Energy Performance Narrative
+claim,"The pilot may have reduced energy use, but attribution remains uncertain and affordability effects require further review."
+risk_score,71
+risk_level,High
+evidence_coverage,partial
+source_count,2
+publication_readiness,conditional
+generated_at,2026-07-17T19:36:00+00:00
