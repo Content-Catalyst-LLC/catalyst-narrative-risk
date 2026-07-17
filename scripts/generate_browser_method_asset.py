@@ -9,14 +9,14 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "methods" / "transparent-heuristic.v1.4.0.json"
+SOURCE = ROOT / "methods" / "transparent-heuristic.v1.5.0.json"
 TARGET = ROOT / "wordpress" / "catalyst-narrative-risk-demo" / "assets" / "narrative-risk-method.js"
 
 
 def render() -> str:
     method = json.loads(SOURCE.read_text(encoding="utf-8"))
     payload = json.dumps(method, ensure_ascii=False, separators=(",", ":"))
-    return f"""(function (root, factory) {{\n  'use strict';\n  const method = factory();\n  if (typeof module === 'object' && module.exports) module.exports = method;\n  if (root) root.CatalystNarrativeRiskMethodV140 = method;\n}})(typeof globalThis !== 'undefined' ? globalThis : this, function () {{\n  'use strict';\n  return {payload};\n}});\n"""
+    return f"""(function (root, factory) {{\n  'use strict';\n  const method = factory();\n  if (typeof module === 'object' && module.exports) module.exports = method;\n  if (root) root.CatalystNarrativeRiskMethodV150 = method;\n}})(typeof globalThis !== 'undefined' ? globalThis : this, function () {{\n  'use strict';\n  return {payload};\n}});\n"""
 
 
 def main() -> int:

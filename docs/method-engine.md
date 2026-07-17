@@ -1,6 +1,6 @@
 # Method engine
 
-The transparent heuristic remains a weighted additive method. v1.4.0 adds a versioned ledger policy without changing the boundary between analysis and human judgment.
+The transparent heuristic remains a weighted additive method. v1.5.0 adds a versioned ledger policy without changing the boundary between analysis and human judgment.
 
 ## Scalar components
 

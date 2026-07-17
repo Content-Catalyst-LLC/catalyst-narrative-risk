@@ -11,9 +11,9 @@ def test_api_returns_canonical_record():
     response = client.post("/api/narrative-risk", json={"claim": "API claim"})
     assert response.status_code == 200
     record = response.get_json()
-    assert record["contract"]["contract_version"] == "1.4.0"
-    assert record["method_snapshot"]["method_version"] == "1.4.0"
-    assert record["identifiers"]["ledger_schema_id"].endswith("/1.4.0")
+    assert record["contract"]["contract_version"] == "1.5.0"
+    assert record["method_snapshot"]["method_version"] == "1.5.0"
+    assert record["identifiers"]["ledger_schema_id"].endswith("/1.5.0")
     assert record["evidence_ledger"]["coverage"]["overall"]["coverage_status"] == "none"
     assert record["human_decision"]["disposition"] == "undecided"
 
@@ -23,12 +23,12 @@ def test_api_exposes_contract_vocabularies_and_method_snapshot():
     contract = client.get("/api/narrative-risk/contract").get_json()
     vocabularies = client.get("/api/narrative-risk/vocabularies").get_json()
     method = client.get("/api/narrative-risk/methods/current").get_json()
-    assert contract["contract_version"] == "1.4.0"
-    assert contract["ledger_schema_id"].endswith("/1.4.0")
-    assert vocabularies["vocabulary_version"] == "1.4.0"
+    assert contract["contract_version"] == "1.5.0"
+    assert contract["ledger_schema_id"].endswith("/1.5.0")
+    assert vocabularies["vocabulary_version"] == "1.5.0"
     assert "evidence_relation_type" in vocabularies["vocabularies"]
-    assert method["method_snapshot"]["method_version"] == "1.4.0"
-    assert method["method_snapshot"]["ledger_policy"]["policy_version"] == "1.4.0"
+    assert method["method_snapshot"]["method_version"] == "1.5.0"
+    assert method["method_snapshot"]["ledger_policy"]["policy_version"] == "1.5.0"
     assert len(method["method_snapshot_sha256"]) == 64
 
 
@@ -43,7 +43,7 @@ def test_api_analyzes_evidence_ledger():
         "source_type": "official_or_primary",
         "evidence_strength": "strong",
         "source_count": 2,
-        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy.",
+        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.5.0 ledger policy.",
     }
 
 
@@ -75,7 +75,7 @@ def test_api_migrates_v1_1_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.1.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.4.0"
+    assert migrated["contract"]["contract_version"] == "1.5.0"
     assert migrated["migration"]["from_schema_version"] == "1.1.0"
     assert migrated["evidence_ledger"]["coverage"]["overall"]["source_count"] == 0
 
@@ -137,7 +137,7 @@ def test_api_saved_views_archive_restore_and_workspace_health(tmp_path):
     assert client.post(f"/api/narrative-risk/cases/{case['case_id']}/archive", json={}).get_json()["archived"] is True
     assert client.post(f"/api/narrative-risk/cases/{case['case_id']}/restore", json={}).get_json()["archived"] is False
     health = client.get("/api/narrative-risk/workspaces/health").get_json()
-    assert health["workspace_version"] == "1.4.0"
+    assert health["workspace_version"] == "1.5.0"
     assert health["counts"]["cases"] == 1
 
 
@@ -147,7 +147,7 @@ def test_api_migrates_v1_2_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.2.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.4.0"
+    assert migrated["contract"]["contract_version"] == "1.5.0"
     assert migrated["migration"]["from_schema_version"] == "1.2.0"
 
 
@@ -156,7 +156,7 @@ def test_api_analyzes_narrative_map():
     response = client.post("/api/narrative-risk/map/analyze", json={"claim": "The policy caused the result.", "uncertainty": "high"})
     assert response.status_code == 200
     payload = response.get_json()
-    assert payload["narrative_map"]["map_version"] == "1.4.0"
+    assert payload["narrative_map"]["map_version"] == "1.5.0"
     assert any(item["code"] == "unsupported_causal_structure" for item in payload["narrative_map"]["analysis"]["issues"])
 
 
@@ -166,5 +166,68 @@ def test_api_migrates_v1_3_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.3.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.4.0"
+    assert migrated["contract"]["contract_version"] == "1.5.0"
     assert migrated["migration"]["from_schema_version"] == "1.3.0"
+
+
+def test_api_migrates_v1_4_0_record():
+    client = create_app({"NARRATIVE_RISK_DATABASE": ":memory:"}).test_client()
+    legacy = json.loads((Path(__file__).parent / "fixtures" / "legacy-v1.4.0-record.json").read_text())
+    response = client.post("/api/narrative-risk/migrate/v1.4.0", json=legacy)
+    assert response.status_code == 200
+    migrated = response.get_json()
+    assert migrated["contract"]["contract_version"] == "1.5.0"
+    assert migrated["migration"]["from_schema_version"] == "1.4.0"
+    assert migrated["calculations"]["risk_score"] == legacy["calculations"]["risk_score"]
+
+
+def test_api_governance_workflow_assignment_decision_and_queue(tmp_path):
+    client = create_app({"NARRATIVE_RISK_DATABASE": str(tmp_path / "governance-api.sqlite3")}).test_client()
+    case = client.post("/api/narrative-risk/cases", json={
+        "title": "Governance API case",
+        "initial_payload": {"claim": "The reviewed claim is suitable for controlled use."},
+        "created_at": "2026-07-17T12:00:00+00:00",
+    }).get_json()
+    template = {
+        "name": "Final-only API workflow",
+        "description": "Compact API validation.",
+        "stages": [{"stage": "final", "required": True, "required_role": "final_approver", "instructions": "Final review."}],
+        "default_due_days": 7,
+        "escalation_days": 1,
+    }
+    started = client.post(f"/api/narrative-risk/cases/{case['case_id']}/governance", json={
+        "template_snapshot": template,
+        "started_at": "2026-07-17T12:05:00+00:00",
+        "created_by": "admin:api",
+    })
+    assert started.status_code == 201
+    workflow = started.get_json()
+    assignment = client.post(f"/api/narrative-risk/governance/{workflow['workflow_id']}/assignments", json={
+        "stage": "final", "reviewer_id": "approver:api", "reviewer_role": "final_approver",
+        "due_at": "2026-07-25T00:00:00+00:00",
+    })
+    assert assignment.status_code == 201
+    assignment_payload = assignment.get_json()
+    decision = client.post(f"/api/narrative-risk/governance/{workflow['workflow_id']}/decisions", json={
+        "stage": "final", "disposition": "approve_with_conditions", "decided_by": "approver:api",
+        "decider_role": "final_approver", "assignment_id": assignment_payload["assignment_id"],
+        "rationale": "Approved with controlled language.", "required_wording": ["Available evidence indicates"],
+        "publication_restrictions": ["disclosure_required"], "disclosures": ["Evidence reviewed July 17, 2026."],
+        "valid_until": "2027-01-01T00:00:00+00:00", "reassessment_at": "2026-12-01T00:00:00+00:00",
+        "decided_at": "2026-07-17T13:00:00+00:00",
+    })
+    assert decision.status_code == 201
+    governed = client.get(f"/api/narrative-risk/cases/{case['case_id']}/governance?include_details=true&at=2026-07-18T00:00:00%2B00:00").get_json()
+    assert governed["status"] == "approved"
+    assert governed["publication_allowed"] is True
+    assert governed["final_disposition"] == "approve_with_conditions"
+    queue = client.get("/api/narrative-risk/governance/queue?reviewer_id=approver:api").get_json()
+    assert queue["count"] == 1
+    assert queue["assignments"][0]["status"] == "completed"
+
+
+def test_api_rejects_unauthorized_template_management(tmp_path):
+    client = create_app({"NARRATIVE_RISK_DATABASE": str(tmp_path / "templates.sqlite3")}).test_client()
+    response = client.post("/api/narrative-risk/review-templates", json={"name": "Unauthorized", "actor_role": "reviewer"})
+    assert response.status_code == 400
+    assert response.get_json()["error"] == "invalid_review_template"

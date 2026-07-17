@@ -24,20 +24,30 @@ from .contracts import (
     REVIEW_EVENT_SCHEMA_PATH,
     SAVED_VIEW_SCHEMA_PATH,
     WORKSPACE_BUNDLE_SCHEMA_PATH,
+    REVIEW_ASSIGNMENT_SCHEMA_PATH,
+    GOVERNANCE_WORKFLOW_SCHEMA_PATH,
+    GOVERNANCE_DECISION_SCHEMA_PATH,
+    REVIEW_TEMPLATE_SCHEMA_PATH,
     canonical_json,
     sha256_digest,
     validate_against_schema,
 )
 from .errors import NarrativeRiskValidationError
+from .governance import (
+    ASSIGNMENT_STATUSES, GOVERNANCE_DISPOSITIONS, GOVERNANCE_ROLES, PUBLICATION_RESTRICTIONS,
+    REVIEWER_ROLES, REVIEW_STAGES, WORKFLOW_STATUSES, default_template_payload, is_past,
+    normalize_string_list, normalize_template_stages, require_permission,
+)
 from .service import build_narrative_risk_record, validate_narrative_risk_record
 
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
 REVIEW_EVENT_TYPES = {
     "comment", "review_requested", "review_completed", "decision_updated",
-    "status_changed", "assignment_changed",
+    "status_changed", "assignment_changed", "workflow_started", "stage_decision",
+    "approval_expired", "reassessment_due",
 }
 SAVED_VIEW_FIELDS = {"query", "organization_id", "project_id", "status", "priority", "tags", "archived"}
 
@@ -219,6 +229,86 @@ class SQLiteCaseRepository:
         );
         CREATE INDEX IF NOT EXISTS idx_review_events_case ON review_events(case_id, created_at);
 
+        CREATE TABLE IF NOT EXISTS review_templates (
+            template_id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL DEFAULT '',
+            stages_json TEXT NOT NULL,
+            default_due_days INTEGER NOT NULL DEFAULT 14,
+            escalation_days INTEGER NOT NULL DEFAULT 3,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            created_by TEXT,
+            active INTEGER NOT NULL DEFAULT 1
+        );
+        CREATE INDEX IF NOT EXISTS idx_review_templates_active ON review_templates(active, name);
+
+        CREATE TABLE IF NOT EXISTS governance_workflows (
+            workflow_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL UNIQUE REFERENCES cases(case_id) ON DELETE RESTRICT,
+            revision_id TEXT NOT NULL REFERENCES revisions(revision_id) ON DELETE RESTRICT,
+            template_id TEXT,
+            template_snapshot_json TEXT NOT NULL,
+            status TEXT NOT NULL,
+            current_stage TEXT NOT NULL,
+            started_at TEXT NOT NULL,
+            due_at TEXT,
+            completed_at TEXT,
+            created_by TEXT,
+            updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_governance_workflows_status ON governance_workflows(status, current_stage);
+        CREATE INDEX IF NOT EXISTS idx_governance_workflows_due ON governance_workflows(due_at);
+
+        CREATE TABLE IF NOT EXISTS review_assignments (
+            assignment_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            revision_id TEXT NOT NULL REFERENCES revisions(revision_id) ON DELETE RESTRICT,
+            workflow_id TEXT NOT NULL REFERENCES governance_workflows(workflow_id) ON DELETE RESTRICT,
+            stage TEXT NOT NULL,
+            reviewer_id TEXT NOT NULL,
+            reviewer_name TEXT,
+            reviewer_role TEXT NOT NULL,
+            status TEXT NOT NULL,
+            required INTEGER NOT NULL DEFAULT 1,
+            instructions TEXT NOT NULL DEFAULT '',
+            created_at TEXT NOT NULL,
+            created_by TEXT,
+            due_at TEXT,
+            accepted_at TEXT,
+            completed_at TEXT,
+            escalated_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_review_assignments_queue ON review_assignments(reviewer_id, status, due_at);
+        CREATE INDEX IF NOT EXISTS idx_review_assignments_case ON review_assignments(case_id, stage, status);
+
+        CREATE TABLE IF NOT EXISTS governance_decisions (
+            decision_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            revision_id TEXT NOT NULL REFERENCES revisions(revision_id) ON DELETE RESTRICT,
+            workflow_id TEXT NOT NULL REFERENCES governance_workflows(workflow_id) ON DELETE RESTRICT,
+            assignment_id TEXT REFERENCES review_assignments(assignment_id) ON DELETE RESTRICT,
+            stage TEXT NOT NULL,
+            disposition TEXT NOT NULL,
+            decided_by TEXT NOT NULL,
+            decided_by_name TEXT,
+            decider_role TEXT NOT NULL,
+            decided_at TEXT NOT NULL,
+            rationale TEXT NOT NULL,
+            conditions_json TEXT NOT NULL DEFAULT '[]',
+            required_wording_json TEXT NOT NULL DEFAULT '[]',
+            publication_restrictions_json TEXT NOT NULL DEFAULT '[]',
+            disclosures_json TEXT NOT NULL DEFAULT '[]',
+            valid_until TEXT,
+            reassessment_at TEXT,
+            supersedes_decision_id TEXT REFERENCES governance_decisions(decision_id) ON DELETE RESTRICT
+        );
+        CREATE INDEX IF NOT EXISTS idx_governance_decisions_case ON governance_decisions(case_id, stage, decided_at);
+        CREATE TRIGGER IF NOT EXISTS governance_decisions_no_update
+        BEFORE UPDATE ON governance_decisions BEGIN SELECT RAISE(ABORT, 'governance decisions are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS governance_decisions_no_delete
+        BEFORE DELETE ON governance_decisions BEGIN SELECT RAISE(ABORT, 'governance decisions are append-only'); END;
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -255,7 +345,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -286,6 +376,9 @@ class SQLiteCaseRepository:
         case_id = row["case_id"]
         revision_count = int(self._connection.execute("SELECT COUNT(*) FROM revisions WHERE case_id=?", (case_id,)).fetchone()[0])
         review_count = int(self._connection.execute("SELECT COUNT(*) FROM review_events WHERE case_id=?", (case_id,)).fetchone()[0])
+        workflow = self.get_case_governance_workflow(case_id)
+        assignment_count = workflow["assignment_count"] if workflow else 0
+        decision_count = workflow["decision_count"] if workflow else 0
         case = {
             "case_id": case_id,
             "organization_id": row["organization_id"],
@@ -303,6 +396,14 @@ class SQLiteCaseRepository:
             "latest_record_id": row["latest_record_id"],
             "revision_count": revision_count,
             "review_event_count": review_count,
+            "assignment_count": assignment_count,
+            "governance_decision_count": decision_count,
+            "workflow_status": workflow["status"] if workflow else None,
+            "current_stage": workflow["current_stage"] if workflow else None,
+            "final_disposition": workflow["final_disposition"] if workflow else None,
+            "approval_valid_until": workflow["approval_valid_until"] if workflow else None,
+            "reassessment_at": workflow["reassessment_at"] if workflow else None,
+            "publication_allowed": workflow["publication_allowed"] if workflow else False,
         }
         _schema_error("case", case, CASE_SCHEMA_PATH)
         return case
@@ -359,6 +460,7 @@ class SQLiteCaseRepository:
             if include_details:
                 case["revisions"] = self.list_revisions(normalized_id)
                 case["review_events"] = self.list_review_events(normalized_id)
+                case["governance_workflow"] = self.get_case_governance_workflow(normalized_id, include_details=True)
                 case["activity"] = self.list_activity(normalized_id)
             return case
 
@@ -697,7 +799,11 @@ class SQLiteCaseRepository:
         bundle = {
             "bundle_type": BUNDLE_TYPE, "bundle_version": VERSION, "exported_at": timestamp,
             "case": case, "revisions": self.list_revisions(case["case_id"]),
-            "review_events": self.list_review_events(case["case_id"]), "activity": self.list_activity(case["case_id"]),
+            "review_events": self.list_review_events(case["case_id"]),
+            "governance_workflow": self.get_case_governance_workflow(case["case_id"]),
+            "review_assignments": self.list_review_assignments(case_id=case["case_id"]),
+            "governance_decisions": self.list_governance_decisions(case_id=case["case_id"]),
+            "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
         _schema_error("workspace bundle", bundle, WORKSPACE_BUNDLE_SCHEMA_PATH)
@@ -723,6 +829,11 @@ class SQLiteCaseRepository:
             "revision_checks": revision_checks,
             "all_revision_hashes_match": all(item["record_hash_match"] for item in revision_checks),
             "all_case_ids_match": all(item["case_id_match"] for item in revision_checks),
+            "governance_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in ([bundle["governance_workflow"]] if bundle.get("governance_workflow") else [])
+                + list(bundle.get("review_assignments", [])) + list(bundle.get("governance_decisions", []))
+            ),
         }
 
     def import_case_bundle(self, bundle: Mapping[str, Any]) -> Dict[str, Any]:
@@ -733,6 +844,8 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains a revision record hash mismatch")
         if not report["all_case_ids_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains a revision for another case")
+        if not report["governance_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains governance records for another case")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -763,6 +876,32 @@ class SQLiteCaseRepository:
                         event["author_name"], event["body"], event["created_at"], _json_dump(event["metadata"]),
                     ),
                 )
+            workflow = bundle.get("governance_workflow")
+            if workflow is not None:
+                connection.execute(
+                    "INSERT INTO governance_workflows(workflow_id,case_id,revision_id,template_id,template_snapshot_json,status,current_stage,started_at,due_at,completed_at,created_by,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (workflow["workflow_id"], workflow["case_id"], workflow["revision_id"], workflow["template_id"],
+                     _json_dump(workflow["template_snapshot"]), workflow["status"] if workflow["status"] != "expired" else "approved",
+                     workflow["current_stage"], workflow["started_at"], workflow["due_at"], workflow["completed_at"],
+                     workflow["created_by"], workflow["updated_at"]),
+                )
+            for assignment in bundle.get("review_assignments", []):
+                connection.execute(
+                    "INSERT INTO review_assignments(assignment_id,case_id,revision_id,workflow_id,stage,reviewer_id,reviewer_name,reviewer_role,status,required,instructions,created_at,created_by,due_at,accepted_at,completed_at,escalated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (assignment["assignment_id"], assignment["case_id"], assignment["revision_id"], assignment["workflow_id"],
+                     assignment["stage"], assignment["reviewer_id"], assignment["reviewer_name"], assignment["reviewer_role"],
+                     assignment["status"], int(assignment["required"]), assignment["instructions"], assignment["created_at"],
+                     assignment["created_by"], assignment["due_at"], assignment["accepted_at"], assignment["completed_at"], assignment["escalated_at"]),
+                )
+            for decision in bundle.get("governance_decisions", []):
+                connection.execute(
+                    "INSERT INTO governance_decisions(decision_id,case_id,revision_id,workflow_id,assignment_id,stage,disposition,decided_by,decided_by_name,decider_role,decided_at,rationale,conditions_json,required_wording_json,publication_restrictions_json,disclosures_json,valid_until,reassessment_at,supersedes_decision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (decision["decision_id"], decision["case_id"], decision["revision_id"], decision["workflow_id"], decision["assignment_id"],
+                     decision["stage"], decision["disposition"], decision["decided_by"], decision["decided_by_name"],
+                     decision["decider_role"], decision["decided_at"], decision["rationale"], _json_dump(decision["conditions"]),
+                     _json_dump(decision["required_wording"]), _json_dump(decision["publication_restrictions"]),
+                     _json_dump(decision["disclosures"]), decision["valid_until"], decision["reassessment_at"], decision["supersedes_decision_id"]),
+                )
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -770,3 +909,445 @@ class SQLiteCaseRepository:
                 )
         imported = self.get_case(case_id, include_details=True)
         return {"case": imported, "verification": report}
+
+    # ------------------------------------------------------------------
+    # v1.5.0 governed review workflow
+
+    def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        template = {
+            "template_id": row["template_id"], "name": row["name"], "description": row["description"],
+            "stages": _json_load(row["stages_json"]), "default_due_days": int(row["default_due_days"]),
+            "escalation_days": int(row["escalation_days"]), "created_at": row["created_at"],
+            "updated_at": row["updated_at"], "created_by": row["created_by"], "active": bool(row["active"]),
+        }
+        _schema_error("review template", template, REVIEW_TEMPLATE_SCHEMA_PATH)
+        return template
+
+    def create_review_template(
+        self, *, name: str | None = None, description: str | None = None,
+        stages: Sequence[Mapping[str, Any]] | None = None, default_due_days: int | None = None,
+        escalation_days: int | None = None, active: bool = True, template_id: str | None = None,
+        created_at: str | None = None, created_by: str | None = None, actor_role: str = "administrator",
+    ) -> Dict[str, Any]:
+        require_permission(actor_role, "manage_templates")
+        defaults = default_template_payload()
+        normalized_id = _urn_uuid(template_id, "template_id")
+        timestamp = _validate_datetime(created_at, "created_at") if created_at else _iso_now()
+        normalized_name = _text(name if name is not None else defaults["name"], "name", required=True, maximum=500)
+        normalized_description = _text(description if description is not None else defaults["description"], "description", maximum=20000)
+        normalized_stages = normalize_template_stages(stages if stages is not None else defaults["stages"])
+        due_days = defaults["default_due_days"] if default_due_days is None else default_due_days
+        escalation = defaults["escalation_days"] if escalation_days is None else escalation_days
+        if not isinstance(due_days, int) or isinstance(due_days, bool) or not 0 <= due_days <= 3650:
+            raise NarrativeRiskValidationError("default_due_days must be an integer between 0 and 3650")
+        if not isinstance(escalation, int) or isinstance(escalation, bool) or not 0 <= escalation <= 3650:
+            raise NarrativeRiskValidationError("escalation_days must be an integer between 0 and 3650")
+        if not isinstance(active, bool):
+            raise NarrativeRiskValidationError("active must be a boolean")
+        template = {
+            "template_id": normalized_id, "name": normalized_name, "description": normalized_description,
+            "stages": normalized_stages, "default_due_days": due_days, "escalation_days": escalation,
+            "created_at": timestamp, "updated_at": timestamp,
+            "created_by": _nullable_text(created_by, "created_by"), "active": active,
+        }
+        _schema_error("review template", template, REVIEW_TEMPLATE_SCHEMA_PATH)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO review_templates(template_id,name,description,stages_json,default_due_days,escalation_days,created_at,updated_at,created_by,active) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    (normalized_id, normalized_name, normalized_description, _json_dump(normalized_stages), due_days, escalation,
+                     timestamp, timestamp, template["created_by"], int(active)),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"review template already exists: {normalized_id}") from exc
+        return template
+
+    def get_review_template(self, template_id: str) -> Dict[str, Any]:
+        normalized_id = _urn_uuid(template_id, "template_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM review_templates WHERE template_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"review template not found: {normalized_id}")
+        return self._template_from_row(row)
+
+    def list_review_templates(self, *, active: bool | None = None) -> List[Dict[str, Any]]:
+        if active is not None and not isinstance(active, bool):
+            raise NarrativeRiskValidationError("active must be a boolean or null")
+        with self._lock:
+            if active is None:
+                rows = self._connection.execute("SELECT * FROM review_templates ORDER BY name, template_id").fetchall()
+            else:
+                rows = self._connection.execute("SELECT * FROM review_templates WHERE active=? ORDER BY name, template_id", (int(active),)).fetchall()
+        return [self._template_from_row(row) for row in rows]
+
+    def _assignment_from_row(self, row: sqlite3.Row, *, at: str | None = None) -> Dict[str, Any]:
+        status = row["status"]
+        if status in {"pending", "accepted"} and row["due_at"] and is_past(row["due_at"], at=at):
+            status = "overdue"
+        assignment = {
+            "assignment_id": row["assignment_id"], "case_id": row["case_id"], "revision_id": row["revision_id"],
+            "workflow_id": row["workflow_id"], "stage": row["stage"], "reviewer_id": row["reviewer_id"],
+            "reviewer_name": row["reviewer_name"], "reviewer_role": row["reviewer_role"], "status": status,
+            "required": bool(row["required"]), "instructions": row["instructions"], "created_at": row["created_at"],
+            "created_by": row["created_by"], "due_at": row["due_at"], "accepted_at": row["accepted_at"],
+            "completed_at": row["completed_at"], "escalated_at": row["escalated_at"],
+        }
+        _schema_error("review assignment", assignment, REVIEW_ASSIGNMENT_SCHEMA_PATH)
+        return assignment
+
+    def _decision_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        decision = {
+            "decision_id": row["decision_id"], "case_id": row["case_id"], "revision_id": row["revision_id"],
+            "workflow_id": row["workflow_id"], "assignment_id": row["assignment_id"], "stage": row["stage"],
+            "disposition": row["disposition"], "decided_by": row["decided_by"], "decided_by_name": row["decided_by_name"],
+            "decider_role": row["decider_role"], "decided_at": row["decided_at"], "rationale": row["rationale"],
+            "conditions": _json_load(row["conditions_json"]), "required_wording": _json_load(row["required_wording_json"]),
+            "publication_restrictions": _json_load(row["publication_restrictions_json"]),
+            "disclosures": _json_load(row["disclosures_json"]), "valid_until": row["valid_until"],
+            "reassessment_at": row["reassessment_at"], "supersedes_decision_id": row["supersedes_decision_id"],
+        }
+        _schema_error("governance decision", decision, GOVERNANCE_DECISION_SCHEMA_PATH)
+        return decision
+
+    def _workflow_from_row(self, row: sqlite3.Row, *, at: str | None = None) -> Dict[str, Any]:
+        workflow_id = row["workflow_id"]
+        assignments = self.list_review_assignments(workflow_id=workflow_id, at=at)
+        decisions = self.list_governance_decisions(workflow_id=workflow_id)
+        required_complete = all(item["status"] in {"completed", "waived"} for item in assignments if item["required"])
+        final = next((item for item in reversed(decisions) if item["stage"] == "final"), None)
+        status = row["status"]
+        flags: List[str] = []
+        approval_valid_until = final["valid_until"] if final and final["disposition"] in {"approve", "approve_with_conditions"} else None
+        reassessment_at = final["reassessment_at"] if final else None
+        if status == "approved" and approval_valid_until and is_past(approval_valid_until, at=at):
+            status = "expired"
+            flags.append("approval_expired")
+        if reassessment_at and is_past(reassessment_at, at=at):
+            flags.append("reassessment_due")
+        if any(item["status"] == "overdue" and item["required"] for item in assignments):
+            flags.append("required_review_overdue")
+        blocking = {"internal_only", "embargoed", "no_public_claim", "legal_review_required"}
+        publication_allowed = bool(
+            status == "approved" and final and final["disposition"] in {"approve", "approve_with_conditions"}
+            and not (set(final["publication_restrictions"]) & blocking) and "reassessment_due" not in flags
+        )
+        workflow = {
+            "workflow_id": workflow_id, "case_id": row["case_id"], "revision_id": row["revision_id"],
+            "template_id": row["template_id"], "template_snapshot": _json_load(row["template_snapshot_json"]),
+            "status": status, "current_stage": row["current_stage"], "started_at": row["started_at"],
+            "due_at": row["due_at"], "completed_at": row["completed_at"], "created_by": row["created_by"],
+            "updated_at": row["updated_at"], "assignment_count": len(assignments), "decision_count": len(decisions),
+            "required_assignments_complete": required_complete,
+            "final_disposition": final["disposition"] if final else None,
+            "approval_valid_until": approval_valid_until, "reassessment_at": reassessment_at,
+            "publication_allowed": publication_allowed, "governance_flags": flags,
+        }
+        _schema_error("governance workflow", workflow, GOVERNANCE_WORKFLOW_SCHEMA_PATH)
+        return workflow
+
+    def start_governance_workflow(
+        self, case_id: str, *, revision_id: str | None = None, template_id: str | None = None,
+        template_snapshot: Mapping[str, Any] | None = None, workflow_id: str | None = None,
+        started_at: str | None = None, due_at: str | None = None, created_by: str | None = None,
+        actor_role: str = "administrator",
+    ) -> Dict[str, Any]:
+        require_permission(actor_role, "assign_reviewers")
+        case = self.get_case(case_id)
+        revisions = self.list_revisions(case["case_id"])
+        if not revisions:
+            raise NarrativeRiskValidationError("a governance workflow requires at least one immutable revision")
+        revision = self.get_revision(revision_id) if revision_id else revisions[-1]
+        if revision["case_id"] != case["case_id"]:
+            raise NarrativeRiskValidationError("workflow revision does not belong to the case")
+        normalized_workflow_id = _urn_uuid(workflow_id, "workflow_id")
+        timestamp = _validate_datetime(started_at, "started_at") if started_at else _iso_now()
+        normalized_due = _validate_datetime(due_at, "due_at") if due_at else None
+        normalized_template_id = None
+        if template_snapshot is not None and template_id is not None:
+            raise NarrativeRiskValidationError("provide template_id or template_snapshot, not both")
+        if template_id is not None:
+            template = self.get_review_template(template_id)
+            normalized_template_id = template["template_id"]
+        elif template_snapshot is not None:
+            if not isinstance(template_snapshot, Mapping):
+                raise NarrativeRiskValidationError("template_snapshot must be a JSON object")
+            raw = dict(template_snapshot)
+            template = {
+                "name": _text(raw.get("name", "Case review"), "template_snapshot.name", required=True, maximum=500),
+                "description": _text(raw.get("description", ""), "template_snapshot.description", maximum=20000),
+                "stages": normalize_template_stages(raw.get("stages")),
+                "default_due_days": int(raw.get("default_due_days", 14)),
+                "escalation_days": int(raw.get("escalation_days", 3)),
+            }
+        else:
+            template = default_template_payload()
+            template = {key: template[key] for key in ("name", "description", "stages", "default_due_days", "escalation_days")}
+        stages = normalize_template_stages(template["stages"])
+        template["stages"] = stages
+        first_stage = stages[0]["stage"]
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO governance_workflows(workflow_id,case_id,revision_id,template_id,template_snapshot_json,status,current_stage,started_at,due_at,completed_at,created_by,updated_at) VALUES(?,?,?,?,?,'active',?,?,?,NULL,?,?)",
+                    (normalized_workflow_id, case["case_id"], revision["revision_id"], normalized_template_id,
+                     _json_dump(template), first_stage, timestamp, normalized_due, _nullable_text(created_by, "created_by"), timestamp),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"case already has a governance workflow: {case['case_id']}") from exc
+            connection.execute("UPDATE cases SET status='in_review', updated_at=? WHERE case_id=?", (timestamp, case["case_id"]))
+            self._activity(connection, case["case_id"], "governance_workflow_started", entity_id=normalized_workflow_id,
+                           payload={"revision_id": revision["revision_id"], "current_stage": first_stage}, created_at=timestamp)
+        return self.get_governance_workflow(normalized_workflow_id)
+
+    def get_governance_workflow(self, workflow_id: str, *, include_details: bool = False, at: str | None = None) -> Dict[str, Any]:
+        normalized_id = _urn_uuid(workflow_id, "workflow_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM governance_workflows WHERE workflow_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"governance workflow not found: {normalized_id}")
+        workflow = self._workflow_from_row(row, at=at)
+        if include_details:
+            workflow["review_assignments"] = self.list_review_assignments(workflow_id=normalized_id, at=at)
+            workflow["governance_decisions"] = self.list_governance_decisions(workflow_id=normalized_id)
+        return workflow
+
+    def get_case_governance_workflow(self, case_id: str, *, include_details: bool = False, at: str | None = None) -> Dict[str, Any] | None:
+        normalized_case = _urn_uuid(case_id, "case_id")
+        with self._lock:
+            row = self._connection.execute("SELECT workflow_id FROM governance_workflows WHERE case_id=?", (normalized_case,)).fetchone()
+        return None if row is None else self.get_governance_workflow(row["workflow_id"], include_details=include_details, at=at)
+
+    def assign_reviewer(
+        self, workflow_id: str, *, stage: str, reviewer_id: str, reviewer_role: str,
+        reviewer_name: str | None = None, required: bool = True, instructions: str = "",
+        due_at: str | None = None, assignment_id: str | None = None, created_at: str | None = None,
+        created_by: str | None = None, actor_role: str = "administrator",
+    ) -> Dict[str, Any]:
+        require_permission(actor_role, "assign_reviewers")
+        workflow = self.get_governance_workflow(workflow_id)
+        normalized_stage = _choice(stage, "stage", REVIEW_STAGES, "intake")
+        template_stage = next((item for item in workflow["template_snapshot"]["stages"] if item["stage"] == normalized_stage), None)
+        if template_stage is None:
+            raise NarrativeRiskValidationError(f"stage is not included in this workflow template: {normalized_stage}")
+        normalized_role = _choice(reviewer_role, "reviewer_role", REVIEWER_ROLES, template_stage["required_role"])
+        if normalized_role != template_stage["required_role"] and actor_role != "administrator":
+            raise NarrativeRiskValidationError(f"stage {normalized_stage} requires role {template_stage['required_role']}")
+        if not isinstance(required, bool):
+            raise NarrativeRiskValidationError("required must be a boolean")
+        normalized_id = _urn_uuid(assignment_id, "assignment_id")
+        timestamp = _validate_datetime(created_at, "created_at") if created_at else _iso_now()
+        normalized_due = _validate_datetime(due_at, "due_at") if due_at else None
+        assignment = {
+            "assignment_id": normalized_id, "case_id": workflow["case_id"], "revision_id": workflow["revision_id"],
+            "workflow_id": workflow["workflow_id"], "stage": normalized_stage,
+            "reviewer_id": _text(reviewer_id, "reviewer_id", required=True, maximum=500),
+            "reviewer_name": _nullable_text(reviewer_name, "reviewer_name"), "reviewer_role": normalized_role,
+            "status": "pending", "required": required, "instructions": _text(instructions or template_stage["instructions"], "instructions", maximum=20000),
+            "created_at": timestamp, "created_by": _nullable_text(created_by, "created_by"), "due_at": normalized_due,
+            "accepted_at": None, "completed_at": None, "escalated_at": None,
+        }
+        _schema_error("review assignment", assignment, REVIEW_ASSIGNMENT_SCHEMA_PATH)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO review_assignments(assignment_id,case_id,revision_id,workflow_id,stage,reviewer_id,reviewer_name,reviewer_role,status,required,instructions,created_at,created_by,due_at,accepted_at,completed_at,escalated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (assignment["assignment_id"], assignment["case_id"], assignment["revision_id"], assignment["workflow_id"], assignment["stage"],
+                     assignment["reviewer_id"], assignment["reviewer_name"], assignment["reviewer_role"], assignment["status"], int(required),
+                     assignment["instructions"], timestamp, assignment["created_by"], normalized_due, None, None, None),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"review assignment already exists: {normalized_id}") from exc
+            self._activity(connection, assignment["case_id"], "reviewer_assigned", entity_id=normalized_id,
+                           payload={"stage": normalized_stage, "reviewer_id": assignment["reviewer_id"], "required": required}, created_at=timestamp)
+        return assignment
+
+    def get_review_assignment(self, assignment_id: str, *, at: str | None = None) -> Dict[str, Any]:
+        normalized_id = _urn_uuid(assignment_id, "assignment_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM review_assignments WHERE assignment_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"review assignment not found: {normalized_id}")
+        return self._assignment_from_row(row, at=at)
+
+    def list_review_assignments(
+        self, *, workflow_id: str | None = None, case_id: str | None = None, reviewer_id: str | None = None,
+        status: str | None = None, stage: str | None = None, at: str | None = None,
+    ) -> List[Dict[str, Any]]:
+        clauses: List[str] = []
+        params: List[Any] = []
+        if workflow_id is not None: clauses.append("workflow_id=?"); params.append(_urn_uuid(workflow_id, "workflow_id"))
+        if case_id is not None: clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if reviewer_id is not None: clauses.append("reviewer_id=?"); params.append(_text(reviewer_id, "reviewer_id", required=True, maximum=500))
+        normalized_status = None if status is None else _choice(status, "status", ASSIGNMENT_STATUSES, "pending")
+        if stage is not None: clauses.append("stage=?"); params.append(_choice(stage, "stage", REVIEW_STAGES, "intake"))
+        sql = "SELECT * FROM review_assignments" + (" WHERE " + " AND ".join(clauses) if clauses else "") + " ORDER BY due_at IS NULL, due_at, created_at, assignment_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        output = [self._assignment_from_row(row, at=at) for row in rows]
+        return [item for item in output if normalized_status is None or item["status"] == normalized_status]
+
+    def update_review_assignment_status(
+        self, assignment_id: str, *, status: str, actor_id: str, actor_role: str,
+        changed_at: str | None = None,
+    ) -> Dict[str, Any]:
+        assignment = self.get_review_assignment(assignment_id)
+        normalized_status = _choice(status, "status", ASSIGNMENT_STATUSES, "pending")
+        if normalized_status == "completed":
+            require_permission(actor_role, "submit_review")
+        elif normalized_status in {"waived", "overdue"}:
+            require_permission(actor_role, "assign_reviewers")
+        elif assignment["reviewer_id"] != actor_id and actor_role != "administrator":
+            raise NarrativeRiskValidationError("only the assigned reviewer or an administrator may accept the assignment")
+        timestamp = _validate_datetime(changed_at, "changed_at") if changed_at else _iso_now()
+        accepted_at = timestamp if normalized_status == "accepted" else assignment["accepted_at"]
+        completed_at = timestamp if normalized_status in {"completed", "waived"} else assignment["completed_at"]
+        escalated_at = timestamp if normalized_status == "overdue" else assignment["escalated_at"]
+        stored_status = normalized_status
+        with self._transaction() as connection:
+            connection.execute("UPDATE review_assignments SET status=?, accepted_at=?, completed_at=?, escalated_at=? WHERE assignment_id=?",
+                               (stored_status, accepted_at, completed_at, escalated_at, assignment["assignment_id"]))
+            self._activity(connection, assignment["case_id"], "assignment_status_changed", entity_id=assignment["assignment_id"],
+                           payload={"status": stored_status, "actor_id": actor_id, "actor_role": actor_role}, created_at=timestamp)
+        return self.get_review_assignment(assignment["assignment_id"], at=timestamp)
+
+    def list_governance_decisions(
+        self, *, workflow_id: str | None = None, case_id: str | None = None, stage: str | None = None,
+    ) -> List[Dict[str, Any]]:
+        clauses: List[str] = []
+        params: List[Any] = []
+        if workflow_id is not None: clauses.append("workflow_id=?"); params.append(_urn_uuid(workflow_id, "workflow_id"))
+        if case_id is not None: clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if stage is not None: clauses.append("stage=?"); params.append(_choice(stage, "stage", REVIEW_STAGES, "intake"))
+        sql = "SELECT * FROM governance_decisions" + (" WHERE " + " AND ".join(clauses) if clauses else "") + " ORDER BY decided_at, decision_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        return [self._decision_from_row(row) for row in rows]
+
+    def add_governance_decision(
+        self, workflow_id: str, *, stage: str, disposition: str, decided_by: str, decider_role: str,
+        rationale: str, assignment_id: str | None = None, decided_by_name: str | None = None,
+        conditions: Sequence[str] | None = None, required_wording: Sequence[str] | None = None,
+        publication_restrictions: Sequence[str] | None = None, disclosures: Sequence[str] | None = None,
+        valid_until: str | None = None, reassessment_at: str | None = None,
+        supersedes_decision_id: str | None = None, decision_id: str | None = None, decided_at: str | None = None,
+    ) -> Dict[str, Any]:
+        workflow = self.get_governance_workflow(workflow_id, include_details=True)
+        normalized_stage = _choice(stage, "stage", REVIEW_STAGES, workflow["current_stage"])
+        normalized_disposition = _choice(disposition, "disposition", GOVERNANCE_DISPOSITIONS, "revise")
+        normalized_role = _choice(decider_role, "decider_role", REVIEWER_ROLES, "reviewer")
+        require_permission(normalized_role, "decide_stage")
+        if normalized_stage == "final" and normalized_disposition in {"approve", "approve_with_conditions"}:
+            require_permission(normalized_role, "approve_final")
+        if workflow["status"] in {"approved", "rejected", "expired", "closed"} and supersedes_decision_id is None:
+            raise NarrativeRiskValidationError("completed governance workflow requires an explicit supersedes_decision_id")
+        if normalized_stage != workflow["current_stage"] and normalized_role != "administrator":
+            raise NarrativeRiskValidationError(f"workflow is currently at stage {workflow['current_stage']}")
+        template_stage_definition = next(item for item in workflow["template_snapshot"]["stages"] if item["stage"] == normalized_stage)
+        normalized_assignment_id = _urn_uuid(assignment_id, "assignment_id") if assignment_id else None
+        if template_stage_definition["required"] and normalized_assignment_id is None:
+            raise NarrativeRiskValidationError(f"required review stage {normalized_stage} requires a review assignment")
+        assignment = None
+        if normalized_assignment_id:
+            assignment = self.get_review_assignment(normalized_assignment_id)
+            if assignment["workflow_id"] != workflow["workflow_id"] or assignment["stage"] != normalized_stage:
+                raise NarrativeRiskValidationError("assignment does not belong to this workflow stage")
+            if assignment["reviewer_id"] != decided_by and normalized_role != "administrator":
+                raise NarrativeRiskValidationError("decision actor does not match the assigned reviewer")
+        normalized_conditions = normalize_string_list(conditions, "conditions", maximum=100, item_maximum=2000)
+        normalized_wording = normalize_string_list(required_wording, "required_wording", maximum=100, item_maximum=5000)
+        normalized_restrictions = normalize_string_list(publication_restrictions, "publication_restrictions", allowed=PUBLICATION_RESTRICTIONS)
+        normalized_disclosures = normalize_string_list(disclosures, "disclosures", maximum=100, item_maximum=5000)
+        if normalized_disposition == "approve_with_conditions" and not (normalized_conditions or normalized_wording or normalized_restrictions or normalized_disclosures):
+            raise NarrativeRiskValidationError("approve_with_conditions requires at least one condition, required wording, restriction, or disclosure")
+        normalized_valid_until = _validate_datetime(valid_until, "valid_until") if valid_until else None
+        normalized_reassessment = _validate_datetime(reassessment_at, "reassessment_at") if reassessment_at else None
+        timestamp = _validate_datetime(decided_at, "decided_at") if decided_at else _iso_now()
+        if normalized_valid_until and is_past(normalized_valid_until, at=timestamp):
+            raise NarrativeRiskValidationError("valid_until must be later than decided_at")
+        if normalized_reassessment and normalized_valid_until:
+            if datetime.fromisoformat(normalized_reassessment.replace("Z", "+00:00")) > datetime.fromisoformat(normalized_valid_until.replace("Z", "+00:00")):
+                raise NarrativeRiskValidationError("reassessment_at must not be later than valid_until")
+        normalized_supersedes = _urn_uuid(supersedes_decision_id, "supersedes_decision_id") if supersedes_decision_id else None
+        if normalized_supersedes:
+            prior = next((item for item in workflow["governance_decisions"] if item["decision_id"] == normalized_supersedes), None)
+            if prior is None:
+                raise NarrativeRiskValidationError("supersedes_decision_id does not belong to this workflow")
+        normalized_id = _urn_uuid(decision_id, "decision_id")
+        decision = {
+            "decision_id": normalized_id, "case_id": workflow["case_id"], "revision_id": workflow["revision_id"],
+            "workflow_id": workflow["workflow_id"], "assignment_id": normalized_assignment_id, "stage": normalized_stage,
+            "disposition": normalized_disposition, "decided_by": _text(decided_by, "decided_by", required=True, maximum=500),
+            "decided_by_name": _nullable_text(decided_by_name, "decided_by_name"), "decider_role": normalized_role,
+            "decided_at": timestamp, "rationale": _text(rationale, "rationale", required=True, maximum=50000),
+            "conditions": normalized_conditions, "required_wording": normalized_wording,
+            "publication_restrictions": normalized_restrictions, "disclosures": normalized_disclosures,
+            "valid_until": normalized_valid_until, "reassessment_at": normalized_reassessment,
+            "supersedes_decision_id": normalized_supersedes,
+        }
+        _schema_error("governance decision", decision, GOVERNANCE_DECISION_SCHEMA_PATH)
+
+        template_stages = workflow["template_snapshot"]["stages"]
+        current_index = next(i for i, item in enumerate(template_stages) if item["stage"] == normalized_stage)
+        next_stage = template_stages[current_index + 1]["stage"] if current_index + 1 < len(template_stages) else "final"
+        workflow_status = "active"
+        completed_at = None
+        case_status = "in_review"
+        if normalized_disposition == "revise":
+            workflow_status = "changes_required"
+        elif normalized_disposition == "reject":
+            workflow_status = "rejected"; completed_at = timestamp; case_status = "closed"
+        elif normalized_stage == "final" and normalized_disposition in {"approve", "approve_with_conditions"}:
+            required_stages = {item["stage"] for item in template_stages if item["required"]}
+            required_assignments = workflow["review_assignments"]
+            complete_stages = {
+                item["stage"] for item in required_assignments
+                if item["required"] and (item["status"] in {"completed", "waived"} or item["assignment_id"] == normalized_assignment_id)
+            }
+            missing_stages = sorted(required_stages - complete_stages, key=REVIEW_STAGES.index)
+            if missing_stages:
+                raise NarrativeRiskValidationError(
+                    "final approval requires a completed or waived assignment for required stage(s): " + ", ".join(missing_stages)
+                )
+            blocking = [item for item in workflow["governance_decisions"] if item["disposition"] in {"revise", "reject"} and not any(d.get("supersedes_decision_id") == item["decision_id"] for d in workflow["governance_decisions"])]
+            if blocking:
+                raise NarrativeRiskValidationError("final approval cannot proceed while an unsuperseded revise or reject decision remains")
+            workflow_status = "approved"; completed_at = timestamp; case_status = "approved"; next_stage = "final"
+        elif normalized_disposition in {"approve", "approve_with_conditions", "waive"}:
+            next_stage = template_stages[current_index + 1]["stage"] if current_index + 1 < len(template_stages) else "final"
+
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO governance_decisions(decision_id,case_id,revision_id,workflow_id,assignment_id,stage,disposition,decided_by,decided_by_name,decider_role,decided_at,rationale,conditions_json,required_wording_json,publication_restrictions_json,disclosures_json,valid_until,reassessment_at,supersedes_decision_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (normalized_id, decision["case_id"], decision["revision_id"], decision["workflow_id"], normalized_assignment_id,
+                     normalized_stage, normalized_disposition, decision["decided_by"], decision["decided_by_name"], normalized_role,
+                     timestamp, decision["rationale"], _json_dump(normalized_conditions), _json_dump(normalized_wording),
+                     _json_dump(normalized_restrictions), _json_dump(normalized_disclosures), normalized_valid_until,
+                     normalized_reassessment, normalized_supersedes),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"governance decision already exists: {normalized_id}") from exc
+            if normalized_assignment_id:
+                connection.execute("UPDATE review_assignments SET status='completed', completed_at=? WHERE assignment_id=?", (timestamp, normalized_assignment_id))
+            connection.execute("UPDATE governance_workflows SET status=?, current_stage=?, completed_at=?, updated_at=? WHERE workflow_id=?",
+                               (workflow_status, next_stage, completed_at, timestamp, workflow["workflow_id"]))
+            connection.execute("UPDATE cases SET status=?, updated_at=? WHERE case_id=?", (case_status, timestamp, workflow["case_id"]))
+            self._activity(connection, workflow["case_id"], "governance_decision_added", entity_id=normalized_id,
+                           payload={"stage": normalized_stage, "disposition": normalized_disposition, "workflow_status": workflow_status}, created_at=timestamp)
+        return self._decision_from_row(self._connection.execute("SELECT * FROM governance_decisions WHERE decision_id=?", (normalized_id,)).fetchone())
+
+    def governance_queue(self, *, reviewer_id: str | None = None, at: str | None = None) -> Dict[str, Any]:
+        assignments = self.list_review_assignments(reviewer_id=reviewer_id, at=at)
+        queues = {status: [item for item in assignments if item["status"] == status] for status in sorted(ASSIGNMENT_STATUSES)}
+        due = self.list_reassessment_due(at=at)
+        return {"assignments": assignments, "queues": queues, "reassessment_due": due, "count": len(assignments)}
+
+    def list_reassessment_due(self, *, at: str | None = None) -> List[Dict[str, Any]]:
+        with self._lock:
+            rows = self._connection.execute("SELECT workflow_id FROM governance_workflows WHERE status IN ('approved','active','changes_required') ORDER BY updated_at").fetchall()
+        output = []
+        for row in rows:
+            workflow = self.get_governance_workflow(row["workflow_id"], at=at)
+            if "approval_expired" in workflow["governance_flags"] or "reassessment_due" in workflow["governance_flags"]:
+                output.append(workflow)
+        return output

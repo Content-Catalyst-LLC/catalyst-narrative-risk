@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.4.0",
-  "title": "Catalyst Narrative Risk Method Snapshot 1.4.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.5.0",
+  "title": "Catalyst Narrative Risk Method Snapshot 1.5.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,14 +20,15 @@
     "ledger_policy",
     "ledger_interpretation",
     "narrative_map_policy",
-    "narrative_map_interpretation"
+    "narrative_map_interpretation",
+    "governance_policy"
   ],
   "properties": {
     "method_id": {
       "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
     },
     "method_version": {
-      "const": "1.4.0"
+      "const": "1.5.0"
     },
     "name": {
       "type": "string",
@@ -120,7 +121,7 @@
       "const": "urn:catalyst:narrative-risk:vocabularies:canonical"
     },
     "controlled_vocabulary_version": {
-      "const": "1.4.0"
+      "const": "1.5.0"
     },
     "defaults": {
       "type": "object",
@@ -539,7 +540,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.4.0"
+          "const": "1.5.0"
         },
         "primary_claim_role": {
           "const": "primary"
@@ -729,7 +730,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.4.0"
+          "const": "1.5.0"
         },
         "node_types": {
           "type": "array",
@@ -764,6 +765,99 @@
     "narrative_map_interpretation": {
       "type": "object",
       "additionalProperties": true
+    },
+    "governance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "boundary",
+        "stage_order",
+        "roles",
+        "permissions",
+        "final_approval_requires",
+        "expiration_behavior",
+        "reassessment_behavior"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "1.5.0"
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stage_order": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "intake",
+              "domain",
+              "editorial",
+              "legal",
+              "compliance",
+              "final"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "author",
+              "reviewer",
+              "domain_reviewer",
+              "editorial_reviewer",
+              "legal_reviewer",
+              "compliance_reviewer",
+              "final_approver",
+              "administrator",
+              "observer"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "permissions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "view",
+                "comment",
+                "submit_review",
+                "assign_reviewers",
+                "decide_stage",
+                "approve_final",
+                "manage_templates",
+                "override_expiration",
+                "publish"
+              ]
+            },
+            "uniqueItems": true
+          }
+        },
+        "final_approval_requires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "expiration_behavior": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reassessment_behavior": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   },
   "$defs": {

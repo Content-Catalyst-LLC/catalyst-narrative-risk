@@ -1,15 +1,18 @@
 # Portable Case Bundles
 
-A v1.4.0 case bundle is a self-contained JSON artifact with:
+A v1.5.0 case bundle is a self-contained JSON artifact with:
 
 - Case metadata
 - All immutable revisions and their canonical records
 - Review events
 - Append-only activity
+- Governance workflow
+- Review assignments
+- Append-only governance decisions
 - Export timestamp
 - SHA-256 checksum of the complete unsigned bundle payload
 
-The bundle type is `catalyst_narrative_risk_case_bundle` and the bundle version is `1.4.0`.
+The bundle type is `catalyst_narrative_risk_case_bundle` and the bundle version is `1.5.0`.
 
 ## Verification sequence
 
@@ -26,3 +29,7 @@ A failed check aborts the complete import. Partial case imports are not committe
 ## Portability guarantee
 
 Exporting a case, importing it into an empty repository, and exporting it again with the same `exported_at` value produces an identical bundle. This preserves record identities, provenance, reviewer activity, revision order, and audit history.
+
+## Governance payload
+
+The v1.5.0 bundle additionally contains the case governance workflow, all reviewer assignments, and all append-only governance decisions. These fields are included in the bundle SHA-256 digest and survive exact export-import-re-export verification.

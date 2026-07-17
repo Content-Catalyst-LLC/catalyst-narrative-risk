@@ -20,3 +20,9 @@
 .cnrisk-workspace__reviews { border-top:1px solid var(--cnr-border); margin-top:16px; padding-top:12px; }
 .cnrisk-workspace__notice { padding:12px; background:#fff; border:1px solid var(--cnr-border); color:var(--cnr-muted); }
 @media(max-width:850px){ .cnrisk-workspace__layout,.cnrisk-workspace__two{grid-template-columns:1fr}.cnrisk-workspace__sidebar{border-right:0;border-bottom:1px solid var(--cnr-border)} }
+.cnrisk-workspace__governance { margin-top:18px; padding:16px; background:#fff; border:1px solid var(--cnr-border); }
+.cnrisk-workspace__governance h4 { margin:0 0 8px; }
+.cnrisk-workspace__governance hr { border:0; border-top:1px solid var(--cnr-border); margin:18px 0; }
+.cnrisk-workspace__governance select[multiple] { min-height:120px; }
+.cnrisk-workspace__governance-item { border-left:4px solid #000; padding:8px 10px; margin:8px 0; background:var(--cnr-soft); }
+.cnrisk-workspace__badge { display:inline-block; padding:2px 7px; border:1px solid #000; font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; }

@@ -1,40 +1,47 @@
 {
   "bundle_type": "catalyst_narrative_risk_case_bundle",
-  "bundle_version": "1.4.0",
-  "exported_at": "2026-07-17T12:30:00+00:00",
+  "bundle_version": "1.5.0",
+  "exported_at": "2026-07-17T16:00:00+00:00",
   "case": {
-    "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
-    "organization_id": "org:sustainable-catalyst",
-    "project_id": "project:pilot-energy",
-    "title": "Pilot energy narrative review",
-    "summary": "Persistent review workspace sample with claim decomposition and narrative mapping.",
-    "status": "in_review",
+    "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+    "organization_id": null,
+    "project_id": null,
+    "title": "Public trust initiative narrative review",
+    "summary": "Governed review of a public-facing claim about trust outcomes.",
+    "status": "approved",
     "priority": "high",
     "tags": [
-      "energy",
-      "pilot",
-      "public",
-      "narrative-map"
+      "public-trust",
+      "governance",
+      "sample"
     ],
     "archived": false,
     "archived_at": null,
     "created_at": "2026-07-17T12:00:00+00:00",
-    "updated_at": "2026-07-17T12:20:00+00:00",
+    "updated_at": "2026-07-17T15:00:00+00:00",
     "current_revision": 1,
-    "latest_record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
+    "latest_record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
     "revision_count": 1,
-    "review_event_count": 1
+    "review_event_count": 1,
+    "assignment_count": 4,
+    "governance_decision_count": 6,
+    "workflow_status": "approved",
+    "current_stage": "final",
+    "final_disposition": "approve_with_conditions",
+    "approval_valid_until": "2027-01-17T15:00:00+00:00",
+    "reassessment_at": "2026-10-17T15:00:00+00:00",
+    "publication_allowed": true
   },
   "revisions": [
     {
-      "revision_id": "urn:uuid:60000000-0000-4000-8000-000000000003",
-      "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
       "revision_number": 1,
-      "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-      "record_sha256": "0b96c1da5721f0ff04a339a6d09c7590b8512e942dc83d7ae03cec6f34b9f2af",
-      "created_at": "2026-07-17T12:10:00+00:00",
-      "created_by": "reviewer:sample",
-      "change_note": "Initial evidence-ledger and narrative-map review.",
+      "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
+      "record_sha256": "176a5d4c6f25fe3b7fa2e853c19535748446c2785155ce6b895913f8132ccaf0",
+      "created_at": "2026-07-17T12:05:00+00:00",
+      "created_by": "sample-author",
+      "change_note": "Initial evidence-led narrative-risk revision.",
       "record": {
         "calculations": {
           "components": {
@@ -105,7 +112,7 @@
         },
         "contract": {
           "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-          "contract_version": "1.4.0"
+          "contract_version": "1.5.0"
         },
         "evidence_ledger": {
           "claims": [
@@ -174,7 +181,7 @@
             ]
           },
           "derived_scoring_inputs": {
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy.",
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.5.0 ledger policy.",
             "evidence_strength": "strong",
             "ledger_applied": true,
             "source_count": 2,
@@ -202,7 +209,7 @@
               "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
             }
           ],
-          "ledger_version": "1.4.0",
+          "ledger_version": "1.5.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "relationships": [
             {
@@ -303,7 +310,7 @@
             }
           ]
         },
-        "generated_at": "2026-07-17T12:10:00+00:00",
+        "generated_at": "2026-07-17T12:00:00+00:00",
         "human_decision": {
           "disposition": "undecided",
           "notes": "",
@@ -313,13 +320,13 @@
           "status": "draft"
         },
         "identifiers": {
-          "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
-          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0",
-          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0",
+          "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.5.0",
+          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.5.0",
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0",
-          "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0"
+          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.5.0",
+          "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
+          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.5.0"
         },
         "interpretation": {
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
@@ -436,7 +443,7 @@
             }
           },
           "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-          "controlled_vocabulary_version": "1.4.0",
+          "controlled_vocabulary_version": "1.5.0",
           "defaults": {
             "consequences": "moderate",
             "evidence_strength": "moderate",
@@ -449,7 +456,95 @@
             "time_sensitivity": "medium",
             "uncertainty": "medium"
           },
-          "description": "A weighted, inspectable review heuristic with a traceable claims, sources, evidence ledger, and advisory narrative map. It structures risk and narrative-review needs without verifying truth, inferring intent, changing scores from diagnostics, or replacing human judgment.",
+          "description": "A weighted, inspectable review heuristic with a traceable evidence ledger, advisory narrative map, and governed human review workflow. It structures risk and review needs without verifying truth, inferring intent, changing scores from diagnostics, or granting approval automatically.",
+          "governance_policy": {
+            "boundary": "Heuristic scores and narrative diagnostics are advisory. Only authorized human reviewers may create governance decisions.",
+            "expiration_behavior": "An approved workflow becomes expired after valid_until and requires a new revision or reassessment decision before publication.",
+            "final_approval_requires": [
+              "completed_required_assignments",
+              "no_unresolved_revise_or_reject_decision",
+              "explicit_final_disposition"
+            ],
+            "permissions": {
+              "administrator": [
+                "view",
+                "comment",
+                "submit_review",
+                "assign_reviewers",
+                "decide_stage",
+                "approve_final",
+                "manage_templates",
+                "override_expiration",
+                "publish"
+              ],
+              "author": [
+                "view",
+                "comment"
+              ],
+              "compliance_reviewer": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage"
+              ],
+              "domain_reviewer": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage"
+              ],
+              "editorial_reviewer": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage"
+              ],
+              "final_approver": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage",
+                "approve_final",
+                "publish"
+              ],
+              "legal_reviewer": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage"
+              ],
+              "observer": [
+                "view"
+              ],
+              "reviewer": [
+                "view",
+                "comment",
+                "submit_review",
+                "decide_stage"
+              ]
+            },
+            "policy_version": "1.5.0",
+            "reassessment_behavior": "A reassessment_at date creates a due item even when valid_until has not elapsed.",
+            "roles": [
+              "author",
+              "reviewer",
+              "domain_reviewer",
+              "editorial_reviewer",
+              "legal_reviewer",
+              "compliance_reviewer",
+              "final_approver",
+              "administrator",
+              "observer"
+            ],
+            "stage_order": [
+              "intake",
+              "domain",
+              "editorial",
+              "legal",
+              "compliance",
+              "final"
+            ]
+          },
           "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
           "interpretation": {
             "action_rules": [
@@ -628,7 +723,7 @@
             ],
             "evidence_strength_derivation": "Start with the strongest positive evidence relationship, downgrade one level when fewer than two independent source groups support the primary claim, and downgrade one additional level when contradictory evidence is present.",
             "minimum_independent_groups_for_no_downgrade": 2,
-            "policy_version": "1.4.0",
+            "policy_version": "1.5.0",
             "positive_relation_types": [
               "support",
               "qualify"
@@ -648,7 +743,7 @@
             "substantial_minimum_strength": "moderate"
           },
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "method_version": "1.4.0",
+          "method_version": "1.5.0",
           "name": "Transparent Heuristic Narrative Risk Method",
           "narrative_map_interpretation": {
             "boundary": "Narrative diagnostics identify structural review needs; they do not determine truth, intent, or approval.",
@@ -691,7 +786,7 @@
               "context",
               "unknown"
             ],
-            "policy_version": "1.4.0"
+            "policy_version": "1.5.0"
           },
           "weights": {
             "consequences": {
@@ -755,7 +850,7 @@
             }
           }
         },
-        "method_snapshot_sha256": "c8d7326700e31c193a6a1cff9215a59876dc92b83cd0dfbd13d737a531dc6b6d",
+        "method_snapshot_sha256": "e1ea46b4dde8e13551f64c3b43d0353db112800c1b9e2fe1aaff311c2b4e175a",
         "narrative_map": {
           "analysis": {
             "cycles": [],
@@ -841,7 +936,7 @@
               "to_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222"
             }
           ],
-          "map_version": "1.4.0",
+          "map_version": "1.5.0",
           "nodes": [
             {
               "baseline": "weather-normalized pre-pilot consumption",
@@ -966,62 +1061,471 @@
         "record_type": "catalyst_narrative_risk_record",
         "reproducibility": {
           "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-          "evidence_ledger_sha256": "58191a2f10426b9d2e86ec969e33a91dc4c16cb6ecde51c2c920428a1d6838da",
-          "narrative_map_sha256": "26e46184c00b1d9fdb55a2a8bd8845db0cf5e820ffcf29e2807833be54001233",
-          "record_payload_sha256": "98af8b0fec7459653b9da379a328c7bba40d358e405421c2a6716dba5915607f"
+          "evidence_ledger_sha256": "8ba08878318f644f6d252f26c55b7de791b1556803a15eab761df0619962c74d",
+          "narrative_map_sha256": "699108a79d9c8d28901c567802a5dbc00865d849abc8bb6dae5e22d66b4e893a",
+          "record_payload_sha256": "bc52ccd46885238117e28ede65e1659efaee45ea288752ab38bf372885969460"
         }
       }
     }
   ],
   "review_events": [
     {
-      "event_id": "urn:uuid:60000000-0000-4000-8000-000000000004",
-      "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
-      "revision_id": "urn:uuid:60000000-0000-4000-8000-000000000003",
+      "event_id": "urn:uuid:30000000-0000-4000-8000-000000000004",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
       "event_type": "comment",
-      "author_id": "reviewer:sample",
-      "author_name": "Sample Reviewer",
-      "body": "Confirm the prediction boundary and replace ambiguous wording before public use.",
-      "created_at": "2026-07-17T12:20:00+00:00",
-      "metadata": {
-        "map_status": "partial"
-      }
+      "author_id": "editor@example.org",
+      "author_name": "Editorial Reviewer",
+      "body": "Proceed through the standard governed review pathway.",
+      "created_at": "2026-07-17T12:15:00+00:00",
+      "metadata": {}
+    }
+  ],
+  "governance_workflow": {
+    "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+    "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+    "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+    "template_id": null,
+    "template_snapshot": {
+      "default_due_days": 14,
+      "description": "Default staged review for evidence, domain, editorial, optional legal/compliance, and final approval.",
+      "escalation_days": 3,
+      "name": "Standard Narrative Risk Review",
+      "stages": [
+        {
+          "instructions": "Confirm scope, intended use, revision, and review pathway.",
+          "required": true,
+          "required_role": "reviewer",
+          "stage": "intake"
+        },
+        {
+          "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
+          "required": true,
+          "required_role": "domain_reviewer",
+          "stage": "domain"
+        },
+        {
+          "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
+          "required": true,
+          "required_role": "editorial_reviewer",
+          "stage": "editorial"
+        },
+        {
+          "instructions": "Review legal exposure, attribution, restrictions, and required notices.",
+          "required": false,
+          "required_role": "legal_reviewer",
+          "stage": "legal"
+        },
+        {
+          "instructions": "Review policy, regulatory, disclosure, and records obligations.",
+          "required": false,
+          "required_role": "compliance_reviewer",
+          "stage": "compliance"
+        },
+        {
+          "instructions": "Issue the final disposition and publication controls.",
+          "required": true,
+          "required_role": "final_approver",
+          "stage": "final"
+        }
+      ]
+    },
+    "status": "approved",
+    "current_stage": "final",
+    "started_at": "2026-07-17T13:00:00+00:00",
+    "due_at": "2026-07-31T13:00:00+00:00",
+    "completed_at": "2026-07-17T15:00:00+00:00",
+    "created_by": "governance-admin",
+    "updated_at": "2026-07-17T15:00:00+00:00",
+    "assignment_count": 4,
+    "decision_count": 6,
+    "required_assignments_complete": true,
+    "final_disposition": "approve_with_conditions",
+    "approval_valid_until": "2027-01-17T15:00:00+00:00",
+    "reassessment_at": "2026-10-17T15:00:00+00:00",
+    "publication_allowed": true,
+    "governance_flags": []
+  },
+  "review_assignments": [
+    {
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000011",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "stage": "intake",
+      "reviewer_id": "intake@example.org",
+      "reviewer_name": "Reviewer",
+      "reviewer_role": "reviewer",
+      "status": "completed",
+      "required": true,
+      "instructions": "Confirm scope, intended use, revision, and review pathway.",
+      "created_at": "2026-07-17T13:05:00+00:00",
+      "created_by": "governance-admin",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T14:00:00+00:00",
+      "escalated_at": null
+    },
+    {
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000012",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "stage": "domain",
+      "reviewer_id": "domain@example.org",
+      "reviewer_name": "Domain Reviewer",
+      "reviewer_role": "domain_reviewer",
+      "status": "completed",
+      "required": true,
+      "instructions": "Review domain accuracy, evidence fit, assumptions, and uncertainty.",
+      "created_at": "2026-07-17T13:06:00+00:00",
+      "created_by": "governance-admin",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T14:01:00+00:00",
+      "escalated_at": null
+    },
+    {
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000013",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "stage": "editorial",
+      "reviewer_id": "editorial@example.org",
+      "reviewer_name": "Editorial Reviewer",
+      "reviewer_role": "editorial_reviewer",
+      "status": "completed",
+      "required": true,
+      "instructions": "Review wording, framing, qualifications, citations, and audience suitability.",
+      "created_at": "2026-07-17T13:07:00+00:00",
+      "created_by": "governance-admin",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T14:02:00+00:00",
+      "escalated_at": null
+    },
+    {
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000014",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "stage": "final",
+      "reviewer_id": "approver@example.org",
+      "reviewer_name": "Final Approver",
+      "reviewer_role": "final_approver",
+      "status": "completed",
+      "required": true,
+      "instructions": "Issue the final disposition and publication controls.",
+      "created_at": "2026-07-17T13:08:00+00:00",
+      "created_by": "governance-admin",
+      "due_at": "2026-07-24T17:00:00+00:00",
+      "accepted_at": null,
+      "completed_at": "2026-07-17T15:00:00+00:00",
+      "escalated_at": null
+    }
+  ],
+  "governance_decisions": [
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000021",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000011",
+      "stage": "intake",
+      "disposition": "approve",
+      "decided_by": "intake@example.org",
+      "decided_by_name": null,
+      "decider_role": "reviewer",
+      "decided_at": "2026-07-17T14:00:00+00:00",
+      "rationale": "Scope and intended use are clear.",
+      "conditions": [],
+      "required_wording": [],
+      "publication_restrictions": [],
+      "disclosures": [],
+      "valid_until": null,
+      "reassessment_at": null,
+      "supersedes_decision_id": null
+    },
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000022",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000012",
+      "stage": "domain",
+      "disposition": "approve",
+      "decided_by": "domain@example.org",
+      "decided_by_name": null,
+      "decider_role": "domain_reviewer",
+      "decided_at": "2026-07-17T14:01:00+00:00",
+      "rationale": "Evidence and uncertainty are suitable for domain review.",
+      "conditions": [],
+      "required_wording": [],
+      "publication_restrictions": [],
+      "disclosures": [],
+      "valid_until": null,
+      "reassessment_at": null,
+      "supersedes_decision_id": null
+    },
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000023",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000013",
+      "stage": "editorial",
+      "disposition": "approve",
+      "decided_by": "editorial@example.org",
+      "decided_by_name": null,
+      "decider_role": "editorial_reviewer",
+      "decided_at": "2026-07-17T14:02:00+00:00",
+      "rationale": "Wording and qualifications are suitable for publication review.",
+      "conditions": [],
+      "required_wording": [],
+      "publication_restrictions": [],
+      "disclosures": [],
+      "valid_until": null,
+      "reassessment_at": null,
+      "supersedes_decision_id": null
+    },
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000024",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": null,
+      "stage": "legal",
+      "disposition": "waive",
+      "decided_by": "governance-admin",
+      "decided_by_name": null,
+      "decider_role": "administrator",
+      "decided_at": "2026-07-17T14:10:00+00:00",
+      "rationale": "No separate legal review is required for this educational sample.",
+      "conditions": [],
+      "required_wording": [],
+      "publication_restrictions": [],
+      "disclosures": [],
+      "valid_until": null,
+      "reassessment_at": null,
+      "supersedes_decision_id": null
+    },
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000025",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": null,
+      "stage": "compliance",
+      "disposition": "waive",
+      "decided_by": "governance-admin",
+      "decided_by_name": null,
+      "decider_role": "administrator",
+      "decided_at": "2026-07-17T14:15:00+00:00",
+      "rationale": "No additional compliance pathway applies to this educational sample.",
+      "conditions": [],
+      "required_wording": [],
+      "publication_restrictions": [],
+      "disclosures": [],
+      "valid_until": null,
+      "reassessment_at": null,
+      "supersedes_decision_id": null
+    },
+    {
+      "decision_id": "urn:uuid:30000000-0000-4000-8000-000000000026",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
+      "workflow_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "assignment_id": "urn:uuid:30000000-0000-4000-8000-000000000014",
+      "stage": "final",
+      "disposition": "approve_with_conditions",
+      "decided_by": "approver@example.org",
+      "decided_by_name": "Final Approver",
+      "decider_role": "final_approver",
+      "decided_at": "2026-07-17T15:00:00+00:00",
+      "rationale": "The narrative may be published when the evidence boundary and attribution are retained.",
+      "conditions": [
+        "Retain the stated uncertainty and evidence boundary."
+      ],
+      "required_wording": [
+        "Describe the expected effect as a monitored outcome, not a guaranteed result."
+      ],
+      "publication_restrictions": [
+        "attribution_required",
+        "disclosure_required"
+      ],
+      "disclosures": [
+        "Disclose that the assessment is a structured heuristic review, not truth certification."
+      ],
+      "valid_until": "2027-01-17T15:00:00+00:00",
+      "reassessment_at": "2026-10-17T15:00:00+00:00",
+      "supersedes_decision_id": null
     }
   ],
   "activity": [
     {
       "activity_id": 1,
-      "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
       "event_type": "case_created",
-      "entity_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
       "payload": {
-        "title": "Pilot energy narrative review"
+        "title": "Public trust initiative narrative review"
       },
       "created_at": "2026-07-17T12:00:00+00:00"
     },
     {
       "activity_id": 2,
-      "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
       "event_type": "revision_added",
-      "entity_id": "urn:uuid:60000000-0000-4000-8000-000000000003",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000003",
       "payload": {
-        "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-        "record_sha256": "0b96c1da5721f0ff04a339a6d09c7590b8512e942dc83d7ae03cec6f34b9f2af",
+        "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
+        "record_sha256": "176a5d4c6f25fe3b7fa2e853c19535748446c2785155ce6b895913f8132ccaf0",
         "revision_number": 1
       },
-      "created_at": "2026-07-17T12:10:00+00:00"
+      "created_at": "2026-07-17T12:05:00+00:00"
     },
     {
       "activity_id": 3,
-      "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
       "event_type": "review_event_added",
-      "entity_id": "urn:uuid:60000000-0000-4000-8000-000000000004",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000004",
       "payload": {
         "event_type": "comment",
-        "revision_id": "urn:uuid:60000000-0000-4000-8000-000000000003"
+        "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003"
       },
-      "created_at": "2026-07-17T12:20:00+00:00"
+      "created_at": "2026-07-17T12:15:00+00:00"
+    },
+    {
+      "activity_id": 4,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_workflow_started",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000010",
+      "payload": {
+        "current_stage": "intake",
+        "revision_id": "urn:uuid:30000000-0000-4000-8000-000000000003"
+      },
+      "created_at": "2026-07-17T13:00:00+00:00"
+    },
+    {
+      "activity_id": 5,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "reviewer_assigned",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000011",
+      "payload": {
+        "required": true,
+        "reviewer_id": "intake@example.org",
+        "stage": "intake"
+      },
+      "created_at": "2026-07-17T13:05:00+00:00"
+    },
+    {
+      "activity_id": 6,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "reviewer_assigned",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000012",
+      "payload": {
+        "required": true,
+        "reviewer_id": "domain@example.org",
+        "stage": "domain"
+      },
+      "created_at": "2026-07-17T13:06:00+00:00"
+    },
+    {
+      "activity_id": 7,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "reviewer_assigned",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000013",
+      "payload": {
+        "required": true,
+        "reviewer_id": "editorial@example.org",
+        "stage": "editorial"
+      },
+      "created_at": "2026-07-17T13:07:00+00:00"
+    },
+    {
+      "activity_id": 8,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "reviewer_assigned",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000014",
+      "payload": {
+        "required": true,
+        "reviewer_id": "approver@example.org",
+        "stage": "final"
+      },
+      "created_at": "2026-07-17T13:08:00+00:00"
+    },
+    {
+      "activity_id": 9,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000021",
+      "payload": {
+        "disposition": "approve",
+        "stage": "intake",
+        "workflow_status": "active"
+      },
+      "created_at": "2026-07-17T14:00:00+00:00"
+    },
+    {
+      "activity_id": 10,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000022",
+      "payload": {
+        "disposition": "approve",
+        "stage": "domain",
+        "workflow_status": "active"
+      },
+      "created_at": "2026-07-17T14:01:00+00:00"
+    },
+    {
+      "activity_id": 11,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000023",
+      "payload": {
+        "disposition": "approve",
+        "stage": "editorial",
+        "workflow_status": "active"
+      },
+      "created_at": "2026-07-17T14:02:00+00:00"
+    },
+    {
+      "activity_id": 12,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000024",
+      "payload": {
+        "disposition": "waive",
+        "stage": "legal",
+        "workflow_status": "active"
+      },
+      "created_at": "2026-07-17T14:10:00+00:00"
+    },
+    {
+      "activity_id": 13,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000025",
+      "payload": {
+        "disposition": "waive",
+        "stage": "compliance",
+        "workflow_status": "active"
+      },
+      "created_at": "2026-07-17T14:15:00+00:00"
+    },
+    {
+      "activity_id": 14,
+      "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+      "event_type": "governance_decision_added",
+      "entity_id": "urn:uuid:30000000-0000-4000-8000-000000000026",
+      "payload": {
+        "disposition": "approve_with_conditions",
+        "stage": "final",
+        "workflow_status": "approved"
+      },
+      "created_at": "2026-07-17T15:00:00+00:00"
     }
   ],
-  "bundle_sha256": "7c82aa8963903d92ae52533a8eada35cbde08d24427d8c2c9ed3ce2141caa31f"
+  "bundle_sha256": "ad91cc38038a9d7cc02bd34f690f6d797a1c6f474366b0837e42d90a0ca1b2af"
 }

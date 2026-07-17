@@ -90,6 +90,72 @@ def parser() -> argparse.ArgumentParser:
     view.add_argument("--name", required=True)
     view.add_argument("--owner-id")
     view.add_argument("--filters", required=True, help="Path to a JSON filters object.")
+
+    template = commands.add_parser("create-template")
+    template.add_argument("--name")
+    template.add_argument("--description")
+    template.add_argument("--stages", help="Path to a JSON array of stage definitions.")
+    template.add_argument("--default-due-days", type=int)
+    template.add_argument("--escalation-days", type=int)
+    template.add_argument("--created-by")
+    template.add_argument("--actor-role", default="administrator")
+
+    templates = commands.add_parser("list-templates")
+    templates.add_argument("--active", choices=("true", "false", "all"), default="all")
+
+    start = commands.add_parser("start-governance")
+    start.add_argument("case_id")
+    start.add_argument("--revision-id")
+    start.add_argument("--template-id")
+    start.add_argument("--template", help="Path to an inline template snapshot JSON object.")
+    start.add_argument("--started-at")
+    start.add_argument("--due-at")
+    start.add_argument("--created-by")
+    start.add_argument("--actor-role", default="administrator")
+
+    assign = commands.add_parser("assign-review")
+    assign.add_argument("workflow_id")
+    assign.add_argument("--stage", required=True)
+    assign.add_argument("--reviewer-id", required=True)
+    assign.add_argument("--reviewer-name")
+    assign.add_argument("--reviewer-role", required=True)
+    assign.add_argument("--optional", action="store_true")
+    assign.add_argument("--instructions", default="")
+    assign.add_argument("--due-at")
+    assign.add_argument("--created-by")
+    assign.add_argument("--actor-role", default="administrator")
+
+    assignment = commands.add_parser("assignment-status")
+    assignment.add_argument("assignment_id")
+    assignment.add_argument("--status", required=True)
+    assignment.add_argument("--actor-id", required=True)
+    assignment.add_argument("--actor-role", required=True)
+    assignment.add_argument("--changed-at")
+
+    decide = commands.add_parser("decide")
+    decide.add_argument("workflow_id")
+    decide.add_argument("--stage", required=True)
+    decide.add_argument("--disposition", required=True)
+    decide.add_argument("--decided-by", required=True)
+    decide.add_argument("--decided-by-name")
+    decide.add_argument("--decider-role", required=True)
+    decide.add_argument("--rationale", required=True)
+    decide.add_argument("--assignment-id")
+    decide.add_argument("--condition", action="append", default=[])
+    decide.add_argument("--required-wording", action="append", default=[])
+    decide.add_argument("--publication-restriction", action="append", default=[])
+    decide.add_argument("--disclosure", action="append", default=[])
+    decide.add_argument("--valid-until")
+    decide.add_argument("--reassessment-at")
+    decide.add_argument("--supersedes-decision-id")
+    decide.add_argument("--decided-at")
+
+    queue = commands.add_parser("governance-queue")
+    queue.add_argument("--reviewer-id")
+    queue.add_argument("--at")
+
+    due = commands.add_parser("reassessment-due")
+    due.add_argument("--at")
     return root
 
 
@@ -135,6 +201,54 @@ def main() -> int:
             write_json(repository.import_case_bundle(read_json(args.input)))
         elif args.command == "save-view":
             write_json(repository.save_view(name=args.name, owner_id=args.owner_id, filters=read_json(args.filters)))
+        elif args.command == "create-template":
+            write_json(repository.create_review_template(
+                name=args.name, description=args.description,
+                stages=read_json(args.stages) if args.stages else None,
+                default_due_days=args.default_due_days, escalation_days=args.escalation_days,
+                created_by=args.created_by, actor_role=args.actor_role,
+            ))
+        elif args.command == "list-templates":
+            active = None if args.active == "all" else args.active == "true"
+            values = repository.list_review_templates(active=active)
+            write_json({"review_templates": values, "count": len(values)})
+        elif args.command == "start-governance":
+            write_json(repository.start_governance_workflow(
+                args.case_id, revision_id=args.revision_id, template_id=args.template_id,
+                template_snapshot=read_json(args.template) if args.template else None,
+                started_at=args.started_at, due_at=args.due_at, created_by=args.created_by,
+                actor_role=args.actor_role,
+            ))
+        elif args.command == "assign-review":
+            write_json(repository.assign_reviewer(
+                args.workflow_id, stage=args.stage, reviewer_id=args.reviewer_id,
+                reviewer_name=args.reviewer_name, reviewer_role=args.reviewer_role,
+                required=not args.optional, instructions=args.instructions, due_at=args.due_at,
+                created_by=args.created_by, actor_role=args.actor_role,
+            ))
+        elif args.command == "assignment-status":
+            write_json(repository.update_review_assignment_status(
+                args.assignment_id, status=args.status, actor_id=args.actor_id,
+                actor_role=args.actor_role, changed_at=args.changed_at,
+            ))
+        elif args.command == "decide":
+            write_json(repository.add_governance_decision(
+                args.workflow_id, stage=args.stage, disposition=args.disposition,
+                decided_by=args.decided_by, decided_by_name=args.decided_by_name,
+                decider_role=args.decider_role, rationale=args.rationale,
+                assignment_id=args.assignment_id, conditions=args.condition,
+                required_wording=args.required_wording,
+                publication_restrictions=args.publication_restriction,
+                disclosures=args.disclosure, valid_until=args.valid_until,
+                reassessment_at=args.reassessment_at,
+                supersedes_decision_id=args.supersedes_decision_id,
+                decided_at=args.decided_at,
+            ))
+        elif args.command == "governance-queue":
+            write_json(repository.governance_queue(reviewer_id=args.reviewer_id, at=args.at))
+        elif args.command == "reassessment-due":
+            values = repository.list_reassessment_due(at=args.at)
+            write_json({"workflows": values, "count": len(values)})
         else:  # pragma: no cover
             raise AssertionError(args.command)
     finally:

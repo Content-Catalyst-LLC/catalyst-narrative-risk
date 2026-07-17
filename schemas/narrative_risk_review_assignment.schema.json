@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/review-assignment/1.5.0",
+  "title": "Catalyst Narrative Risk Review Assignment 1.5.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assignment_id",
+    "case_id",
+    "revision_id",
+    "workflow_id",
+    "stage",
+    "reviewer_id",
+    "reviewer_name",
+    "reviewer_role",
+    "status",
+    "required",
+    "instructions",
+    "created_at",
+    "created_by",
+    "due_at",
+    "accepted_at",
+    "completed_at",
+    "escalated_at"
+  ],
+  "properties": {
+    "assignment_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "revision_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "workflow_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "stage": {
+      "enum": [
+        "intake",
+        "domain",
+        "editorial",
+        "legal",
+        "compliance",
+        "final"
+      ]
+    },
+    "reviewer_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "reviewer_name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "reviewer_role": {
+      "enum": [
+        "reviewer",
+        "domain_reviewer",
+        "editorial_reviewer",
+        "legal_reviewer",
+        "compliance_reviewer",
+        "final_approver",
+        "administrator"
+      ]
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "accepted",
+        "completed",
+        "waived",
+        "overdue"
+      ]
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "instructions": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "due_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "accepted_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "escalated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

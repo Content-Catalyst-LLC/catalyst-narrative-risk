@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The v1.4.0 ledger makes each material narrative-risk conclusion traceable. It records review objects and relationships rather than treating a source count as evidence by itself.
+The v1.5.0 ledger makes each material narrative-risk conclusion traceable. It records review objects and relationships rather than treating a source count as evidence by itself.
 
 ## Claims
 

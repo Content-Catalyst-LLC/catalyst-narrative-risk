@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk
  * Description: Narrative-risk scoring, evidence ledger, claim decomposition, narrative mapping, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.4.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.4.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.4.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.4.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.4.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.4.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.4.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.5.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.5.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.5.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.5.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.5.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.5.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.5.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -234,7 +234,7 @@ function cnrisk_workspace_shortcode() {
     <div class="cnrisk-workspace" data-cnrisk-workspace>
       <header class="cnrisk-workspace__head">
         <h3>Narrative Risk Review Workspace</h3>
-        <p>Create durable cases, add immutable analytical revisions, preserve review comments, and export checksummed case bundles.</p>
+        <p>Create durable cases, add immutable analytical revisions, assign staged reviews, record approval conditions, and export checksummed governance bundles.</p>
       </header>
       <div class="cnrisk-workspace__layout">
         <aside class="cnrisk-workspace__sidebar">
@@ -273,10 +273,43 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.4.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.5.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
+          <section class="cnrisk-workspace__governance" aria-labelledby="cnrisk-governance-heading">
+            <h4 id="cnrisk-governance-heading">Review, approval, and governance</h4>
+            <p data-cnrisk-governance-summary>No governance workflow started.</p>
+            <div class="cnrisk-workspace__actions">
+              <button type="button" data-cnrisk-start-governance>Start standard workflow</button>
+            </div>
+            <div class="cnrisk-workspace__two">
+              <label><span>Review stage</span><select data-cnrisk-assignment-stage><option>intake</option><option>domain</option><option>editorial</option><option>legal</option><option>compliance</option><option>final</option></select></label>
+              <label><span>Reviewer role</span><select data-cnrisk-reviewer-role><option value="reviewer">Reviewer</option><option value="domain_reviewer">Domain reviewer</option><option value="editorial_reviewer">Editorial reviewer</option><option value="legal_reviewer">Legal reviewer</option><option value="compliance_reviewer">Compliance reviewer</option><option value="final_approver">Final approver</option></select></label>
+              <label><span>Reviewer identifier</span><input data-cnrisk-reviewer-id placeholder="reviewer@example.org" /></label>
+              <label><span>Due date</span><input type="datetime-local" data-cnrisk-assignment-due /></label>
+            </div>
+            <button type="button" data-cnrisk-assign-reviewer>Assign reviewer</button>
+            <div data-cnrisk-governance-assignments></div>
+            <hr />
+            <div class="cnrisk-workspace__two">
+              <label><span>Decision stage</span><select data-cnrisk-decision-stage><option>intake</option><option>domain</option><option>editorial</option><option>legal</option><option>compliance</option><option>final</option></select></label>
+              <label><span>Disposition</span><select data-cnrisk-disposition><option value="approve">Approve stage</option><option value="approve_with_conditions">Approve with conditions</option><option value="revise">Require revision</option><option value="reject">Reject</option><option value="waive">Waive stage</option></select></label>
+              <label><span>Decision maker</span><input data-cnrisk-decided-by placeholder="reviewer@example.org" /></label>
+              <label><span>Decision-maker role</span><select data-cnrisk-decider-role><option value="reviewer">Reviewer</option><option value="domain_reviewer">Domain reviewer</option><option value="editorial_reviewer">Editorial reviewer</option><option value="legal_reviewer">Legal reviewer</option><option value="compliance_reviewer">Compliance reviewer</option><option value="final_approver">Final approver</option><option value="administrator">Administrator</option></select></label>
+            </div>
+            <label><span>Rationale</span><textarea rows="2" data-cnrisk-decision-rationale></textarea></label>
+            <label><span>Conditions, one per line</span><textarea rows="2" data-cnrisk-conditions></textarea></label>
+            <label><span>Required wording, one per line</span><textarea rows="2" data-cnrisk-required-wording></textarea></label>
+            <label><span>Publication restrictions</span><select multiple data-cnrisk-publication-restrictions><option value="internal_only">Internal only</option><option value="embargoed">Embargoed</option><option value="no_public_claim">No public claim</option><option value="attribution_required">Attribution required</option><option value="legal_review_required">Legal review required</option><option value="disclosure_required">Disclosure required</option></select></label>
+            <label><span>Disclosures, one per line</span><textarea rows="2" data-cnrisk-disclosures></textarea></label>
+            <div class="cnrisk-workspace__two">
+              <label><span>Approval valid until</span><input type="datetime-local" data-cnrisk-valid-until /></label>
+              <label><span>Reassess at</span><input type="datetime-local" data-cnrisk-reassessment-at /></label>
+            </div>
+            <button type="button" data-cnrisk-add-decision>Record governance decision</button>
+            <div data-cnrisk-governance-decisions></div>
+          </section>
           <div class="cnrisk-workspace__reviews">
             <label><span>Add review comment</span><textarea rows="2" data-cnrisk-review-body></textarea></label>
             <button type="button" data-cnrisk-add-review>Add review activity</button>

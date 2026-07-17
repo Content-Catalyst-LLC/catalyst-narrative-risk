@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHON="${PYTHON:-python3}"
 NODE="${NODE:-node}"
 PHP="${PHP:-php}"
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v140.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v150.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 export CNRISK_DATABASE_PATH="$TMP_DIR/api-tests.sqlite3"
 
@@ -56,13 +56,57 @@ printf '\n==> Persistent workspace CLI and portable bundle round trip\n'
 SOURCE_DB="$TMP_DIR/source.sqlite3"; TARGET_DB="$TMP_DIR/target.sqlite3"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" init > "$TMP_DIR/workspace-health.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create \
-  --title "Release narrative-map case" --summary "Persistent v1.4.0 release verification." \
+  --title "Release narrative-map case" --summary "Persistent v1.5.0 release verification." \
   --status in_review --priority high --tag release --tag narrative-map \
   --input data/sample_narrative_risk_input.json --created-by release-suite > "$TMP_DIR/case.json"
 CASE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["case_id"])' "$TMP_DIR/case.json")"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" show "$CASE_ID" --details > "$TMP_DIR/case-details.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-review "$CASE_ID" \
   --event-type comment --author-id release-suite --body "Narrative-map release review event." > "$TMP_DIR/review.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create-template \
+  --name "Release governance template" --created-by release-suite --actor-role administrator > "$TMP_DIR/template.json"
+TEMPLATE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["template_id"])' "$TMP_DIR/template.json")"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" list-templates --active true > "$TMP_DIR/templates.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" start-governance "$CASE_ID" \
+  --template-id "$TEMPLATE_ID" --started-at 2026-07-17T13:00:00+00:00 \
+  --due-at 2026-07-31T13:00:00+00:00 --created-by release-suite --actor-role administrator > "$TMP_DIR/workflow.json"
+WORKFLOW_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["workflow_id"])' "$TMP_DIR/workflow.json")"
+for spec in \
+  "intake|intake-reviewer|reviewer" \
+  "domain|domain-reviewer|domain_reviewer" \
+  "editorial|editorial-reviewer|editorial_reviewer" \
+  "final|final-approver|final_approver"; do
+  IFS='|' read -r STAGE REVIEWER ROLE <<< "$spec"
+  "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" assign-review "$WORKFLOW_ID" \
+    --stage "$STAGE" --reviewer-id "$REVIEWER" --reviewer-role "$ROLE" \
+    --due-at 2026-07-24T17:00:00+00:00 --created-by release-suite --actor-role administrator > "$TMP_DIR/assignment-$STAGE.json"
+done
+for spec in \
+  "intake|intake-reviewer|reviewer" \
+  "domain|domain-reviewer|domain_reviewer" \
+  "editorial|editorial-reviewer|editorial_reviewer"; do
+  IFS='|' read -r STAGE REVIEWER ROLE <<< "$spec"
+  ASSIGNMENT_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["assignment_id"])' "$TMP_DIR/assignment-$STAGE.json")"
+  "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" decide "$WORKFLOW_ID" \
+    --stage "$STAGE" --disposition approve --assignment-id "$ASSIGNMENT_ID" \
+    --decided-by "$REVIEWER" --decider-role "$ROLE" --rationale "$STAGE release review passed." > "$TMP_DIR/decision-$STAGE.json"
+done
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" decide "$WORKFLOW_ID" \
+  --stage legal --disposition waive --decided-by release-suite --decider-role administrator \
+  --rationale "Separate legal review is not required for this release fixture." > "$TMP_DIR/decision-legal.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" decide "$WORKFLOW_ID" \
+  --stage compliance --disposition waive --decided-by release-suite --decider-role administrator \
+  --rationale "Separate compliance review is not required for this release fixture." > "$TMP_DIR/decision-compliance.json"
+FINAL_ASSIGNMENT_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["assignment_id"])' "$TMP_DIR/assignment-final.json")"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" decide "$WORKFLOW_ID" \
+  --stage final --disposition approve_with_conditions --assignment-id "$FINAL_ASSIGNMENT_ID" \
+  --decided-by final-approver --decider-role final_approver \
+  --rationale "Release governance checks passed with explicit publication controls." \
+  --condition "Preserve method limitations." --required-wording "Describe the score as advisory." \
+  --publication-restriction attribution_required --disclosure "Disclose heuristic review status." \
+  --valid-until 2027-01-17T15:00:00+00:00 --reassessment-at 2026-10-17T15:00:00+00:00 > "$TMP_DIR/decision-final.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" governance-queue --reviewer-id final-approver > "$TMP_DIR/governance-queue.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" reassessment-due --at 2026-10-18T15:00:00+00:00 > "$TMP_DIR/reassessment-due.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" export "$CASE_ID" \
   --output "$TMP_DIR/case-bundle.json" --exported-at 2026-07-17T17:00:00+00:00
 "$PYTHON" python/narrative_risk_workspace.py verify-bundle --input "$TMP_DIR/case-bundle.json" > "$TMP_DIR/bundle-verification.json"
@@ -72,7 +116,7 @@ CASE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["ca
 cmp "$TMP_DIR/case-bundle.json" "$TMP_DIR/reexported.json"
 
 printf '\n==> Legacy migrations and post-migration reproduction\n'
-for legacy in 1.0.1 1.1.0 1.2.0 1.3.0; do
+for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0; do
   "$PYTHON" python/migrate_narrative_risk_record.py \
     --input "tests/fixtures/legacy-v${legacy}-record.json" \
     --output "$TMP_DIR/migrated-${legacy}.json" --migrated-at 2026-07-17T18:00:00+00:00
@@ -82,4 +126,4 @@ done
 printf '\n==> WordPress PHP syntax\n'
 "$PHP" -l wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php
 
-printf '\nCatalyst Narrative Risk v1.4.0 release suite passed.\n'
+printf '\nCatalyst Narrative Risk v1.5.0 release suite passed.\n'

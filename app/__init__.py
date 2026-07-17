@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -77,6 +77,7 @@ def create_app(config: dict | None = None):
             "evidence_ledger": True,
             "persistent_cases": True,
             "narrative_mapping": True,
+            "governance_workflow": True,
             "workspace": repository.health(),
         }, 200
 
@@ -163,6 +164,14 @@ def create_app(config: dict | None = None):
     def narrative_risk_migrate_v130():
         try:
             migrated = migrate_v1_3_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+    @app.post("/api/narrative-risk/migrate/v1.4.0")
+    def narrative_risk_migrate_v140():
+        try:
+            migrated = migrate_v1_4_0_record(_json_object())
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
@@ -293,6 +302,84 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_case_bundle", exc)
         return jsonify(result), 201
+
+    @app.post("/api/narrative-risk/review-templates")
+    def create_review_template():
+        try:
+            template = repository.create_review_template(**_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_review_template", exc)
+        return jsonify(template), 201
+
+    @app.get("/api/narrative-risk/review-templates")
+    def list_review_templates():
+        try:
+            active_raw = request.args.get("active")
+            active = None if active_raw is None else _bool_query("active")
+            templates = repository.list_review_templates(active=active)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_review_template_query", exc)
+        return jsonify({"review_templates": templates, "count": len(templates)}), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/governance")
+    def start_governance(case_id: str):
+        try:
+            workflow = repository.start_governance_workflow(case_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_governance_workflow", exc)
+        return jsonify(workflow), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/governance")
+    def get_case_governance(case_id: str):
+        try:
+            workflow = repository.get_case_governance_workflow(
+                case_id, include_details=_bool_query("include_details", True), at=request.args.get("at")
+            )
+            if workflow is None:
+                raise NarrativeRiskValidationError("case does not have a governance workflow")
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("governance_workflow_not_found", exc)
+        return jsonify(workflow), 200
+
+    @app.post("/api/narrative-risk/governance/<workflow_id>/assignments")
+    def create_review_assignment(workflow_id: str):
+        try:
+            assignment = repository.assign_reviewer(workflow_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_review_assignment", exc)
+        return jsonify(assignment), 201
+
+    @app.patch("/api/narrative-risk/governance/assignments/<assignment_id>")
+    def update_review_assignment(assignment_id: str):
+        try:
+            assignment = repository.update_review_assignment_status(assignment_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_review_assignment_update", exc)
+        return jsonify(assignment), 200
+
+    @app.get("/api/narrative-risk/governance/queue")
+    def governance_queue():
+        try:
+            queue = repository.governance_queue(reviewer_id=request.args.get("reviewer_id"), at=request.args.get("at"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_governance_queue", exc)
+        return jsonify(queue), 200
+
+    @app.post("/api/narrative-risk/governance/<workflow_id>/decisions")
+    def create_governance_decision(workflow_id: str):
+        try:
+            decision = repository.add_governance_decision(workflow_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_governance_decision", exc)
+        return jsonify(decision), 201
+
+    @app.get("/api/narrative-risk/governance/reassessment-due")
+    def governance_reassessment_due():
+        try:
+            workflows = repository.list_reassessment_due(at=request.args.get("at"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_reassessment_query", exc)
+        return jsonify({"workflows": workflows, "count": len(workflows)}), 200
 
     @app.post("/api/narrative-risk/saved-views")
     def create_saved_view():

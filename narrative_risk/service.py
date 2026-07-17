@@ -1,4 +1,4 @@
-"""Canonical v1.4.0 narrative-risk method, evidence-ledger, and narrative-map engine.
+"""Canonical v1.5.0 narrative-risk method, evidence-ledger, and narrative-map engine.
 
 The engine separates normalized scalar inputs, a traceable claims/sources/evidence
 ledger, deterministic calculations, machine interpretation, and human decisions.
@@ -28,16 +28,16 @@ from .errors import NarrativeRiskValidationError
 from .ledger import build_evidence_ledger, ledger_input_from_record, ledger_interpretation
 from .narrative_map import build_narrative_map, narrative_map_input_from_record, narrative_map_interpretation
 
-VERSION = "1.4.0"
-METHOD_VERSION = "1.4.0"
-SCHEMA_VERSION = "1.4.0"
+VERSION = "1.5.0"
+METHOD_VERSION = "1.5.0"
+SCHEMA_VERSION = "1.5.0"
 RECORD_TYPE = "catalyst_narrative_risk_record"
 CONTRACT_ID = "urn:catalyst:narrative-risk:contract:canonical"
 METHOD_ID = "urn:catalyst:narrative-risk:method:transparent-heuristic"
-SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0"
-INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0"
-LEDGER_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0"
-NARRATIVE_MAP_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0"
+SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.5.0"
+INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.5.0"
+LEDGER_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.5.0"
+NARRATIVE_MAP_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.5.0"
 METHOD = "transparent heuristic scoring with traceable evidence relationships; not truth verification"
 
 SCALAR_INPUT_FIELDS = {
@@ -399,7 +399,7 @@ def build_narrative_risk_record(
     method_snapshot: Mapping[str, Any] | None = None,
     migration: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    """Build a complete v1.4.0 record with an evidence ledger, narrative map, and method."""
+    """Build a complete v1.5.0 record with an evidence ledger, narrative map, and method."""
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
     method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()

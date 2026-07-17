@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0 — Review, Approval, and Governance Workflow
+
+- Added versioned review templates, canonical stage order, and role-based governance permissions.
+- Added reviewer assignments, deadlines, queues, acceptance, completion, waiver, and overdue state.
+- Added append-only stage and final decisions with rationale, conditions, required wording, restrictions, disclosures, validity, and reassessment.
+- Added explicit final-approval gates and publication-eligibility calculation.
+- Added governance schemas, REST endpoints, CLI commands, WordPress controls, and portable bundle records.
+- Added deterministic migration from v1.4.0 while preserving the complete analytical result.
+- Preserved the v1.4.0 scoring, evidence-ledger, and narrative-map policies unchanged.
+
 ## 1.4.0 — Claim Decomposition and Narrative Mapping
 
 - Added a canonical narrative-map layer with deterministic node, link, variant, and issue identifiers.

@@ -11,4 +11,4 @@ The release gate runs each fixture through Python and browser JavaScript and com
 - Complete fixed-ID canonical records
 - Method, input, evidence-ledger, and record-payload SHA-256 digests
 
-The browser method asset is generated from `methods/transparent-heuristic.v1.4.0.json` and checked for drift.
+The browser method asset is generated from `methods/transparent-heuristic.v1.5.0.json` and checked for drift.

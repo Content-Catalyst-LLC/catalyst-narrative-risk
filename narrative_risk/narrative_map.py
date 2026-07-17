@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence
 from .contracts import NARRATIVE_MAP_SCHEMA_PATH, sha256_digest, validate_against_schema
 from .errors import NarrativeRiskValidationError
 
-MAP_VERSION = "1.4.0"
+MAP_VERSION = "1.5.0"
 NODE_TYPES = (
     "factual_claim", "causal_claim", "predictive_claim", "normative_claim",
     "recommendation", "assumption", "context", "unknown",

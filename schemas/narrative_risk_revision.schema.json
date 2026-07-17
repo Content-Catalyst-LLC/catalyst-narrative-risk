@@ -1,19 +1,58 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.4.0",
-  "title": "Catalyst Narrative Risk Case Revision 1.4.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.5.0",
+  "title": "Catalyst Narrative Risk Case Revision 1.5.0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["revision_id", "case_id", "revision_number", "record_id", "record_sha256", "created_at", "created_by", "change_note", "record"],
+  "required": [
+    "revision_id",
+    "case_id",
+    "revision_number",
+    "record_id",
+    "record_sha256",
+    "created_at",
+    "created_by",
+    "change_note",
+    "record"
+  ],
   "properties": {
-    "revision_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
-    "case_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
-    "revision_number": {"type": "integer", "minimum": 1},
-    "record_id": {"type": "string", "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"},
-    "record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "created_at": {"type": "string", "format": "date-time"},
-    "created_by": {"type": ["string", "null"], "maxLength": 500},
-    "change_note": {"type": "string", "maxLength": 20000},
-    "record": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0"}
+    "revision_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "revision_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "record_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "change_note": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "record": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.5.0"
+    }
   }
 }

@@ -2,16 +2,16 @@
   "record_type": "catalyst_narrative_risk_record",
   "contract": {
     "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-    "contract_version": "1.4.0"
+    "contract_version": "1.5.0"
   },
   "identifiers": {
     "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
     "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0",
-    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0",
-    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0",
-    "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0"
+    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.5.0",
+    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.5.0",
+    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.5.0",
+    "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.5.0"
   },
   "generated_at": "2026-07-17T12:00:00+00:00",
   "normalized_input": {
@@ -28,7 +28,7 @@
     "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
   },
   "evidence_ledger": {
-    "ledger_version": "1.4.0",
+    "ledger_version": "1.5.0",
     "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "claims": [
       {
@@ -220,11 +220,11 @@
       "source_type": "official_or_primary",
       "evidence_strength": "strong",
       "source_count": 2,
-      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy."
+      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.5.0 ledger policy."
     }
   },
   "narrative_map": {
-    "map_version": "1.4.0",
+    "map_version": "1.5.0",
     "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666",
     "nodes": [
@@ -419,9 +419,9 @@
   },
   "method_snapshot": {
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "method_version": "1.4.0",
+    "method_version": "1.5.0",
     "name": "Transparent Heuristic Narrative Risk Method",
-    "description": "A weighted, inspectable review heuristic with a traceable claims, sources, evidence ledger, and advisory narrative map. It structures risk and narrative-review needs without verifying truth, inferring intent, changing scores from diagnostics, or replacing human judgment.",
+    "description": "A weighted, inspectable review heuristic with a traceable evidence ledger, advisory narrative map, and governed human review workflow. It structures risk and review needs without verifying truth, inferring intent, changing scores from diagnostics, or granting approval automatically.",
     "algorithm": {
       "type": "weighted_additive_v1",
       "component_order": [
@@ -458,7 +458,7 @@
       ]
     },
     "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-    "controlled_vocabulary_version": "1.4.0",
+    "controlled_vocabulary_version": "1.5.0",
     "defaults": {
       "source_type": "reputable_secondary",
       "evidence_strength": "moderate",
@@ -743,7 +743,7 @@
     },
     "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
     "ledger_policy": {
-      "policy_version": "1.4.0",
+      "policy_version": "1.5.0",
       "primary_claim_role": "primary",
       "positive_relation_types": [
         "support",
@@ -795,7 +795,7 @@
       }
     },
     "narrative_map_policy": {
-      "policy_version": "1.4.0",
+      "policy_version": "1.5.0",
       "node_types": [
         "factual_claim",
         "causal_claim",
@@ -836,9 +836,97 @@
     "narrative_map_interpretation": {
       "boundary": "Narrative diagnostics identify structural review needs; they do not determine truth, intent, or approval.",
       "high_severity_action": "Resolve high-severity map issues before confident public use."
+    },
+    "governance_policy": {
+      "policy_version": "1.5.0",
+      "boundary": "Heuristic scores and narrative diagnostics are advisory. Only authorized human reviewers may create governance decisions.",
+      "stage_order": [
+        "intake",
+        "domain",
+        "editorial",
+        "legal",
+        "compliance",
+        "final"
+      ],
+      "roles": [
+        "author",
+        "reviewer",
+        "domain_reviewer",
+        "editorial_reviewer",
+        "legal_reviewer",
+        "compliance_reviewer",
+        "final_approver",
+        "administrator",
+        "observer"
+      ],
+      "permissions": {
+        "author": [
+          "view",
+          "comment"
+        ],
+        "reviewer": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage"
+        ],
+        "domain_reviewer": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage"
+        ],
+        "editorial_reviewer": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage"
+        ],
+        "legal_reviewer": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage"
+        ],
+        "compliance_reviewer": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage"
+        ],
+        "final_approver": [
+          "view",
+          "comment",
+          "submit_review",
+          "decide_stage",
+          "approve_final",
+          "publish"
+        ],
+        "administrator": [
+          "view",
+          "comment",
+          "submit_review",
+          "assign_reviewers",
+          "decide_stage",
+          "approve_final",
+          "manage_templates",
+          "override_expiration",
+          "publish"
+        ],
+        "observer": [
+          "view"
+        ]
+      },
+      "final_approval_requires": [
+        "completed_required_assignments",
+        "no_unresolved_revise_or_reject_decision",
+        "explicit_final_disposition"
+      ],
+      "expiration_behavior": "An approved workflow becomes expired after valid_until and requires a new revision or reassessment decision before publication.",
+      "reassessment_behavior": "A reassessment_at date creates a due item even when valid_until has not elapsed."
     }
   },
-  "method_snapshot_sha256": "c8d7326700e31c193a6a1cff9215a59876dc92b83cd0dfbd13d737a531dc6b6d",
+  "method_snapshot_sha256": "e1ea46b4dde8e13551f64c3b43d0353db112800c1b9e2fe1aaff311c2b4e175a",
   "calculations": {
     "components": {
       "source_type": {
@@ -929,8 +1017,8 @@
   },
   "reproducibility": {
     "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-    "evidence_ledger_sha256": "58191a2f10426b9d2e86ec969e33a91dc4c16cb6ecde51c2c920428a1d6838da",
-    "narrative_map_sha256": "26e46184c00b1d9fdb55a2a8bd8845db0cf5e820ffcf29e2807833be54001233",
-    "record_payload_sha256": "0d778dbd17d8e715086fafee13fc65e7a864db3e20b8f17272c8aa7e3662cb8c"
+    "evidence_ledger_sha256": "8ba08878318f644f6d252f26c55b7de791b1556803a15eab761df0619962c74d",
+    "narrative_map_sha256": "699108a79d9c8d28901c567802a5dbc00865d849abc8bb6dae5e22d66b4e893a",
+    "record_payload_sha256": "bc52ccd46885238117e28ede65e1659efaee45ea288752ab38bf372885969460"
   }
 }

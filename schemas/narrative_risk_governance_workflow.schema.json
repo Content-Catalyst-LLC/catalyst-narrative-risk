@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-workflow/1.5.0",
+  "title": "Catalyst Narrative Risk Governance Workflow 1.5.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflow_id",
+    "case_id",
+    "revision_id",
+    "template_id",
+    "template_snapshot",
+    "status",
+    "current_stage",
+    "started_at",
+    "due_at",
+    "completed_at",
+    "created_by",
+    "updated_at",
+    "assignment_count",
+    "decision_count",
+    "required_assignments_complete",
+    "final_disposition",
+    "approval_valid_until",
+    "reassessment_at",
+    "publication_allowed",
+    "governance_flags"
+  ],
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "revision_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "template_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "template_snapshot": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "blocked",
+        "changes_required",
+        "approved",
+        "rejected",
+        "expired",
+        "closed"
+      ]
+    },
+    "current_stage": {
+      "enum": [
+        "intake",
+        "domain",
+        "editorial",
+        "legal",
+        "compliance",
+        "final"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "due_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assignment_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "decision_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "required_assignments_complete": {
+      "type": "boolean"
+    },
+    "final_disposition": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "approve",
+        "approve_with_conditions",
+        "revise",
+        "reject",
+        "waive",
+        null
+      ]
+    },
+    "approval_valid_until": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "reassessment_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "publication_allowed": {
+      "type": "boolean"
+    },
+    "governance_flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

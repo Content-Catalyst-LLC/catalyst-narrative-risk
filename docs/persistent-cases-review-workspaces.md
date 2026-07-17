@@ -1,6 +1,6 @@
 # Persistent Cases and Review Workspaces
 
-Catalyst Narrative Risk v1.4.0 adds a durable workspace layer around immutable canonical analytical records.
+Catalyst Narrative Risk v1.5.0 adds a durable workspace layer around immutable canonical analytical records.
 
 ## Separation of responsibilities
 
@@ -42,3 +42,7 @@ The repository uses Python's standard `sqlite3` module and does not add an ORM o
 ## Local and institutional interfaces
 
 The Flask REST API is the durable institutional interface. The WordPress shortcode `[catalyst_narrative_risk_workspace]` provides a browser-local workspace for demonstration, private offline use, and interface testing. Browser mode uses local storage and clearly identifies that an institutional deployment should connect the interface to the REST workspace API.
+
+## Governed revisions
+
+A governance workflow is pinned to one immutable revision. New analytical work creates a new revision rather than changing the revision under review. Review assignments and decisions remain traceable to the exact record that reviewers assessed.

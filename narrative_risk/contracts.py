@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.4.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v1.5.0."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.4.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.4.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.4.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.4.0.json"
+VERSION = "1.5.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.5.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.5.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.5.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_narrative_map.schema.json"
@@ -25,6 +25,10 @@ REVISION_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_revision.schema.json"
 REVIEW_EVENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_event.schema.json"
 SAVED_VIEW_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_saved_view.schema.json"
 WORKSPACE_BUNDLE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_workspace_bundle.schema.json"
+REVIEW_ASSIGNMENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_assignment.schema.json"
+GOVERNANCE_WORKFLOW_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_governance_workflow.schema.json"
+GOVERNANCE_DECISION_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_governance_decision.schema.json"
+REVIEW_TEMPLATE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_template.schema.json"
 LEGACY_V101_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.0.1.schema.json"
 LEGACY_V110_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.1.0.schema.json"
 LEGACY_V110_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.1.0.schema.json"
@@ -37,6 +41,11 @@ LEGACY_V130_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_i
 LEGACY_V130_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.3.0.schema.json"
 LEGACY_V130_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.3.0.schema.json"
 LEGACY_V130_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.3.0.schema.json"
+LEGACY_V140_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.4.0.schema.json"
+LEGACY_V140_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.4.0.schema.json"
+LEGACY_V140_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.4.0.schema.json"
+LEGACY_V140_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.4.0.schema.json"
+LEGACY_V140_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.4.0.schema.json"
 # Backwards-compatible alias retained for integrations written against v1.1.0.
 LEGACY_RECORD_SCHEMA_PATH = LEGACY_V101_RECORD_SCHEMA_PATH
 
@@ -103,6 +112,8 @@ def _registry():
         REVIEW_EVENT_SCHEMA_PATH,
         SAVED_VIEW_SCHEMA_PATH,
         WORKSPACE_BUNDLE_SCHEMA_PATH,
+        REVIEW_ASSIGNMENT_SCHEMA_PATH, GOVERNANCE_WORKFLOW_SCHEMA_PATH,
+        GOVERNANCE_DECISION_SCHEMA_PATH, REVIEW_TEMPLATE_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
@@ -115,6 +126,9 @@ def _registry():
         LEGACY_V130_LEDGER_SCHEMA_PATH,
         LEGACY_V130_METHOD_SCHEMA_PATH,
         LEGACY_V130_RECORD_SCHEMA_PATH,
+        LEGACY_V140_INPUT_SCHEMA_PATH, LEGACY_V140_LEDGER_SCHEMA_PATH,
+        LEGACY_V140_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V140_METHOD_SCHEMA_PATH,
+        LEGACY_V140_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:
