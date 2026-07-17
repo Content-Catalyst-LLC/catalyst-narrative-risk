@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify and exactly reproduce a Catalyst Narrative Risk v1.5.0 record."""
+"""Verify and exactly reproduce a Catalyst Narrative Risk v1.6.0 record."""
 
 from __future__ import annotations
 

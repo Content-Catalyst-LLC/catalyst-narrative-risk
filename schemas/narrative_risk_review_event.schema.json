@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.5.0",
-  "title": "Catalyst Narrative Risk Review Event 1.5.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.6.0",
+  "title": "Catalyst Narrative Risk Review Event 1.6.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -42,7 +42,10 @@
         "workflow_started",
         "stage_decision",
         "approval_expired",
-        "reassessment_due"
+        "reassessment_due",
+        "monitoring_snapshot",
+        "monitoring_alert",
+        "source_change"
       ]
     },
     "author_id": {

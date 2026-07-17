@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-comparison/1.6.0",
+  "title": "Catalyst Narrative Risk Monitoring Comparison 1.6.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "comparison_id",
+    "comparison_version",
+    "case_id",
+    "from_snapshot_id",
+    "to_snapshot_id",
+    "compared_at",
+    "score_delta",
+    "risk_level_changed",
+    "wording_changes",
+    "confidence_changes",
+    "evidence_changes",
+    "narrative_changes",
+    "freshness_changes",
+    "governance_changes",
+    "materiality_score",
+    "severity",
+    "material_change",
+    "reasons",
+    "comparison_sha256"
+  ],
+  "properties": {
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "comparison_version": {
+      "const": "1.6.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "from_snapshot_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "to_snapshot_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "compared_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "score_delta": {
+      "type": "integer",
+      "minimum": -100,
+      "maximum": 100
+    },
+    "risk_level_changed": {
+      "type": "boolean"
+    },
+    "wording_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim_id",
+          "change_type",
+          "from_text",
+          "to_text",
+          "similarity"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+          },
+          "change_type": {
+            "enum": [
+              "added",
+              "removed",
+              "modified"
+            ]
+          },
+          "from_text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "to_text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "similarity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "confidence_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "from",
+          "to"
+        ],
+        "properties": {
+          "field": {
+            "enum": [
+              "evidence_strength",
+              "uncertainty",
+              "review_status"
+            ]
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence_changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "added_source_ids",
+        "removed_source_ids",
+        "added_evidence_ids",
+        "removed_evidence_ids",
+        "content_changed_source_ids"
+      ],
+      "properties": {
+        "added_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "removed_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "added_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "removed_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "content_changed_source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "narrative_changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "added_node_ids",
+        "removed_node_ids",
+        "modified_node_ids",
+        "added_link_ids",
+        "removed_link_ids"
+      ],
+      "properties": {
+        "added_node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "removed_node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "modified_node_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "added_link_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "removed_link_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "freshness_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "from",
+          "to"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "from": {
+            "enum": [
+              "current",
+              "aging",
+              "stale",
+              "unknown"
+            ]
+          },
+          "to": {
+            "enum": [
+              "current",
+              "aging",
+              "stale",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "governance_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "from",
+          "to"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "from": {},
+          "to": {}
+        }
+      }
+    },
+    "materiality_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "material_change": {
+      "type": "boolean"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "comparison_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

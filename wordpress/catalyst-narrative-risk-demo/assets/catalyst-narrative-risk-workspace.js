@@ -2,7 +2,7 @@
   'use strict';
   const engine = window.CatalystNarrativeRisk;
   if (!engine) return;
-  const STORAGE_KEY = 'catalyst_narrative_risk_workspace_v1_5_0';
+  const STORAGE_KEY = 'catalyst_narrative_risk_workspace_v1_6_0';
   const STAGES = ['intake', 'domain', 'editorial', 'legal', 'compliance', 'final'];
   const REQUIRED = new Set(['intake', 'domain', 'editorial', 'final']);
   const ROLE_BY_STAGE = { intake: 'reviewer', domain: 'domain_reviewer', editorial: 'editorial_reviewer', legal: 'legal_reviewer', compliance: 'compliance_reviewer', final: 'final_approver' };
@@ -34,6 +34,11 @@
     item.governance_workflow = item.governance_workflow || null;
     item.review_assignments = Array.isArray(item.review_assignments) ? item.review_assignments : [];
     item.governance_decisions = Array.isArray(item.governance_decisions) ? item.governance_decisions : [];
+    item.monitoring_snapshots = Array.isArray(item.monitoring_snapshots) ? item.monitoring_snapshots : [];
+    item.monitoring_comparisons = Array.isArray(item.monitoring_comparisons) ? item.monitoring_comparisons : [];
+    item.watchlists = Array.isArray(item.watchlists) ? item.watchlists : [];
+    item.monitoring_alerts = Array.isArray(item.monitoring_alerts) ? item.monitoring_alerts : [];
+    item.site_intelligence_events = Array.isArray(item.site_intelligence_events) ? item.site_intelligence_events : [];
     refreshCounts(item);
   }
   function save(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
@@ -50,10 +55,13 @@
   }
   function bundle(caseItem) {
     const base = {
-      bundle_type: 'catalyst_narrative_risk_case_bundle', bundle_version: '1.5.0', exported_at: now(),
+      bundle_type: 'catalyst_narrative_risk_case_bundle', bundle_version: '1.6.0', exported_at: now(),
       case: caseItem.case, revisions: caseItem.revisions, review_events: caseItem.review_events,
       activity: caseItem.activity, governance_workflow: caseItem.governance_workflow,
-      review_assignments: caseItem.review_assignments, governance_decisions: caseItem.governance_decisions
+      review_assignments: caseItem.review_assignments, governance_decisions: caseItem.governance_decisions,
+      monitoring_snapshots: caseItem.monitoring_snapshots, monitoring_comparisons: caseItem.monitoring_comparisons,
+      watchlists: caseItem.watchlists, monitoring_alerts: caseItem.monitoring_alerts,
+      site_intelligence_events: caseItem.site_intelligence_events
     };
     base.bundle_sha256 = engine.digest(base); return base;
   }
@@ -103,6 +111,11 @@
     item.case.approval_valid_until = workflow ? workflow.approval_valid_until : null;
     item.case.reassessment_at = workflow ? workflow.reassessment_at : null;
     item.case.publication_allowed = workflow ? workflow.publication_allowed : false;
+    item.case.monitoring_snapshot_count = item.monitoring_snapshots.length;
+    item.case.watch_count = item.watchlists.filter(function (watch) { return watch.status === 'active'; }).length;
+    item.case.open_alert_count = item.monitoring_alerts.filter(function (alert) { return alert.status === 'open'; }).length;
+    item.case.last_monitored_at = item.monitoring_snapshots.length ? item.monitoring_snapshots[item.monitoring_snapshots.length - 1].captured_at : null;
+    item.case.monitoring_status = item.case.open_alert_count ? 'attention_required' : (item.case.monitoring_snapshot_count ? 'current' : 'not_started');
   }
   function caseCard(root, item) {
     const card = document.createElement('article'); card.className = 'cnrisk-workspace__case';
@@ -111,7 +124,7 @@
     const claim = document.createElement('p'); claim.textContent = item.revisions.length ? item.revisions[item.revisions.length - 1].record.normalized_input.claim : 'No analytical revision yet.';
     const actions = document.createElement('div'); actions.className = 'cnrisk-workspace__actions';
     const open = document.createElement('button'); open.type = 'button'; open.textContent = 'Open'; open.addEventListener('click', function () { openCase(root, item.case.case_id); });
-    const exportButton = document.createElement('button'); exportButton.type = 'button'; exportButton.textContent = 'Export'; exportButton.addEventListener('click', function () { download('narrative-risk-case-v1.5.0.json', bundle(item)); });
+    const exportButton = document.createElement('button'); exportButton.type = 'button'; exportButton.textContent = 'Export'; exportButton.addEventListener('click', function () { download('narrative-risk-case-v1.6.0.json', bundle(item)); });
     actions.append(open, exportButton); card.append(heading, meta, claim, actions); return card;
   }
   function renderList(root) {
@@ -132,7 +145,7 @@
     root.querySelector('[name="case_priority"]').value = item.case.priority;
     root.querySelector('[name="case_tags"]').value = item.case.tags.join(', ');
     if (item.revisions.length) root.querySelector('[name="claim"]').value = item.revisions[item.revisions.length - 1].record.normalized_input.claim;
-    renderDetail(root, item); renderGovernance(root, item);
+    renderDetail(root, item); renderGovernance(root, item); renderMonitoring(root, item);
   }
   function renderDetail(root, item) {
     const detail = root.querySelector('[data-cnrisk-workspace-detail]'); detail.innerHTML = '';
@@ -201,7 +214,7 @@
     const id = root.dataset.currentCaseId; if (!id) throw new Error('Open or create a case before starting governance.');
     const state = load(); const item = state.cases[id]; if (!item.revisions.length) throw new Error('Save an analytical revision first.'); if (item.governance_workflow) throw new Error('This browser case already has a governance workflow.');
     const stamp = now(); const workflowId = uuid();
-    item.governance_workflow = { workflow_id: workflowId, case_id: id, revision_id: item.revisions[item.revisions.length - 1].revision_id, template_id: null, template_snapshot: { name: 'Standard Narrative Risk Review', description: 'Staged browser review aligned with v1.5.0.', stages: STAGES.map(function (stage) { return { stage: stage, required: REQUIRED.has(stage), required_role: ROLE_BY_STAGE[stage], instructions: 'Review the ' + stage + ' stage.' }; }), default_due_days: 14, escalation_days: 3 }, status: 'active', current_stage: 'intake', started_at: stamp, due_at: null, completed_at: null, created_by: null, updated_at: stamp, assignment_count: 0, decision_count: 0, required_assignments_complete: false, final_disposition: null, approval_valid_until: null, reassessment_at: null, publication_allowed: false, governance_flags: [] };
+    item.governance_workflow = { workflow_id: workflowId, case_id: id, revision_id: item.revisions[item.revisions.length - 1].revision_id, template_id: null, template_snapshot: { name: 'Standard Narrative Risk Review', description: 'Staged browser review aligned with v1.6.0.', stages: STAGES.map(function (stage) { return { stage: stage, required: REQUIRED.has(stage), required_role: ROLE_BY_STAGE[stage], instructions: 'Review the ' + stage + ' stage.' }; }), default_due_days: 14, escalation_days: 3 }, status: 'active', current_stage: 'intake', started_at: stamp, due_at: null, completed_at: null, created_by: null, updated_at: stamp, assignment_count: 0, decision_count: 0, required_assignments_complete: false, final_disposition: null, approval_valid_until: null, reassessment_at: null, publication_allowed: false, governance_flags: [] };
     item.case.status = 'in_review'; addActivity(item, 'governance_workflow_started', workflowId, { revision_id: item.governance_workflow.revision_id, current_stage: 'intake' }, stamp); refreshCounts(item); save(state); renderGovernance(root, item); renderList(root);
   }
   function assignReviewer(root) {
@@ -229,13 +242,54 @@
     if (disposition === 'revise') workflow.status = 'changes_required'; else if (disposition === 'reject') { workflow.status = 'rejected'; workflow.completed_at = stamp; item.case.status = 'closed'; } else if (stage === 'final' && ['approve', 'approve_with_conditions'].includes(disposition)) { workflow.status = 'approved'; workflow.completed_at = stamp; workflow.current_stage = 'final'; item.case.status = 'approved'; } else workflow.status = 'active';
     addActivity(item, 'governance_decision_added', decisionId, { stage: stage, disposition: disposition, workflow_status: workflow.status }, stamp); refreshCounts(item); save(state); renderGovernance(root, item); renderList(root);
   }
+  function monitoringSnapshot(item, trigger) {
+    if (!item.revisions.length) throw new Error('Save an analytical revision before capturing a snapshot.');
+    const revision = item.revisions[item.revisions.length - 1]; const record = revision.record; const stamp = now();
+    const claims = (record.evidence_ledger.claims || []).map(function (claim) { return { claim_id: claim.claim_id, text: claim.text, claim_type: claim.claim_type, role: claim.role }; });
+    const nodes = (record.narrative_map.nodes || []).map(function (node) { return { node_id: node.node_id, text: node.text, node_type: node.node_type, confidence_language: node.confidence_language }; });
+    const sources = (record.evidence_ledger.sources || []).map(function (source) { return { source_id: source.source_id, title: source.title, source_type: source.source_type, reference_at: source.accessed_at || null, age_days: null, freshness: source.freshness || 'unknown', content_sha256: source.provenance ? source.provenance.content_sha256 : null }; });
+    const counts = { current: 0, aging: 0, stale: 0, unknown: 0 }; sources.forEach(function (source) { counts[source.freshness] = (counts[source.freshness] || 0) + 1; });
+    const final = latestFinal(item); const snapshot = {
+      snapshot_id: uuid(), snapshot_version: '1.6.0', case_id: item.case.case_id, revision_id: revision.revision_id,
+      record_id: revision.record_id, captured_at: stamp, trigger: trigger || 'manual', record_sha256: engine.digest(record),
+      risk_score: record.calculations.risk_score, risk_level: record.interpretation.risk_level,
+      confidence_state: { evidence_strength: record.normalized_input.evidence_strength, uncertainty: record.normalized_input.uncertainty, review_status: record.normalized_input.review_status },
+      claims: claims, narrative_nodes: nodes, narrative_link_ids: (record.narrative_map.links || []).map(function (link) { return link.link_id; }),
+      source_ids: sources.map(function (source) { return source.source_id; }), evidence_ids: (record.evidence_ledger.evidence_items || []).map(function (evidence) { return evidence.evidence_id; }),
+      freshness_report: { evaluated_at: stamp, status: sources.length ? (counts.stale ? 'stale' : (counts.aging ? 'aging' : 'current')) : 'unknown', source_count: sources.length, counts: counts, stale_ratio: sources.length ? counts.stale / sources.length : 0, sources: sources, reassessment_recommended: !!counts.stale },
+      governance_state: { workflow_status: item.governance_workflow ? item.governance_workflow.status : null, final_disposition: final ? final.disposition : null, approval_valid_until: final ? final.valid_until : null, reassessment_at: final ? final.reassessment_at : null, publication_allowed: item.governance_workflow ? !!item.governance_workflow.publication_allowed : false }
+    };
+    snapshot.snapshot_sha256 = engine.digest(snapshot); return snapshot;
+  }
+  function compareLocalSnapshots(previous, current) {
+    const beforeClaims = new Map(previous.claims.map(function (claim) { return [claim.claim_id, claim]; })); const afterClaims = new Map(current.claims.map(function (claim) { return [claim.claim_id, claim]; })); const wording = [];
+    new Set(Array.from(beforeClaims.keys()).concat(Array.from(afterClaims.keys()))).forEach(function (claimId) { const before = beforeClaims.get(claimId); const after = afterClaims.get(claimId); if (!before) wording.push({ claim_id: claimId, change_type: 'added', from_text: null, to_text: after.text, similarity: 0 }); else if (!after) wording.push({ claim_id: claimId, change_type: 'removed', from_text: before.text, to_text: null, similarity: 0 }); else if (before.text !== after.text) wording.push({ claim_id: claimId, change_type: 'modified', from_text: before.text, to_text: after.text, similarity: 0 }); });
+    const confidence = []; ['evidence_strength','uncertainty','review_status'].forEach(function (field) { if (previous.confidence_state[field] !== current.confidence_state[field]) confidence.push({ field: field, from: previous.confidence_state[field], to: current.confidence_state[field] }); });
+    const addedEvidence = current.evidence_ids.filter(function (id) { return !previous.evidence_ids.includes(id); }); const removedEvidence = previous.evidence_ids.filter(function (id) { return !current.evidence_ids.includes(id); });
+    const scoreDelta = current.risk_score - previous.risk_score; const riskLevelChanged = current.risk_level !== previous.risk_level; const materiality = Math.min(100, Math.abs(scoreDelta) * 2 + wording.length * 20 + confidence.length * 15 + addedEvidence.length * 10 + (riskLevelChanged ? 25 : 0)); const severity = materiality >= 70 ? 'critical' : materiality >= 45 ? 'high' : materiality >= 20 ? 'medium' : materiality ? 'low' : 'info'; const reasons = []; if (scoreDelta) reasons.push('Risk score changed by ' + scoreDelta + '.'); if (wording.length) reasons.push(wording.length + ' claim wording change(s) detected.'); if (confidence.length) reasons.push(confidence.length + ' confidence-state change(s) detected.'); if (addedEvidence.length) reasons.push(addedEvidence.length + ' new evidence item(s) detected.');
+    const comparison = { comparison_id: uuid(), comparison_version: '1.6.0', case_id: current.case_id, from_snapshot_id: previous.snapshot_id, to_snapshot_id: current.snapshot_id, compared_at: current.captured_at, score_delta: scoreDelta, risk_level_changed: riskLevelChanged, wording_changes: wording, confidence_changes: confidence, evidence_changes: { added_source_ids: current.source_ids.filter(function (id) { return !previous.source_ids.includes(id); }), removed_source_ids: previous.source_ids.filter(function (id) { return !current.source_ids.includes(id); }), added_evidence_ids: addedEvidence, removed_evidence_ids: removedEvidence, content_changed_source_ids: [] }, narrative_changes: { added_node_ids: [], removed_node_ids: [], modified_node_ids: [], added_link_ids: [], removed_link_ids: [] }, freshness_changes: [], governance_changes: [], materiality_score: materiality, severity: severity, material_change: materiality >= 20, reasons: reasons };
+    comparison.comparison_sha256 = engine.digest(comparison); return comparison;
+  }
+  function renderMonitoring(root, item) {
+    const summary = root.querySelector('[data-cnrisk-monitoring-summary]'); const detail = root.querySelector('[data-cnrisk-monitoring-detail]'); if (!summary || !detail) return;
+    summary.textContent = item.monitoring_snapshots.length + ' snapshot(s) · ' + item.watchlists.filter(function (watch) { return watch.status === 'active'; }).length + ' active watch(es) · ' + item.monitoring_alerts.filter(function (alert) { return alert.status === 'open'; }).length + ' open alert(s).';
+    detail.innerHTML = ''; item.monitoring_alerts.slice().reverse().forEach(function (alert) { const row = document.createElement('div'); row.className = 'cnrisk-workspace__governance-item'; row.textContent = alert.severity.toUpperCase() + ' · ' + alert.title + ' · ' + alert.status; detail.appendChild(row); });
+  }
+  function captureSnapshot(root, runWatch) {
+    const id = root.dataset.currentCaseId; if (!id) throw new Error('Open a case first.'); const state = load(); const item = state.cases[id]; const previous = item.monitoring_snapshots.length ? item.monitoring_snapshots[item.monitoring_snapshots.length - 1] : null; const snapshot = monitoringSnapshot(item, runWatch ? 'scheduled' : 'manual'); item.monitoring_snapshots.push(snapshot); addActivity(item, 'monitoring_snapshot_captured', snapshot.snapshot_id, { risk_score: snapshot.risk_score, freshness: snapshot.freshness_report.status }, snapshot.captured_at);
+    if (runWatch && previous) { const comparison = compareLocalSnapshots(previous, snapshot); item.monitoring_comparisons.push(comparison); addActivity(item, 'monitoring_snapshots_compared', comparison.comparison_id, { materiality_score: comparison.materiality_score, severity: comparison.severity }, comparison.compared_at); if (comparison.material_change) { const alert = { alert_id: uuid(), alert_version: '1.6.0', case_id: id, watch_id: item.watchlists.length ? item.watchlists[0].watch_id : null, snapshot_id: snapshot.snapshot_id, comparison_id: comparison.comparison_id, alert_type: 'material_change', severity: comparison.severity, title: 'Material narrative change detected', body: comparison.reasons.join(' ') || 'The monitored narrative changed materially.', status: 'open', created_at: snapshot.captured_at, acknowledged_at: null, acknowledged_by: null, resolved_at: null, metadata: { materiality_score: comparison.materiality_score } }; item.monitoring_alerts.push(alert); addActivity(item, 'monitoring_alert_created', alert.alert_id, { alert_type: alert.alert_type, severity: alert.severity }, alert.created_at); } }
+    refreshCounts(item); save(state); renderMonitoring(root, item); renderList(root);
+  }
+  function createLocalWatch(root) {
+    const id = root.dataset.currentCaseId; if (!id) throw new Error('Open a case first.'); const state = load(); const item = state.cases[id]; const name = root.querySelector('[data-cnrisk-watch-name]').value.trim() || 'Narrative change watch'; const stamp = now(); const watch = { watch_id: uuid(), watch_version: '1.6.0', case_id: id, name: name, status: 'active', cadence: root.querySelector('[data-cnrisk-watch-cadence]').value, trigger_types: ['material_change','new_evidence','source_stale','reassessment_due'], source_ids: [], created_at: stamp, updated_at: stamp, last_checked_at: null, next_check_at: null, created_by: null, notes: 'Browser-local demonstration watch.' }; item.watchlists.push(watch); addActivity(item, 'watchlist_created', watch.watch_id, { name: watch.name, cadence: watch.cadence }, stamp); refreshCounts(item); save(state); renderMonitoring(root, item); renderList(root);
+  }
   function importBundle(root, file) {
     const reader = new FileReader(); reader.onload = function () {
       try {
-        const data = JSON.parse(reader.result); if (data.bundle_type !== 'catalyst_narrative_risk_case_bundle' || data.bundle_version !== '1.5.0') throw new Error('Not a v1.5.0 narrative-risk case bundle.');
+        const data = JSON.parse(reader.result); if (data.bundle_type !== 'catalyst_narrative_risk_case_bundle' || data.bundle_version !== '1.6.0') throw new Error('Not a v1.6.0 narrative-risk case bundle.');
         const expected = data.bundle_sha256; const unsigned = Object.assign({}, data); delete unsigned.bundle_sha256; if (engine.digest(unsigned) !== expected) throw new Error('Bundle checksum does not match.');
         const state = load(); const caseId = data.case.case_id; if (state.cases[caseId]) throw new Error('A case with this identifier already exists.');
-        state.cases[caseId] = { case: data.case, revisions: data.revisions, review_events: data.review_events, activity: data.activity, governance_workflow: data.governance_workflow, review_assignments: data.review_assignments, governance_decisions: data.governance_decisions }; normalizeCaseItem(state.cases[caseId]); save(state); renderList(root); openCase(root, caseId);
+        state.cases[caseId] = { case: data.case, revisions: data.revisions, review_events: data.review_events, activity: data.activity, governance_workflow: data.governance_workflow, review_assignments: data.review_assignments, governance_decisions: data.governance_decisions, monitoring_snapshots: data.monitoring_snapshots, monitoring_comparisons: data.monitoring_comparisons, watchlists: data.watchlists, monitoring_alerts: data.monitoring_alerts, site_intelligence_events: data.site_intelligence_events }; normalizeCaseItem(state.cases[caseId]); save(state); renderList(root); openCase(root, caseId);
       } catch (error) { root.querySelector('[data-cnrisk-workspace-message]').textContent = error.message; }
     }; reader.readAsText(file);
   }
@@ -249,6 +303,9 @@
     root.querySelector('[data-cnrisk-start-governance]').addEventListener('click', function () { guarded(root, function () { startGovernance(root); }, 'Governance workflow started.'); });
     root.querySelector('[data-cnrisk-assign-reviewer]').addEventListener('click', function () { guarded(root, function () { assignReviewer(root); }, 'Reviewer assigned.'); });
     root.querySelector('[data-cnrisk-add-decision]').addEventListener('click', function () { guarded(root, function () { addDecision(root); }, 'Governance decision recorded.'); });
+    root.querySelector('[data-cnrisk-capture-snapshot]').addEventListener('click', function () { guarded(root, function () { captureSnapshot(root, false); }, 'Monitoring snapshot captured.'); });
+    root.querySelector('[data-cnrisk-create-watch]').addEventListener('click', function () { guarded(root, function () { createLocalWatch(root); }, 'Monitoring watch created.'); });
+    root.querySelector('[data-cnrisk-run-watch]').addEventListener('click', function () { guarded(root, function () { captureSnapshot(root, true); }, 'Monitoring check completed.'); });
     root.querySelector('[data-cnrisk-assignment-stage]').addEventListener('change', function () { root.querySelector('[data-cnrisk-reviewer-role]').value = ROLE_BY_STAGE[this.value]; root.querySelector('[data-cnrisk-decision-stage]').value = this.value; });
     root.querySelector('[data-cnrisk-archive-case]').addEventListener('click', function () { const id = root.dataset.currentCaseId; if (!id) return; const state = load(); const item = state.cases[id]; item.case.archived = true; item.case.archived_at = now(); addActivity(item, 'case_archived', id, {}); refreshCounts(item); save(state); delete root.dataset.currentCaseId; renderList(root); });
     root.querySelector('[data-cnrisk-import-bundle]').addEventListener('change', function () { if (this.files[0]) importBundle(root, this.files[0]); this.value = ''; });

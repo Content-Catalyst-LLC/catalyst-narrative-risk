@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/watchlist/1.6.0",
+  "title": "Catalyst Narrative Risk Watchlist 1.6.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "watch_id",
+    "watch_version",
+    "case_id",
+    "name",
+    "status",
+    "cadence",
+    "trigger_types",
+    "source_ids",
+    "created_at",
+    "updated_at",
+    "last_checked_at",
+    "next_check_at",
+    "created_by",
+    "notes"
+  ],
+  "properties": {
+    "watch_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "watch_version": {
+      "const": "1.6.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "status": {
+      "enum": [
+        "active",
+        "paused",
+        "closed"
+      ]
+    },
+    "cadence": {
+      "enum": [
+        "manual",
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly"
+      ]
+    },
+    "trigger_types": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "new_evidence",
+          "material_change",
+          "source_stale",
+          "source_content_changed",
+          "risk_level_changed",
+          "wording_changed",
+          "confidence_changed",
+          "reassessment_due",
+          "approval_expired",
+          "site_intelligence_event"
+        ]
+      }
+    },
+    "source_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_checked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "next_check_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 20000
+    }
+  }
+}

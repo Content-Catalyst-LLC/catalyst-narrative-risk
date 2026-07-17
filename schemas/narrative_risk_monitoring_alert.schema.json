@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-alert/1.6.0",
+  "title": "Catalyst Narrative Risk Monitoring Alert 1.6.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "alert_id",
+    "alert_version",
+    "case_id",
+    "watch_id",
+    "snapshot_id",
+    "comparison_id",
+    "alert_type",
+    "severity",
+    "title",
+    "body",
+    "status",
+    "created_at",
+    "acknowledged_at",
+    "acknowledged_by",
+    "resolved_at",
+    "metadata"
+  ],
+  "properties": {
+    "alert_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "alert_version": {
+      "const": "1.6.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "watch_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "comparison_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "alert_type": {
+      "enum": [
+        "new_evidence",
+        "material_change",
+        "source_stale",
+        "source_content_changed",
+        "risk_level_changed",
+        "wording_changed",
+        "confidence_changed",
+        "reassessment_due",
+        "approval_expired",
+        "site_intelligence_event"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50000
+    },
+    "status": {
+      "enum": [
+        "open",
+        "acknowledged",
+        "resolved"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledged_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "acknowledged_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "resolved_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-name: Persistent cases and workspace release integrity
+name: Narrative monitoring and release integrity
 
 on:
   push:

@@ -156,6 +156,57 @@ def parser() -> argparse.ArgumentParser:
 
     due = commands.add_parser("reassessment-due")
     due.add_argument("--at")
+
+    snapshot = commands.add_parser("capture-snapshot")
+    snapshot.add_argument("case_id")
+    snapshot.add_argument("--revision-id")
+    snapshot.add_argument("--captured-at")
+    snapshot.add_argument("--trigger", default="manual")
+
+    compare = commands.add_parser("compare-snapshots")
+    compare.add_argument("from_snapshot_id")
+    compare.add_argument("to_snapshot_id")
+    compare.add_argument("--compared-at")
+
+    watch = commands.add_parser("create-watch")
+    watch.add_argument("case_id")
+    watch.add_argument("--name", required=True)
+    watch.add_argument("--cadence", default="daily")
+    watch.add_argument("--trigger-type", action="append", default=[])
+    watch.add_argument("--source-id", action="append", default=[])
+    watch.add_argument("--next-check-at")
+    watch.add_argument("--created-by")
+    watch.add_argument("--notes", default="")
+
+    watches = commands.add_parser("list-watches")
+    watches.add_argument("--case-id")
+    watches.add_argument("--status")
+    watches.add_argument("--due-at")
+
+    check = commands.add_parser("check-watch")
+    check.add_argument("watch_id")
+    check.add_argument("--revision-id")
+    check.add_argument("--checked-at")
+    check.add_argument("--trigger", default="scheduled")
+
+    alerts = commands.add_parser("list-alerts")
+    alerts.add_argument("--case-id")
+    alerts.add_argument("--watch-id")
+    alerts.add_argument("--status")
+    alerts.add_argument("--severity")
+
+    alert_status = commands.add_parser("alert-status")
+    alert_status.add_argument("alert_id")
+    alert_status.add_argument("--status", required=True)
+    alert_status.add_argument("--actor-id", required=True)
+    alert_status.add_argument("--changed-at")
+
+    timeline = commands.add_parser("timeline")
+    timeline.add_argument("case_id")
+
+    site = commands.add_parser("ingest-site-intelligence")
+    site.add_argument("--input", required=True)
+    site.add_argument("--ingested-at")
     return root
 
 
@@ -249,6 +300,40 @@ def main() -> int:
         elif args.command == "reassessment-due":
             values = repository.list_reassessment_due(at=args.at)
             write_json({"workflows": values, "count": len(values)})
+        elif args.command == "capture-snapshot":
+            write_json(repository.capture_monitoring_snapshot(
+                args.case_id, revision_id=args.revision_id, captured_at=args.captured_at, trigger=args.trigger,
+            ))
+        elif args.command == "compare-snapshots":
+            write_json(repository.compare_snapshots(
+                args.from_snapshot_id, args.to_snapshot_id, compared_at=args.compared_at,
+            ))
+        elif args.command == "create-watch":
+            write_json(repository.create_watchlist(
+                args.case_id, name=args.name, cadence=args.cadence,
+                trigger_types=args.trigger_type or None, source_ids=args.source_id,
+                next_check_at=args.next_check_at, created_by=args.created_by, notes=args.notes,
+            ))
+        elif args.command == "list-watches":
+            values = repository.list_watchlists(case_id=args.case_id, status=args.status, due_at=args.due_at)
+            write_json({"watchlists": values, "count": len(values)})
+        elif args.command == "check-watch":
+            write_json(repository.run_watchlist_check(
+                args.watch_id, revision_id=args.revision_id, checked_at=args.checked_at, trigger=args.trigger,
+            ))
+        elif args.command == "list-alerts":
+            values = repository.list_monitoring_alerts(
+                case_id=args.case_id, watch_id=args.watch_id, status=args.status, severity=args.severity,
+            )
+            write_json({"monitoring_alerts": values, "count": len(values)})
+        elif args.command == "alert-status":
+            write_json(repository.update_monitoring_alert_status(
+                args.alert_id, status=args.status, actor_id=args.actor_id, changed_at=args.changed_at,
+            ))
+        elif args.command == "timeline":
+            write_json(repository.case_timeline(args.case_id))
+        elif args.command == "ingest-site-intelligence":
+            write_json(repository.ingest_site_intelligence_event(read_json(args.input), ingested_at=args.ingested_at))
         else:  # pragma: no cover
             raise AssertionError(args.command)
     finally:

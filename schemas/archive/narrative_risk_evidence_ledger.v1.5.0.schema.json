@@ -1,0 +1,599 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.5.0",
+  "title": "Catalyst Narrative Risk Evidence Ledger 1.5.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ledger_version",
+    "primary_claim_id",
+    "claims",
+    "sources",
+    "evidence_items",
+    "relationships",
+    "coverage",
+    "source_list",
+    "derived_scoring_inputs"
+  ],
+  "properties": {
+    "ledger_version": {
+      "const": "1.5.0"
+    },
+    "primary_claim_id": {
+      "type": "string",
+      "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim_id",
+          "text",
+          "claim_type",
+          "role",
+          "notes"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim_type": {
+            "enum": [
+              "factual",
+              "causal",
+              "predictive",
+              "normative",
+              "recommendation",
+              "interpretive"
+            ]
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "supporting",
+              "context"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "title",
+          "source_type",
+          "creators",
+          "publisher",
+          "published_year",
+          "url",
+          "accessed_at",
+          "identifiers",
+          "independence_group",
+          "duplicate_of_source_id",
+          "directness",
+          "freshness",
+          "provenance",
+          "notes"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_type": {
+            "enum": [
+              "official_or_primary",
+              "peer_reviewed_or_audited",
+              "reputable_secondary",
+              "internal_unreviewed",
+              "single_report_or_media",
+              "social_or_anecdotal",
+              "unknown"
+            ]
+          },
+          "creators": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "published_year": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "accessed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "identifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scheme",
+                "value"
+              ],
+              "properties": {
+                "scheme": {
+                  "enum": [
+                    "doi",
+                    "isbn",
+                    "issn",
+                    "url",
+                    "handle",
+                    "ark",
+                    "catalog",
+                    "other"
+                  ]
+                },
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "independence_group": {
+            "type": "string",
+            "minLength": 1
+          },
+          "duplicate_of_source_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "directness": {
+            "enum": [
+              "direct",
+              "indirect",
+              "mixed",
+              "unknown"
+            ]
+          },
+          "freshness": {
+            "enum": [
+              "current",
+              "aging",
+              "stale",
+              "unknown"
+            ]
+          },
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "acquisition_method",
+              "imported_from",
+              "imported_at",
+              "content_sha256"
+            ],
+            "properties": {
+              "acquisition_method": {
+                "enum": [
+                  "manual",
+                  "knowledge_library",
+                  "catalyst_data",
+                  "api",
+                  "document_import",
+                  "other"
+                ]
+              },
+              "imported_from": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "imported_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "content_sha256": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidence_id",
+          "source_id",
+          "evidence_type",
+          "excerpt",
+          "locator",
+          "captured_at",
+          "excerpt_sha256",
+          "notes"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:evidence:sha256:[0-9a-f]{64}$"
+          },
+          "source_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+          },
+          "evidence_type": {
+            "enum": [
+              "quote",
+              "data",
+              "finding",
+              "observation",
+              "method",
+              "context"
+            ]
+          },
+          "excerpt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "locator": {
+            "type": "string"
+          },
+          "captured_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "excerpt_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "relationship_id",
+          "claim_id",
+          "evidence_id",
+          "relation_type",
+          "strength",
+          "notes"
+        ],
+        "properties": {
+          "relationship_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:relationship:sha256:[0-9a-f]{64}$"
+          },
+          "claim_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+          },
+          "evidence_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:evidence:sha256:[0-9a-f]{64}$"
+          },
+          "relation_type": {
+            "enum": [
+              "support",
+              "qualify",
+              "contradict",
+              "contextualize",
+              "unresolved"
+            ]
+          },
+          "strength": {
+            "enum": [
+              "strong",
+              "moderate",
+              "limited",
+              "weak",
+              "unclear"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "per_claim",
+        "overall"
+      ],
+      "properties": {
+        "per_claim": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "claim_id",
+              "evidence_count",
+              "source_count",
+              "independent_source_count",
+              "relationship_counts",
+              "positive_strength",
+              "coverage_status",
+              "contested"
+            ],
+            "properties": {
+              "claim_id": {
+                "type": "string",
+                "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+              },
+              "evidence_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "source_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "independent_source_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "relationship_counts": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "support",
+                  "qualify",
+                  "contradict",
+                  "contextualize",
+                  "unresolved"
+                ],
+                "properties": {
+                  "support": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "qualify": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "contradict": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "contextualize": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "unresolved": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              },
+              "positive_strength": {
+                "enum": [
+                  "strong",
+                  "moderate",
+                  "limited",
+                  "weak",
+                  "unclear"
+                ]
+              },
+              "coverage_status": {
+                "enum": [
+                  "none",
+                  "partial",
+                  "substantial",
+                  "contested"
+                ]
+              },
+              "contested": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "overall": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "claim_count",
+            "source_count",
+            "evidence_count",
+            "relationship_count",
+            "independent_source_count",
+            "duplicate_source_count",
+            "direct_source_count",
+            "stale_source_count",
+            "unsupported_claim_count",
+            "contested_claim_count",
+            "coverage_status"
+          ],
+          "properties": {
+            "claim_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "evidence_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "relationship_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "independent_source_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duplicate_source_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "direct_source_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stale_source_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unsupported_claim_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "contested_claim_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverage_status": {
+              "enum": [
+                "none",
+                "partial",
+                "substantial",
+                "contested"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "source_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_id",
+          "citation_key",
+          "citation"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+          },
+          "citation_key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "citation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "derived_scoring_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ledger_applied",
+        "source_type",
+        "evidence_strength",
+        "source_count",
+        "basis"
+      ],
+      "properties": {
+        "ledger_applied": {
+          "type": "boolean"
+        },
+        "source_type": {
+          "enum": [
+            "official_or_primary",
+            "peer_reviewed_or_audited",
+            "reputable_secondary",
+            "internal_unreviewed",
+            "single_report_or_media",
+            "social_or_anecdotal",
+            "unknown"
+          ]
+        },
+        "evidence_strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "limited",
+            "weak",
+            "unclear"
+          ]
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

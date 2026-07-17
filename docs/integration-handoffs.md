@@ -1,6 +1,6 @@
 # Integration handoffs
 
-v1.5.0 provides narrow source-import contracts rather than coupling Narrative Risk to another product's database.
+v1.6.0 provides narrow source-import contracts rather than coupling Narrative Risk to another product's database.
 
 ## Knowledge Library
 

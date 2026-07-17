@@ -1,6 +1,6 @@
 # Repository Architecture
 
-The v1.5.0 repository separates six concerns:
+The v1.6.0 repository separates six concerns:
 
 - contracts and schemas
 - evidence-ledger construction

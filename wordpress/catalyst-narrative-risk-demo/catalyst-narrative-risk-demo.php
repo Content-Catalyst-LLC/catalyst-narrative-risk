@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Catalyst Narrative Risk
- * Description: Narrative-risk scoring, evidence ledger, claim decomposition, narrative mapping, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.5.0
+ * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, narrative monitoring, and persistent review workspace interfaces for Sustainable Catalyst.
+ * Version: 1.6.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.5.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.5.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.5.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.5.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.5.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.5.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.5.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.6.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.6.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.6.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.6.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.6.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.6.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.6.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -234,7 +234,7 @@ function cnrisk_workspace_shortcode() {
     <div class="cnrisk-workspace" data-cnrisk-workspace>
       <header class="cnrisk-workspace__head">
         <h3>Narrative Risk Review Workspace</h3>
-        <p>Create durable cases, add immutable analytical revisions, assign staged reviews, record approval conditions, and export checksummed governance bundles.</p>
+        <p>Create durable cases, add immutable revisions, govern approvals, capture monitoring snapshots, detect narrative change, and export checksummed case bundles.</p>
       </header>
       <div class="cnrisk-workspace__layout">
         <aside class="cnrisk-workspace__sidebar">
@@ -273,7 +273,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.5.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.6.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -309,6 +309,20 @@ function cnrisk_workspace_shortcode() {
             </div>
             <button type="button" data-cnrisk-add-decision>Record governance decision</button>
             <div data-cnrisk-governance-decisions></div>
+          </section>
+          <section class="cnrisk-workspace__governance cnrisk-workspace__monitoring" aria-labelledby="cnrisk-monitoring-heading">
+            <h4 id="cnrisk-monitoring-heading">Narrative change, freshness, and monitoring</h4>
+            <p data-cnrisk-monitoring-summary>No monitoring snapshots or watches yet.</p>
+            <div class="cnrisk-workspace__two">
+              <label><span>Watch name</span><input data-cnrisk-watch-name value="Narrative change watch" /></label>
+              <label><span>Cadence</span><select data-cnrisk-watch-cadence><option value="manual">Manual</option><option value="daily" selected>Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label>
+            </div>
+            <div class="cnrisk-workspace__actions">
+              <button type="button" data-cnrisk-capture-snapshot>Capture snapshot</button>
+              <button type="button" data-cnrisk-create-watch>Create watch</button>
+              <button type="button" data-cnrisk-run-watch>Run monitoring check</button>
+            </div>
+            <div data-cnrisk-monitoring-detail></div>
           </section>
           <div class="cnrisk-workspace__reviews">
             <label><span>Add review comment</span><textarea rows="2" data-cnrisk-review-body></textarea></label>

@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHON="${PYTHON:-python3}"
 NODE="${NODE:-node}"
 PHP="${PHP:-php}"
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v150.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v160.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 export CNRISK_DATABASE_PATH="$TMP_DIR/api-tests.sqlite3"
 
@@ -52,11 +52,11 @@ grep -q 'relationship_id,claim_id,claim_text' "$TMP_DIR/ledger.csv"
 grep -q 'flowchart TD' "$TMP_DIR/map.mmd"
 grep -q 'Narrative Map' "$TMP_DIR/map.md"
 
-printf '\n==> Persistent workspace CLI and portable bundle round trip\n'
+printf '\n==> Persistent workspace, governance, monitoring CLI, and portable bundle round trip\n'
 SOURCE_DB="$TMP_DIR/source.sqlite3"; TARGET_DB="$TMP_DIR/target.sqlite3"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" init > "$TMP_DIR/workspace-health.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create \
-  --title "Release narrative-map case" --summary "Persistent v1.5.0 release verification." \
+  --title "Release narrative-map case" --summary "Persistent v1.6.0 release verification." \
   --status in_review --priority high --tag release --tag narrative-map \
   --input data/sample_narrative_risk_input.json --created-by release-suite > "$TMP_DIR/case.json"
 CASE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["case_id"])' "$TMP_DIR/case.json")"
@@ -107,6 +107,26 @@ FINAL_ASSIGNMENT_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.a
   --valid-until 2027-01-17T15:00:00+00:00 --reassessment-at 2026-10-17T15:00:00+00:00 > "$TMP_DIR/decision-final.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" governance-queue --reviewer-id final-approver > "$TMP_DIR/governance-queue.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" reassessment-due --at 2026-10-18T15:00:00+00:00 > "$TMP_DIR/reassessment-due.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" capture-snapshot "$CASE_ID" \
+  --captured-at 2026-07-18T12:00:00+00:00 --trigger manual > "$TMP_DIR/snapshot.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create-watch "$CASE_ID" \
+  --name "Release monitoring watch" --cadence daily --trigger-type source_stale \
+  --trigger-type material_change --trigger-type reassessment_due --trigger-type approval_expired \
+  --created-by release-suite > "$TMP_DIR/watch.json"
+WATCH_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["watch_id"])' "$TMP_DIR/watch.json")"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" check-watch "$WATCH_ID" \
+  --checked-at 2028-07-18T12:00:00+00:00 > "$TMP_DIR/watch-check.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" list-watches --case-id "$CASE_ID" > "$TMP_DIR/watches.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" list-alerts --case-id "$CASE_ID" > "$TMP_DIR/alerts.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" timeline "$CASE_ID" > "$TMP_DIR/timeline.json"
+"$PYTHON" - "$CASE_ID" data/handoffs/site_intelligence_monitoring_event.json "$TMP_DIR/site-event.json" <<'PY'
+import json,sys
+case_id,source,target=sys.argv[1:]
+payload=json.load(open(source)); payload["case_id"]=case_id
+json.dump(payload,open(target,"w"),indent=2); open(target,"a").write("\n")
+PY
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" ingest-site-intelligence \
+  --input "$TMP_DIR/site-event.json" --ingested-at 2026-07-20T12:01:00+00:00 > "$TMP_DIR/site-intelligence.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" export "$CASE_ID" \
   --output "$TMP_DIR/case-bundle.json" --exported-at 2026-07-17T17:00:00+00:00
 "$PYTHON" python/narrative_risk_workspace.py verify-bundle --input "$TMP_DIR/case-bundle.json" > "$TMP_DIR/bundle-verification.json"
@@ -116,7 +136,7 @@ FINAL_ASSIGNMENT_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.a
 cmp "$TMP_DIR/case-bundle.json" "$TMP_DIR/reexported.json"
 
 printf '\n==> Legacy migrations and post-migration reproduction\n'
-for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0; do
+for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0; do
   "$PYTHON" python/migrate_narrative_risk_record.py \
     --input "tests/fixtures/legacy-v${legacy}-record.json" \
     --output "$TMP_DIR/migrated-${legacy}.json" --migrated-at 2026-07-17T18:00:00+00:00
@@ -126,4 +146,4 @@ done
 printf '\n==> WordPress PHP syntax\n'
 "$PHP" -l wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php
 
-printf '\nCatalyst Narrative Risk v1.5.0 release suite passed.\n'
+printf '\nCatalyst Narrative Risk v1.6.0 release suite passed.\n'

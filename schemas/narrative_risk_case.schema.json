@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.5.0",
-  "title": "Catalyst Narrative Risk Case 1.5.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.6.0",
+  "title": "Catalyst Narrative Risk Case 1.6.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -28,7 +28,12 @@
     "final_disposition",
     "approval_valid_until",
     "reassessment_at",
-    "publication_allowed"
+    "publication_allowed",
+    "monitoring_snapshot_count",
+    "watch_count",
+    "open_alert_count",
+    "last_monitored_at",
+    "monitoring_status"
   ],
   "properties": {
     "case_id": {
@@ -192,6 +197,33 @@
     },
     "publication_allowed": {
       "type": "boolean"
+    },
+    "monitoring_snapshot_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "watch_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "open_alert_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_monitored_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "monitoring_status": {
+      "enum": [
+        "not_monitored",
+        "current",
+        "attention_required",
+        "critical"
+      ]
     }
   }
 }

@@ -1,0 +1,429 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-snapshot/1.6.0",
+  "title": "Catalyst Narrative Risk Monitoring Snapshot 1.6.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "snapshot_id",
+    "snapshot_version",
+    "case_id",
+    "revision_id",
+    "record_id",
+    "captured_at",
+    "trigger",
+    "record_sha256",
+    "risk_score",
+    "risk_level",
+    "confidence_state",
+    "claims",
+    "narrative_nodes",
+    "narrative_link_ids",
+    "source_ids",
+    "evidence_ids",
+    "freshness_report",
+    "governance_state",
+    "snapshot_sha256"
+  ],
+  "properties": {
+    "snapshot_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "snapshot_version": {
+      "const": "1.6.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "revision_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "record_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trigger": {
+      "enum": [
+        "manual",
+        "revision_created",
+        "scheduled",
+        "site_intelligence",
+        "import"
+      ]
+    },
+    "record_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "risk_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "risk_level": {
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "confidence_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_strength",
+        "uncertainty",
+        "review_status"
+      ],
+      "properties": {
+        "evidence_strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "limited",
+            "weak",
+            "unclear"
+          ]
+        },
+        "uncertainty": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "review_status": {
+          "enum": [
+            "reviewed",
+            "partly_reviewed",
+            "not_reviewed"
+          ]
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim_id",
+          "text",
+          "claim_type",
+          "role"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:claim:sha256:[0-9a-f]{64}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim_type": {
+            "enum": [
+              "factual",
+              "causal",
+              "predictive",
+              "normative",
+              "recommendation",
+              "interpretive"
+            ]
+          },
+          "role": {
+            "enum": [
+              "primary",
+              "supporting",
+              "context"
+            ]
+          }
+        }
+      }
+    },
+    "narrative_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "node_id",
+          "text",
+          "node_type",
+          "confidence_language"
+        ],
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "pattern": "^urn:catalyst:narrative-risk:node:sha256:[0-9a-f]{64}$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "node_type": {
+            "enum": [
+              "factual_claim",
+              "causal_claim",
+              "predictive_claim",
+              "normative_claim",
+              "recommendation",
+              "assumption",
+              "context",
+              "unknown"
+            ]
+          },
+          "confidence_language": {
+            "enum": [
+              "absolute",
+              "confident",
+              "qualified",
+              "tentative",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "narrative_link_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:catalyst:narrative-risk:link:sha256:[0-9a-f]{64}$"
+      },
+      "uniqueItems": true
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+      },
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:catalyst:narrative-risk:evidence:sha256:[0-9a-f]{64}$"
+      },
+      "uniqueItems": true
+    },
+    "freshness_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluated_at",
+        "status",
+        "source_count",
+        "counts",
+        "stale_ratio",
+        "sources",
+        "reassessment_recommended"
+      ],
+      "properties": {
+        "evaluated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "current",
+            "aging",
+            "stale",
+            "unknown"
+          ]
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "current",
+            "aging",
+            "stale",
+            "unknown"
+          ],
+          "properties": {
+            "current": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "aging": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stale": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "stale_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reassessment_recommended": {
+          "type": "boolean"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_id",
+              "title",
+              "source_type",
+              "reference_at",
+              "age_days",
+              "freshness",
+              "content_sha256"
+            ],
+            "properties": {
+              "source_id": {
+                "type": "string",
+                "pattern": "^urn:catalyst:narrative-risk:source:sha256:[0-9a-f]{64}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_type": {
+                "enum": [
+                  "official_or_primary",
+                  "peer_reviewed_or_audited",
+                  "reputable_secondary",
+                  "internal_unreviewed",
+                  "single_report_or_media",
+                  "social_or_anecdotal",
+                  "unknown"
+                ]
+              },
+              "reference_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              },
+              "age_days": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "freshness": {
+                "enum": [
+                  "current",
+                  "aging",
+                  "stale",
+                  "unknown"
+                ]
+              },
+              "content_sha256": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "governance_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow_status",
+        "final_disposition",
+        "approval_valid_until",
+        "reassessment_at",
+        "publication_allowed"
+      ],
+      "properties": {
+        "workflow_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "draft",
+            "active",
+            "blocked",
+            "changes_required",
+            "approved",
+            "rejected",
+            "expired",
+            "closed",
+            null
+          ]
+        },
+        "final_disposition": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "approve",
+            "approve_with_conditions",
+            "revise",
+            "reject",
+            "waive",
+            null
+          ]
+        },
+        "approval_valid_until": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "reassessment_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "publication_allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

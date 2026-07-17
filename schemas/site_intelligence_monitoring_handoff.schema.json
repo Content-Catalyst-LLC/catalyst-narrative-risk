@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/site-intelligence-monitoring/1.6.0",
+  "title": "Site Intelligence Monitoring Handoff 1.6.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_type",
+    "handoff_version",
+    "event_id",
+    "observed_at",
+    "case_id",
+    "event_type",
+    "headline",
+    "summary",
+    "source_url",
+    "source_title",
+    "source_content_sha256",
+    "affected_claim_ids",
+    "confidence",
+    "payload"
+  ],
+  "properties": {
+    "handoff_type": {
+      "const": "site_intelligence_monitoring_event"
+    },
+    "handoff_version": {
+      "const": "1.6.0"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "event_type": {
+      "enum": [
+        "new_evidence",
+        "material_change",
+        "source_update",
+        "narrative_shift"
+      ]
+    },
+    "headline": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "source_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "source_title": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1000
+    },
+    "source_content_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "affected_claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

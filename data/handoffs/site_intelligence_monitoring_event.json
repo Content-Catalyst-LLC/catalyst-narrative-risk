@@ -1,0 +1,21 @@
+{
+  "handoff_type": "site_intelligence_monitoring_event",
+  "handoff_version": "1.6.0",
+  "event_id": "urn:uuid:50000000-0000-4000-8000-000000000001",
+  "observed_at": "2026-07-20T12:00:00+00:00",
+  "case_id": "urn:uuid:40000000-0000-4000-8000-000000000001",
+  "event_type": "material_change",
+  "headline": "Updated official measurement published",
+  "summary": "A new official measurement may materially revise the monitored estimate.",
+  "source_url": "https://example.org/official-update",
+  "source_title": "Official measurement update",
+  "source_content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "affected_claim_ids": [
+    "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  ],
+  "confidence": "high",
+  "payload": {
+    "observed_value": 8.4,
+    "unit": "percent"
+  }
+}

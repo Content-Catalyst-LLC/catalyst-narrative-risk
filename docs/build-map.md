@@ -6,20 +6,19 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.3.0
+## Current implementation — v1.6.0
 
-The repository now provides a validated canonical method and traceable evidence foundation:
+The repository now provides:
 
-- Cross-runtime scoring and SHA-256 parity.
-- Versioned contract, method, controlled vocabularies, and schemas.
-- Five-layer records separating normalized inputs, evidence ledger, calculations, interpretation, and human decisions.
-- Structured claims, sources, evidence excerpts, provenance, citations, and relationships.
-- Evidence coverage and ledger-derived source inputs.
-- v1.0.1 and v1.1.0 migration.
-- Knowledge Library and Catalyst Data source handoffs.
-- JSON, Markdown, bibliography, CSV, API, and WordPress demonstration surfaces.
+- Cross-runtime scoring, narrative-map, evidence-ledger, canonical-record, and SHA-256 parity.
+- Versioned contracts, methods, vocabularies, and active plus archived schemas.
+- Persistent SQLite cases, immutable revisions, review history, saved views, and portable bundles.
+- Claim decomposition, typed narrative relationships, diagnostics, and wording comparison.
+- Staged review templates, assignments, human decisions, publication controls, expiration, and reassessment.
+- Immutable monitoring snapshots, source-freshness evaluation, change comparisons, watchlists, alerts, timelines, and Site Intelligence handoffs.
+- REST, CLI, and WordPress browser-workspace surfaces.
 
-The next architectural gap is persistence: records are still generated as files or API responses rather than managed as durable cases and workspaces.
+The next roadmap release is v1.7.0 — Stakeholder, Incentive, and Pressure Intelligence.
 
 ## Release roadmap
 

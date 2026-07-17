@@ -1,6 +1,6 @@
 # Persistent Cases and Review Workspaces
 
-Catalyst Narrative Risk v1.5.0 adds a durable workspace layer around immutable canonical analytical records.
+Catalyst Narrative Risk v1.6.0 adds a durable workspace layer around immutable canonical analytical records.
 
 ## Separation of responsibilities
 

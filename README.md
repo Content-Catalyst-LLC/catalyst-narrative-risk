@@ -1,34 +1,21 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.5.0 — Review, Approval, and Governance Workflow**
+**Current release: v1.6.0 — Narrative Change, Freshness, and Monitoring**
 
 Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, interpretation, and accountable human review. It does not certify truth or infer intent. It makes the reasoning, review, approval, and publication path inspectable.
 
-## What v1.5.0 adds
+## What v1.6.0 adds
 
-- Versioned review templates with intake, domain, editorial, legal, compliance, and final stages
-- Reviewer assignments, deadlines, acceptance, completion, waiver, escalation, and reviewer queues
-- Role-based permissions embedded in the canonical method snapshot
-- Append-only stage and final governance decisions
-- Explicit approval conditions, required wording, publication restrictions, and disclosures
-- Approval validity, expiration, mandatory reassessment, and publication-eligibility checks
-- Governance workflow, assignment, decision, and template JSON Schemas
-- Governance REST endpoints and command-line operations
-- Browser-local WordPress governance workflow and portable governance bundles
-- Deterministic migration from v1.4.0 without changing analytical results
+- Immutable monitoring snapshots for analytical revisions and governance state.
+- Versioned source-freshness policies with current, aging, stale, and unknown states.
+- Claim wording, evidence, narrative-map, score, confidence, and governance comparisons.
+- Advisory materiality scoring with explicit reasons and severity.
+- Persistent watchlists, monitoring checks, alerts, acknowledgement, and resolution.
+- Approval-expiration and reassessment-due monitoring signals.
+- Site Intelligence monitoring handoffs without automatic record mutation.
+- Unified case timelines and monitoring-complete portable bundles.
 
-The v1.4.0 claim decomposition, narrative mapping, evidence ledger, persistent cases, immutable revisions, review history, and bundle-transfer capabilities remain intact.
-
-## Canonical analytical record
-
-1. `normalized_input`
-2. `evidence_ledger`
-3. `narrative_map`
-4. `calculations`
-5. `interpretation`
-6. `human_decision`
-
-Governance is stored in the workspace around immutable revisions. The weighted score and narrative diagnostics remain advisory and cannot approve a claim automatically.
+The v1.5.0 analytical and governance boundaries remain intact. Monitoring never verifies truth, changes an analytical score silently, or grants approval automatically.
 
 ## Repository layout
 
@@ -54,7 +41,7 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 PYTHON=.venv/bin/python bash scripts/release_check.sh
 ```
 
-The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all five legacy migrations, JavaScript syntax, and WordPress PHP syntax.
+The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all six legacy migrations, JavaScript syntax, and WordPress PHP syntax.
 
 ## Generate a canonical record
 
@@ -99,6 +86,21 @@ python python/narrative_risk_workspace.py --database "$DB" decide WORKFLOW_ID   
 ```
 
 See `docs/review-approval-governance-workflow.md` for the complete governance contract.
+
+## Monitoring workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" capture-snapshot CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" create-watch CASE_ID \
+  --name "Daily narrative watch" --cadence daily \
+  --trigger-type material_change --trigger-type source_stale
+python python/narrative_risk_workspace.py --database "$DB" check-watch WATCH_ID
+python python/narrative_risk_workspace.py --database "$DB" list-alerts --case-id CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" timeline CASE_ID
+```
+
+See `docs/narrative-change-freshness-monitoring.md` and `docs/site-intelligence-monitoring-handoff.md`.
 
 ## WordPress shortcodes
 

@@ -85,3 +85,7 @@ The v1.5.0 case bundle includes:
 - one bundle SHA-256 checksum.
 
 Import verifies the bundle checksum, all revision hashes, and all case identifiers before writing any data. Import is transactional, and an export-import-re-export round trip is exact.
+
+## Monitoring relationship
+
+v1.6.0 monitors approval validity, publication state, and reassessment dates without modifying or renewing a governance decision automatically. See `narrative-change-freshness-monitoring.md`.

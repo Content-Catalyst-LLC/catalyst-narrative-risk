@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import json
 from pathlib import Path
 import sqlite3
@@ -28,6 +28,8 @@ from .contracts import (
     GOVERNANCE_WORKFLOW_SCHEMA_PATH,
     GOVERNANCE_DECISION_SCHEMA_PATH,
     REVIEW_TEMPLATE_SCHEMA_PATH,
+    MONITORING_SNAPSHOT_SCHEMA_PATH, MONITORING_COMPARISON_SCHEMA_PATH,
+    WATCHLIST_SCHEMA_PATH, MONITORING_ALERT_SCHEMA_PATH,
     canonical_json,
     sha256_digest,
     validate_against_schema,
@@ -39,15 +41,20 @@ from .governance import (
     normalize_string_list, normalize_template_stages, require_permission,
 )
 from .service import build_narrative_risk_record, validate_narrative_risk_record
+from .monitoring import (
+    ALERT_SEVERITIES, ALERT_STATUSES, ALERT_TYPES, WATCH_CADENCES, WATCH_STATUSES, WATCH_TRIGGERS,
+    build_alert, build_monitoring_snapshot, compare_monitoring_snapshots, normalize_watchlist,
+    validate_site_intelligence_handoff, validate_datetime as monitoring_datetime, urn_uuid as monitoring_urn_uuid,
+)
 
-VERSION = "1.5.0"
+VERSION = "1.6.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
 REVIEW_EVENT_TYPES = {
     "comment", "review_requested", "review_completed", "decision_updated",
     "status_changed", "assignment_changed", "workflow_started", "stage_decision",
-    "approval_expired", "reassessment_due",
+    "approval_expired", "reassessment_due", "monitoring_snapshot", "monitoring_alert", "source_change",
 }
 SAVED_VIEW_FIELDS = {"query", "organization_id", "project_id", "status", "priority", "tags", "archived"}
 
@@ -309,6 +316,93 @@ class SQLiteCaseRepository:
         CREATE TRIGGER IF NOT EXISTS governance_decisions_no_delete
         BEFORE DELETE ON governance_decisions BEGIN SELECT RAISE(ABORT, 'governance decisions are append-only'); END;
 
+        CREATE TABLE IF NOT EXISTS monitoring_snapshots (
+            snapshot_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            revision_id TEXT REFERENCES revisions(revision_id) ON DELETE RESTRICT,
+            record_id TEXT NOT NULL,
+            captured_at TEXT NOT NULL,
+            trigger TEXT NOT NULL,
+            snapshot_json TEXT NOT NULL,
+            snapshot_sha256 TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_monitoring_snapshots_case ON monitoring_snapshots(case_id, captured_at);
+        CREATE TRIGGER IF NOT EXISTS monitoring_snapshots_no_update
+        BEFORE UPDATE ON monitoring_snapshots BEGIN SELECT RAISE(ABORT, 'monitoring snapshots are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS monitoring_snapshots_no_delete
+        BEFORE DELETE ON monitoring_snapshots BEGIN SELECT RAISE(ABORT, 'monitoring snapshots are append-only'); END;
+
+        CREATE TABLE IF NOT EXISTS monitoring_comparisons (
+            comparison_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            from_snapshot_id TEXT NOT NULL REFERENCES monitoring_snapshots(snapshot_id) ON DELETE RESTRICT,
+            to_snapshot_id TEXT NOT NULL REFERENCES monitoring_snapshots(snapshot_id) ON DELETE RESTRICT,
+            compared_at TEXT NOT NULL,
+            materiality_score INTEGER NOT NULL,
+            severity TEXT NOT NULL,
+            comparison_json TEXT NOT NULL,
+            comparison_sha256 TEXT NOT NULL,
+            UNIQUE(from_snapshot_id, to_snapshot_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_monitoring_comparisons_case ON monitoring_comparisons(case_id, compared_at);
+        CREATE TRIGGER IF NOT EXISTS monitoring_comparisons_no_update
+        BEFORE UPDATE ON monitoring_comparisons BEGIN SELECT RAISE(ABORT, 'monitoring comparisons are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS monitoring_comparisons_no_delete
+        BEFORE DELETE ON monitoring_comparisons BEGIN SELECT RAISE(ABORT, 'monitoring comparisons are append-only'); END;
+
+        CREATE TABLE IF NOT EXISTS watchlists (
+            watch_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            name TEXT NOT NULL,
+            status TEXT NOT NULL,
+            cadence TEXT NOT NULL,
+            trigger_types_json TEXT NOT NULL,
+            source_ids_json TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            last_checked_at TEXT,
+            next_check_at TEXT,
+            created_by TEXT,
+            notes TEXT NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_watchlists_due ON watchlists(status, next_check_at);
+        CREATE INDEX IF NOT EXISTS idx_watchlists_case ON watchlists(case_id, status);
+
+        CREATE TABLE IF NOT EXISTS monitoring_alerts (
+            alert_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            watch_id TEXT REFERENCES watchlists(watch_id) ON DELETE RESTRICT,
+            snapshot_id TEXT REFERENCES monitoring_snapshots(snapshot_id) ON DELETE RESTRICT,
+            comparison_id TEXT REFERENCES monitoring_comparisons(comparison_id) ON DELETE RESTRICT,
+            alert_type TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            status TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            acknowledged_at TEXT,
+            acknowledged_by TEXT,
+            resolved_at TEXT,
+            metadata_json TEXT NOT NULL DEFAULT '{}'
+        );
+        CREATE INDEX IF NOT EXISTS idx_monitoring_alerts_queue ON monitoring_alerts(status, severity, created_at);
+        CREATE INDEX IF NOT EXISTS idx_monitoring_alerts_case ON monitoring_alerts(case_id, status);
+
+        CREATE TABLE IF NOT EXISTS site_intelligence_events (
+            event_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            event_type TEXT NOT NULL,
+            observed_at TEXT NOT NULL,
+            handoff_json TEXT NOT NULL,
+            handoff_sha256 TEXT NOT NULL,
+            ingested_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_site_intelligence_events_case ON site_intelligence_events(case_id, observed_at);
+        CREATE TRIGGER IF NOT EXISTS site_intelligence_events_no_update
+        BEFORE UPDATE ON site_intelligence_events BEGIN SELECT RAISE(ABORT, 'site intelligence events are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS site_intelligence_events_no_delete
+        BEFORE DELETE ON site_intelligence_events BEGIN SELECT RAISE(ABORT, 'site intelligence events are append-only'); END;
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -345,7 +439,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -379,6 +473,12 @@ class SQLiteCaseRepository:
         workflow = self.get_case_governance_workflow(case_id)
         assignment_count = workflow["assignment_count"] if workflow else 0
         decision_count = workflow["decision_count"] if workflow else 0
+        snapshot_count = int(self._connection.execute("SELECT COUNT(*) FROM monitoring_snapshots WHERE case_id=?", (case_id,)).fetchone()[0])
+        watch_count = int(self._connection.execute("SELECT COUNT(*) FROM watchlists WHERE case_id=? AND status='active'", (case_id,)).fetchone()[0])
+        open_alert_count = int(self._connection.execute("SELECT COUNT(*) FROM monitoring_alerts WHERE case_id=? AND status='open'", (case_id,)).fetchone()[0])
+        last_snapshot = self._connection.execute("SELECT captured_at FROM monitoring_snapshots WHERE case_id=? ORDER BY captured_at DESC LIMIT 1", (case_id,)).fetchone()
+        critical_alerts = int(self._connection.execute("SELECT COUNT(*) FROM monitoring_alerts WHERE case_id=? AND status='open' AND severity='critical'", (case_id,)).fetchone()[0])
+        monitoring_status = "critical" if critical_alerts else "attention_required" if open_alert_count else "current" if snapshot_count else "not_monitored"
         case = {
             "case_id": case_id,
             "organization_id": row["organization_id"],
@@ -404,6 +504,11 @@ class SQLiteCaseRepository:
             "approval_valid_until": workflow["approval_valid_until"] if workflow else None,
             "reassessment_at": workflow["reassessment_at"] if workflow else None,
             "publication_allowed": workflow["publication_allowed"] if workflow else False,
+            "monitoring_snapshot_count": snapshot_count,
+            "watch_count": watch_count,
+            "open_alert_count": open_alert_count,
+            "last_monitored_at": last_snapshot["captured_at"] if last_snapshot else None,
+            "monitoring_status": monitoring_status,
         }
         _schema_error("case", case, CASE_SCHEMA_PATH)
         return case
@@ -461,6 +566,11 @@ class SQLiteCaseRepository:
                 case["revisions"] = self.list_revisions(normalized_id)
                 case["review_events"] = self.list_review_events(normalized_id)
                 case["governance_workflow"] = self.get_case_governance_workflow(normalized_id, include_details=True)
+                case["monitoring_snapshots"] = self.list_monitoring_snapshots(normalized_id)
+                case["monitoring_comparisons"] = self.list_monitoring_comparisons(normalized_id)
+                case["watchlists"] = self.list_watchlists(case_id=normalized_id)
+                case["monitoring_alerts"] = self.list_monitoring_alerts(case_id=normalized_id)
+                case["site_intelligence_events"] = self.list_site_intelligence_events(normalized_id)
                 case["activity"] = self.list_activity(normalized_id)
             return case
 
@@ -803,6 +913,11 @@ class SQLiteCaseRepository:
             "governance_workflow": self.get_case_governance_workflow(case["case_id"]),
             "review_assignments": self.list_review_assignments(case_id=case["case_id"]),
             "governance_decisions": self.list_governance_decisions(case_id=case["case_id"]),
+            "monitoring_snapshots": self.list_monitoring_snapshots(case["case_id"]),
+            "monitoring_comparisons": self.list_monitoring_comparisons(case["case_id"]),
+            "watchlists": self.list_watchlists(case_id=case["case_id"]),
+            "monitoring_alerts": self.list_monitoring_alerts(case_id=case["case_id"]),
+            "site_intelligence_events": self.list_site_intelligence_events(case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -834,6 +949,20 @@ class SQLiteCaseRepository:
                 for item in ([bundle["governance_workflow"]] if bundle.get("governance_workflow") else [])
                 + list(bundle.get("review_assignments", [])) + list(bundle.get("governance_decisions", []))
             ),
+            "monitoring_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in list(bundle.get("monitoring_snapshots", [])) + list(bundle.get("monitoring_comparisons", []))
+                + list(bundle.get("watchlists", [])) + list(bundle.get("monitoring_alerts", []))
+                + list(bundle.get("site_intelligence_events", []))
+            ),
+            "all_snapshot_hashes_match": all(
+                sha256_digest({k: v for k, v in item.items() if k != "snapshot_sha256"}) == item["snapshot_sha256"]
+                for item in bundle.get("monitoring_snapshots", [])
+            ),
+            "all_comparison_hashes_match": all(
+                sha256_digest({k: v for k, v in item.items() if k != "comparison_sha256"}) == item["comparison_sha256"]
+                for item in bundle.get("monitoring_comparisons", [])
+            ),
         }
 
     def import_case_bundle(self, bundle: Mapping[str, Any]) -> Dict[str, Any]:
@@ -846,6 +975,12 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains a revision for another case")
         if not report["governance_case_ids_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains governance records for another case")
+        if not report["monitoring_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains monitoring records for another case")
+        if not report["all_snapshot_hashes_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a monitoring snapshot hash mismatch")
+        if not report["all_comparison_hashes_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a monitoring comparison hash mismatch")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -902,6 +1037,31 @@ class SQLiteCaseRepository:
                      _json_dump(decision["required_wording"]), _json_dump(decision["publication_restrictions"]),
                      _json_dump(decision["disclosures"]), decision["valid_until"], decision["reassessment_at"], decision["supersedes_decision_id"]),
                 )
+            for snapshot in bundle.get("monitoring_snapshots", []):
+                connection.execute(
+                    "INSERT INTO monitoring_snapshots(snapshot_id,case_id,revision_id,record_id,captured_at,trigger,snapshot_json,snapshot_sha256) VALUES(?,?,?,?,?,?,?,?)",
+                    (snapshot["snapshot_id"], snapshot["case_id"], snapshot["revision_id"], snapshot["record_id"], snapshot["captured_at"], snapshot["trigger"], _json_dump(snapshot), snapshot["snapshot_sha256"]),
+                )
+            for comparison in bundle.get("monitoring_comparisons", []):
+                connection.execute(
+                    "INSERT INTO monitoring_comparisons(comparison_id,case_id,from_snapshot_id,to_snapshot_id,compared_at,materiality_score,severity,comparison_json,comparison_sha256) VALUES(?,?,?,?,?,?,?,?,?)",
+                    (comparison["comparison_id"], comparison["case_id"], comparison["from_snapshot_id"], comparison["to_snapshot_id"], comparison["compared_at"], comparison["materiality_score"], comparison["severity"], _json_dump(comparison), comparison["comparison_sha256"]),
+                )
+            for watch in bundle.get("watchlists", []):
+                connection.execute(
+                    "INSERT INTO watchlists(watch_id,case_id,name,status,cadence,trigger_types_json,source_ids_json,created_at,updated_at,last_checked_at,next_check_at,created_by,notes) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (watch["watch_id"], watch["case_id"], watch["name"], watch["status"], watch["cadence"], _json_dump(watch["trigger_types"]), _json_dump(watch["source_ids"]), watch["created_at"], watch["updated_at"], watch["last_checked_at"], watch["next_check_at"], watch["created_by"], watch["notes"]),
+                )
+            for alert in bundle.get("monitoring_alerts", []):
+                connection.execute(
+                    "INSERT INTO monitoring_alerts(alert_id,case_id,watch_id,snapshot_id,comparison_id,alert_type,severity,title,body,status,created_at,acknowledged_at,acknowledged_by,resolved_at,metadata_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (alert["alert_id"], alert["case_id"], alert["watch_id"], alert["snapshot_id"], alert["comparison_id"], alert["alert_type"], alert["severity"], alert["title"], alert["body"], alert["status"], alert["created_at"], alert["acknowledged_at"], alert["acknowledged_by"], alert["resolved_at"], _json_dump(alert["metadata"])),
+                )
+            for handoff in bundle.get("site_intelligence_events", []):
+                connection.execute(
+                    "INSERT INTO site_intelligence_events(event_id,case_id,event_type,observed_at,handoff_json,handoff_sha256,ingested_at) VALUES(?,?,?,?,?,?,?)",
+                    (handoff["event_id"], handoff["case_id"], handoff["event_type"], handoff["observed_at"], _json_dump(handoff), sha256_digest(handoff), bundle["exported_at"]),
+                )
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -911,7 +1071,369 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.5.0 governed review workflow
+    # v1.6.0 narrative change, freshness, and monitoring
+
+    def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        snapshot = _json_load(row["snapshot_json"])
+        _schema_error("monitoring snapshot", snapshot, MONITORING_SNAPSHOT_SCHEMA_PATH)
+        return snapshot
+
+    def get_monitoring_snapshot(self, snapshot_id: str) -> Dict[str, Any]:
+        normalized_id = monitoring_urn_uuid(snapshot_id, "snapshot_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM monitoring_snapshots WHERE snapshot_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"monitoring snapshot not found: {normalized_id}")
+        return self._snapshot_from_row(row)
+
+    def list_monitoring_snapshots(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized_case = _urn_uuid(case_id, "case_id")
+        self.get_case(normalized_case)
+        with self._lock:
+            rows = self._connection.execute(
+                "SELECT * FROM monitoring_snapshots WHERE case_id=? ORDER BY captured_at, snapshot_id", (normalized_case,)
+            ).fetchall()
+        return [self._snapshot_from_row(row) for row in rows]
+
+    def capture_monitoring_snapshot(
+        self, case_id: str, *, revision_id: str | None = None, captured_at: str | None = None,
+        trigger: str = "manual", snapshot_id: str | None = None,
+    ) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        if revision_id is None:
+            revisions = self.list_revisions(case["case_id"])
+            if not revisions:
+                raise NarrativeRiskValidationError("case has no revision to monitor")
+            revision = revisions[-1]
+        else:
+            revision = self.get_revision(revision_id)
+            if revision["case_id"] != case["case_id"]:
+                raise NarrativeRiskValidationError("revision does not belong to the monitored case")
+        governance = self.get_case_governance_workflow(case["case_id"], at=captured_at) or {}
+        snapshot = build_monitoring_snapshot(
+            revision["record"], case_id=case["case_id"], revision_id=revision["revision_id"],
+            governance=governance, captured_at=captured_at, trigger=trigger, snapshot_id=snapshot_id,
+        )
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO monitoring_snapshots(snapshot_id,case_id,revision_id,record_id,captured_at,trigger,snapshot_json,snapshot_sha256) VALUES(?,?,?,?,?,?,?,?)",
+                    (snapshot["snapshot_id"], snapshot["case_id"], snapshot["revision_id"], snapshot["record_id"],
+                     snapshot["captured_at"], snapshot["trigger"], _json_dump(snapshot), snapshot["snapshot_sha256"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"monitoring snapshot already exists: {snapshot['snapshot_id']}") from exc
+            connection.execute("UPDATE cases SET updated_at=? WHERE case_id=?", (snapshot["captured_at"], case["case_id"]))
+            self._activity(connection, case["case_id"], "monitoring_snapshot_captured", entity_id=snapshot["snapshot_id"],
+                           payload={"revision_id": snapshot["revision_id"], "trigger": snapshot["trigger"], "freshness": snapshot["freshness_report"]["status"]},
+                           created_at=snapshot["captured_at"])
+        return snapshot
+
+    def _comparison_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        comparison = _json_load(row["comparison_json"])
+        _schema_error("monitoring comparison", comparison, MONITORING_COMPARISON_SCHEMA_PATH)
+        return comparison
+
+    def get_monitoring_comparison(self, comparison_id: str) -> Dict[str, Any]:
+        normalized_id = monitoring_urn_uuid(comparison_id, "comparison_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM monitoring_comparisons WHERE comparison_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"monitoring comparison not found: {normalized_id}")
+        return self._comparison_from_row(row)
+
+    def list_monitoring_comparisons(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized_case = _urn_uuid(case_id, "case_id")
+        with self._lock:
+            rows = self._connection.execute(
+                "SELECT * FROM monitoring_comparisons WHERE case_id=? ORDER BY compared_at, comparison_id", (normalized_case,)
+            ).fetchall()
+        return [self._comparison_from_row(row) for row in rows]
+
+    def compare_snapshots(
+        self, from_snapshot_id: str, to_snapshot_id: str, *, compared_at: str | None = None,
+        comparison_id: str | None = None,
+    ) -> Dict[str, Any]:
+        previous = self.get_monitoring_snapshot(from_snapshot_id)
+        current = self.get_monitoring_snapshot(to_snapshot_id)
+        revision = self.get_revision(current["revision_id"])
+        comparison = compare_monitoring_snapshots(
+            previous, current, compared_at=compared_at, method_snapshot=revision["record"]["method_snapshot"],
+            comparison_id=comparison_id,
+        )
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO monitoring_comparisons(comparison_id,case_id,from_snapshot_id,to_snapshot_id,compared_at,materiality_score,severity,comparison_json,comparison_sha256) VALUES(?,?,?,?,?,?,?,?,?)",
+                    (comparison["comparison_id"], comparison["case_id"], comparison["from_snapshot_id"], comparison["to_snapshot_id"],
+                     comparison["compared_at"], comparison["materiality_score"], comparison["severity"], _json_dump(comparison), comparison["comparison_sha256"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                existing = connection.execute(
+                    "SELECT comparison_id FROM monitoring_comparisons WHERE from_snapshot_id=? AND to_snapshot_id=?",
+                    (comparison["from_snapshot_id"], comparison["to_snapshot_id"]),
+                ).fetchone()
+                if existing:
+                    return self.get_monitoring_comparison(existing["comparison_id"])
+                raise NarrativeRiskValidationError(f"monitoring comparison already exists: {comparison['comparison_id']}") from exc
+            self._activity(connection, comparison["case_id"], "monitoring_snapshots_compared", entity_id=comparison["comparison_id"],
+                           payload={"materiality_score": comparison["materiality_score"], "severity": comparison["severity"], "material_change": comparison["material_change"]},
+                           created_at=comparison["compared_at"])
+        return comparison
+
+    def _watch_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        watch = {
+            "watch_id": row["watch_id"], "watch_version": VERSION, "case_id": row["case_id"], "name": row["name"],
+            "status": row["status"], "cadence": row["cadence"], "trigger_types": _json_load(row["trigger_types_json"]),
+            "source_ids": _json_load(row["source_ids_json"]), "created_at": row["created_at"], "updated_at": row["updated_at"],
+            "last_checked_at": row["last_checked_at"], "next_check_at": row["next_check_at"], "created_by": row["created_by"], "notes": row["notes"],
+        }
+        _schema_error("watchlist", watch, WATCHLIST_SCHEMA_PATH)
+        return watch
+
+    def create_watchlist(self, case_id: str, **payload: Any) -> Dict[str, Any]:
+        self.get_case(case_id)
+        watch = normalize_watchlist(payload, case_id=case_id)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO watchlists(watch_id,case_id,name,status,cadence,trigger_types_json,source_ids_json,created_at,updated_at,last_checked_at,next_check_at,created_by,notes) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (watch["watch_id"], watch["case_id"], watch["name"], watch["status"], watch["cadence"], _json_dump(watch["trigger_types"]),
+                     _json_dump(watch["source_ids"]), watch["created_at"], watch["updated_at"], watch["last_checked_at"], watch["next_check_at"],
+                     watch["created_by"], watch["notes"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"watchlist already exists: {watch['watch_id']}") from exc
+            self._activity(connection, watch["case_id"], "watchlist_created", entity_id=watch["watch_id"],
+                           payload={"name": watch["name"], "cadence": watch["cadence"], "trigger_types": watch["trigger_types"]}, created_at=watch["created_at"])
+        return self.get_watchlist(watch["watch_id"])
+
+    def get_watchlist(self, watch_id: str) -> Dict[str, Any]:
+        normalized_id = monitoring_urn_uuid(watch_id, "watch_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM watchlists WHERE watch_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"watchlist not found: {normalized_id}")
+        return self._watch_from_row(row)
+
+    def list_watchlists(self, *, case_id: str | None = None, status: str | None = None, due_at: str | None = None) -> List[Dict[str, Any]]:
+        clauses: List[str] = []
+        params: List[Any] = []
+        if case_id is not None:
+            clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if status is not None:
+            normalized_status = _choice(status, "status", WATCH_STATUSES, "active")
+            clauses.append("status=?"); params.append(normalized_status)
+        if due_at is not None:
+            timestamp = monitoring_datetime(due_at, "due_at")
+            clauses.append("next_check_at IS NOT NULL AND next_check_at<=?"); params.append(timestamp)
+        sql = "SELECT * FROM watchlists" + (" WHERE " + " AND ".join(clauses) if clauses else "") + " ORDER BY next_check_at, created_at"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        return [self._watch_from_row(row) for row in rows]
+
+    def update_watchlist(self, watch_id: str, changes: Mapping[str, Any]) -> Dict[str, Any]:
+        watch = self.get_watchlist(watch_id)
+        allowed = {"name", "status", "cadence", "trigger_types", "source_ids", "next_check_at", "notes", "updated_at"}
+        unknown = sorted(set(changes) - allowed)
+        if unknown:
+            raise NarrativeRiskValidationError(f"unsupported watchlist update field(s): {', '.join(unknown)}")
+        payload = dict(watch)
+        payload.update(changes)
+        payload.pop("watch_version", None)
+        normalized = normalize_watchlist(payload, case_id=watch["case_id"])
+        with self._transaction() as connection:
+            connection.execute(
+                "UPDATE watchlists SET name=?,status=?,cadence=?,trigger_types_json=?,source_ids_json=?,updated_at=?,next_check_at=?,notes=? WHERE watch_id=?",
+                (normalized["name"], normalized["status"], normalized["cadence"], _json_dump(normalized["trigger_types"]), _json_dump(normalized["source_ids"]),
+                 normalized["updated_at"], normalized["next_check_at"], normalized["notes"], watch["watch_id"]),
+            )
+            self._activity(connection, watch["case_id"], "watchlist_updated", entity_id=watch["watch_id"], payload=dict(changes), created_at=normalized["updated_at"])
+        return self.get_watchlist(watch["watch_id"])
+
+    def _alert_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
+        alert = {
+            "alert_id": row["alert_id"], "alert_version": VERSION, "case_id": row["case_id"], "watch_id": row["watch_id"],
+            "snapshot_id": row["snapshot_id"], "comparison_id": row["comparison_id"], "alert_type": row["alert_type"],
+            "severity": row["severity"], "title": row["title"], "body": row["body"], "status": row["status"], "created_at": row["created_at"],
+            "acknowledged_at": row["acknowledged_at"], "acknowledged_by": row["acknowledged_by"], "resolved_at": row["resolved_at"],
+            "metadata": _json_load(row["metadata_json"]),
+        }
+        _schema_error("monitoring alert", alert, MONITORING_ALERT_SCHEMA_PATH)
+        return alert
+
+    def create_monitoring_alert(self, **payload: Any) -> Dict[str, Any]:
+        alert = build_alert(**payload)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO monitoring_alerts(alert_id,case_id,watch_id,snapshot_id,comparison_id,alert_type,severity,title,body,status,created_at,acknowledged_at,acknowledged_by,resolved_at,metadata_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (alert["alert_id"], alert["case_id"], alert["watch_id"], alert["snapshot_id"], alert["comparison_id"], alert["alert_type"], alert["severity"],
+                     alert["title"], alert["body"], alert["status"], alert["created_at"], None, None, None, _json_dump(alert["metadata"])),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"monitoring alert already exists: {alert['alert_id']}") from exc
+            self._activity(connection, alert["case_id"], "monitoring_alert_created", entity_id=alert["alert_id"],
+                           payload={"alert_type": alert["alert_type"], "severity": alert["severity"]}, created_at=alert["created_at"])
+        return self.get_monitoring_alert(alert["alert_id"])
+
+    def get_monitoring_alert(self, alert_id: str) -> Dict[str, Any]:
+        normalized_id = monitoring_urn_uuid(alert_id, "alert_id")
+        with self._lock:
+            row = self._connection.execute("SELECT * FROM monitoring_alerts WHERE alert_id=?", (normalized_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"monitoring alert not found: {normalized_id}")
+        return self._alert_from_row(row)
+
+    def list_monitoring_alerts(
+        self, *, case_id: str | None = None, watch_id: str | None = None, status: str | None = None,
+        severity: str | None = None,
+    ) -> List[Dict[str, Any]]:
+        clauses: List[str] = []
+        params: List[Any] = []
+        if case_id is not None: clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if watch_id is not None: clauses.append("watch_id=?"); params.append(monitoring_urn_uuid(watch_id, "watch_id"))
+        if status is not None: clauses.append("status=?"); params.append(_choice(status, "status", ALERT_STATUSES, "open"))
+        if severity is not None: clauses.append("severity=?"); params.append(_choice(severity, "severity", ALERT_SEVERITIES, "info"))
+        sql = "SELECT * FROM monitoring_alerts" + (" WHERE " + " AND ".join(clauses) if clauses else "") + " ORDER BY created_at DESC, alert_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        return [self._alert_from_row(row) for row in rows]
+
+    def update_monitoring_alert_status(
+        self, alert_id: str, *, status: str, actor_id: str, changed_at: str | None = None,
+    ) -> Dict[str, Any]:
+        alert = self.get_monitoring_alert(alert_id)
+        normalized_status = _choice(status, "status", ALERT_STATUSES, "acknowledged")
+        timestamp = monitoring_datetime(changed_at, "changed_at") if changed_at else _iso_now()
+        actor = _text(actor_id, "actor_id", required=True, maximum=500)
+        acknowledged_at = timestamp if normalized_status in {"acknowledged", "resolved"} else alert["acknowledged_at"]
+        acknowledged_by = actor if normalized_status in {"acknowledged", "resolved"} else alert["acknowledged_by"]
+        resolved_at = timestamp if normalized_status == "resolved" else None
+        with self._transaction() as connection:
+            connection.execute(
+                "UPDATE monitoring_alerts SET status=?,acknowledged_at=?,acknowledged_by=?,resolved_at=? WHERE alert_id=?",
+                (normalized_status, acknowledged_at, acknowledged_by, resolved_at, alert["alert_id"]),
+            )
+            self._activity(connection, alert["case_id"], "monitoring_alert_status_changed", entity_id=alert["alert_id"],
+                           payload={"status": normalized_status, "actor_id": actor}, created_at=timestamp)
+        return self.get_monitoring_alert(alert["alert_id"])
+
+    @staticmethod
+    def _next_watch_check(cadence: str, checked_at: str) -> str | None:
+        if cadence == "manual":
+            return None
+        current = datetime.fromisoformat(checked_at.replace("Z", "+00:00"))
+        delta = {"hourly": timedelta(hours=1), "daily": timedelta(days=1), "weekly": timedelta(days=7), "monthly": timedelta(days=30)}[cadence]
+        return (current + delta).isoformat()
+
+    def run_watchlist_check(
+        self, watch_id: str, *, revision_id: str | None = None, checked_at: str | None = None,
+        trigger: str = "scheduled",
+    ) -> Dict[str, Any]:
+        watch = self.get_watchlist(watch_id)
+        if watch["status"] != "active":
+            raise NarrativeRiskValidationError("only active watchlists can be checked")
+        timestamp = monitoring_datetime(checked_at, "checked_at") if checked_at else _iso_now()
+        previous = self.list_monitoring_snapshots(watch["case_id"])
+        snapshot = self.capture_monitoring_snapshot(watch["case_id"], revision_id=revision_id, captured_at=timestamp, trigger=trigger)
+        comparison = self.compare_snapshots(previous[-1]["snapshot_id"], snapshot["snapshot_id"], compared_at=timestamp) if previous else None
+        generated_alerts: List[Dict[str, Any]] = []
+
+        def emit(alert_type: str, severity: str, title: str, body: str, metadata: Mapping[str, Any] | None = None) -> None:
+            if alert_type in watch["trigger_types"]:
+                generated_alerts.append(self.create_monitoring_alert(
+                    case_id=watch["case_id"], watch_id=watch["watch_id"], snapshot_id=snapshot["snapshot_id"],
+                    comparison_id=comparison["comparison_id"] if comparison else None, alert_type=alert_type, severity=severity,
+                    title=title, body=body, metadata=metadata or {}, created_at=timestamp,
+                ))
+
+        freshness = snapshot["freshness_report"]
+        if freshness["counts"]["stale"]:
+            emit("source_stale", "high" if freshness["stale_ratio"] >= 0.5 else "medium", "Source freshness requires review",
+                 f"{freshness['counts']['stale']} of {freshness['source_count']} monitored sources are stale.", {"freshness_report": freshness})
+        if comparison:
+            if comparison["material_change"]:
+                emit("material_change", comparison["severity"], "Material narrative change detected", " ".join(comparison["reasons"]) or "The monitored case changed materially.", {"comparison": comparison})
+            if comparison["evidence_changes"]["added_evidence_ids"]:
+                emit("new_evidence", "medium", "New evidence detected", f"{len(comparison['evidence_changes']['added_evidence_ids'])} new evidence item(s) were added.", {"evidence_ids": comparison["evidence_changes"]["added_evidence_ids"]})
+            if comparison["evidence_changes"]["content_changed_source_ids"]:
+                emit("source_content_changed", "high", "Source content changed", f"{len(comparison['evidence_changes']['content_changed_source_ids'])} source content digest(s) changed.", {"source_ids": comparison["evidence_changes"]["content_changed_source_ids"]})
+            if comparison["risk_level_changed"]:
+                emit("risk_level_changed", "high", "Risk level changed", f"Risk level changed while monitoring case {watch['case_id']}.", {"comparison_id": comparison["comparison_id"]})
+            if comparison["wording_changes"]:
+                emit("wording_changed", "medium", "Claim wording changed", f"{len(comparison['wording_changes'])} claim wording change(s) were detected.", {"wording_changes": comparison["wording_changes"]})
+            if comparison["confidence_changes"]:
+                emit("confidence_changed", "medium", "Confidence state changed", f"{len(comparison['confidence_changes'])} confidence-state change(s) were detected.", {"confidence_changes": comparison["confidence_changes"]})
+        flags = snapshot["governance_state"]
+        approval_valid = flags.get("approval_valid_until")
+        reassessment = flags.get("reassessment_at")
+        now_dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        if approval_valid and datetime.fromisoformat(approval_valid.replace("Z", "+00:00")) < now_dt:
+            emit("approval_expired", "critical", "Approval expired", "The final governance approval has expired and publication should stop pending reassessment.")
+        elif reassessment and datetime.fromisoformat(reassessment.replace("Z", "+00:00")) <= now_dt:
+            emit("reassessment_due", "high", "Reassessment is due", "The governed narrative has reached its reassessment date.")
+        next_check = self._next_watch_check(watch["cadence"], timestamp)
+        with self._transaction() as connection:
+            connection.execute("UPDATE watchlists SET last_checked_at=?,next_check_at=?,updated_at=? WHERE watch_id=?", (timestamp, next_check, timestamp, watch["watch_id"]))
+            self._activity(connection, watch["case_id"], "watchlist_checked", entity_id=watch["watch_id"],
+                           payload={"snapshot_id": snapshot["snapshot_id"], "comparison_id": comparison["comparison_id"] if comparison else None, "alert_count": len(generated_alerts)}, created_at=timestamp)
+        return {"watchlist": self.get_watchlist(watch["watch_id"]), "snapshot": snapshot, "comparison": comparison, "alerts": generated_alerts, "alert_count": len(generated_alerts)}
+
+    def ingest_site_intelligence_event(self, payload: Mapping[str, Any], *, ingested_at: str | None = None) -> Dict[str, Any]:
+        handoff = validate_site_intelligence_handoff(payload)
+        self.get_case(handoff["case_id"])
+        timestamp = monitoring_datetime(ingested_at, "ingested_at") if ingested_at else _iso_now()
+        digest = sha256_digest(handoff)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO site_intelligence_events(event_id,case_id,event_type,observed_at,handoff_json,handoff_sha256,ingested_at) VALUES(?,?,?,?,?,?,?)",
+                    (handoff["event_id"], handoff["case_id"], handoff["event_type"], handoff["observed_at"], _json_dump(handoff), digest, timestamp),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"Site Intelligence event already exists: {handoff['event_id']}") from exc
+            self._activity(connection, handoff["case_id"], "site_intelligence_event_ingested", entity_id=handoff["event_id"],
+                           payload={"event_type": handoff["event_type"], "confidence": handoff["confidence"], "handoff_sha256": digest}, created_at=timestamp)
+        alerts = []
+        for watch in self.list_watchlists(case_id=handoff["case_id"], status="active"):
+            if "site_intelligence_event" in watch["trigger_types"]:
+                alerts.append(self.create_monitoring_alert(
+                    case_id=handoff["case_id"], watch_id=watch["watch_id"], alert_type="site_intelligence_event",
+                    severity="high" if handoff["confidence"] == "high" and handoff["event_type"] == "material_change" else "medium",
+                    title=handoff["headline"], body=handoff["summary"] or "Site Intelligence reported a monitored event.",
+                    metadata={"event_id": handoff["event_id"], "event_type": handoff["event_type"], "source_url": handoff["source_url"]}, created_at=timestamp,
+                ))
+        return {"handoff": handoff, "handoff_sha256": digest, "ingested_at": timestamp, "alerts": alerts}
+
+    def list_site_intelligence_events(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized_case = _urn_uuid(case_id, "case_id")
+        with self._lock:
+            rows = self._connection.execute("SELECT handoff_json FROM site_intelligence_events WHERE case_id=? ORDER BY observed_at,event_id", (normalized_case,)).fetchall()
+        return [_json_load(row["handoff_json"]) for row in rows]
+
+    def case_timeline(self, case_id: str) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        events: List[Dict[str, Any]] = []
+        for revision in self.list_revisions(case["case_id"]):
+            events.append({"occurred_at": revision["created_at"], "event_type": "revision", "entity_id": revision["revision_id"], "summary": revision["change_note"], "payload": {"revision_number": revision["revision_number"], "risk_score": revision["record"]["calculations"]["risk_score"]}})
+        for review in self.list_review_events(case["case_id"]):
+            events.append({"occurred_at": review["created_at"], "event_type": "review_event", "entity_id": review["event_id"], "summary": review["body"], "payload": {"review_event_type": review["event_type"]}})
+        for decision in self.list_governance_decisions(case_id=case["case_id"]):
+            events.append({"occurred_at": decision["decided_at"], "event_type": "governance_decision", "entity_id": decision["decision_id"], "summary": decision["rationale"], "payload": {"stage": decision["stage"], "disposition": decision["disposition"]}})
+        for snapshot in self.list_monitoring_snapshots(case["case_id"]):
+            events.append({"occurred_at": snapshot["captured_at"], "event_type": "monitoring_snapshot", "entity_id": snapshot["snapshot_id"], "summary": f"Captured {snapshot['trigger']} snapshot.", "payload": {"risk_score": snapshot["risk_score"], "freshness": snapshot["freshness_report"]["status"]}})
+        for comparison in self.list_monitoring_comparisons(case["case_id"]):
+            events.append({"occurred_at": comparison["compared_at"], "event_type": "monitoring_comparison", "entity_id": comparison["comparison_id"], "summary": " ".join(comparison["reasons"]), "payload": {"materiality_score": comparison["materiality_score"], "severity": comparison["severity"]}})
+        for alert in self.list_monitoring_alerts(case_id=case["case_id"]):
+            events.append({"occurred_at": alert["created_at"], "event_type": "monitoring_alert", "entity_id": alert["alert_id"], "summary": alert["title"], "payload": {"alert_type": alert["alert_type"], "severity": alert["severity"], "status": alert["status"]}})
+        for handoff in self.list_site_intelligence_events(case["case_id"]):
+            events.append({"occurred_at": handoff["observed_at"], "event_type": "site_intelligence_event", "entity_id": handoff["event_id"], "summary": handoff["headline"], "payload": {"event_type": handoff["event_type"], "confidence": handoff["confidence"]}})
+        events.sort(key=lambda item: (item["occurred_at"], item["event_type"], item["entity_id"]))
+        return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
+
+    # ------------------------------------------------------------------
+    # v1.6.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {

@@ -1,6 +1,6 @@
 # Reproducibility
 
-A v1.5.0 record can be rebuilt exactly from its normalized input, evidence ledger inputs, narrative-map inputs, method snapshot, identifiers, generation timestamp, human decision, and optional migration metadata.
+A v1.6.0 record can be rebuilt exactly from its normalized input, evidence ledger inputs, narrative-map inputs, method snapshot, identifiers, generation timestamp, human decision, and optional migration metadata.
 
 Verification checks:
 

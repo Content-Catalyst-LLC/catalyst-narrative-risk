@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.5.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v1.6.0."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.5.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.5.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.5.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.5.0.json"
+VERSION = "1.6.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.6.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.6.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.6.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_narrative_map.schema.json"
@@ -29,6 +29,11 @@ REVIEW_ASSIGNMENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_assign
 GOVERNANCE_WORKFLOW_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_governance_workflow.schema.json"
 GOVERNANCE_DECISION_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_governance_decision.schema.json"
 REVIEW_TEMPLATE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_review_template.schema.json"
+MONITORING_SNAPSHOT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_monitoring_snapshot.schema.json"
+MONITORING_COMPARISON_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_monitoring_comparison.schema.json"
+WATCHLIST_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_watchlist.schema.json"
+MONITORING_ALERT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_monitoring_alert.schema.json"
+SITE_INTELLIGENCE_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "site_intelligence_monitoring_handoff.schema.json"
 LEGACY_V101_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.0.1.schema.json"
 LEGACY_V110_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.1.0.schema.json"
 LEGACY_V110_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.1.0.schema.json"
@@ -46,6 +51,11 @@ LEGACY_V140_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_
 LEGACY_V140_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.4.0.schema.json"
 LEGACY_V140_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.4.0.schema.json"
 LEGACY_V140_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.4.0.schema.json"
+LEGACY_V150_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.5.0.schema.json"
+LEGACY_V150_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.5.0.schema.json"
+LEGACY_V150_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.5.0.schema.json"
+LEGACY_V150_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.5.0.schema.json"
+LEGACY_V150_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.5.0.schema.json"
 # Backwards-compatible alias retained for integrations written against v1.1.0.
 LEGACY_RECORD_SCHEMA_PATH = LEGACY_V101_RECORD_SCHEMA_PATH
 
@@ -114,6 +124,8 @@ def _registry():
         WORKSPACE_BUNDLE_SCHEMA_PATH,
         REVIEW_ASSIGNMENT_SCHEMA_PATH, GOVERNANCE_WORKFLOW_SCHEMA_PATH,
         GOVERNANCE_DECISION_SCHEMA_PATH, REVIEW_TEMPLATE_SCHEMA_PATH,
+        MONITORING_SNAPSHOT_SCHEMA_PATH, MONITORING_COMPARISON_SCHEMA_PATH,
+        WATCHLIST_SCHEMA_PATH, MONITORING_ALERT_SCHEMA_PATH, SITE_INTELLIGENCE_HANDOFF_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
@@ -129,6 +141,9 @@ def _registry():
         LEGACY_V140_INPUT_SCHEMA_PATH, LEGACY_V140_LEDGER_SCHEMA_PATH,
         LEGACY_V140_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V140_METHOD_SCHEMA_PATH,
         LEGACY_V140_RECORD_SCHEMA_PATH,
+        LEGACY_V150_INPUT_SCHEMA_PATH, LEGACY_V150_LEDGER_SCHEMA_PATH,
+        LEGACY_V150_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V150_METHOD_SCHEMA_PATH,
+        LEGACY_V150_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:

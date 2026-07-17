@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.6.0 — Narrative Change, Freshness, and Monitoring
+
+- Added immutable monitoring snapshots with record, freshness, confidence, narrative, and governance state.
+- Added versioned source-age thresholds and current, aging, stale, and unknown freshness reporting.
+- Added snapshot comparison for score, risk level, claim wording, confidence, evidence, source content, narrative structure, and governance change.
+- Added advisory materiality scores, severity, and explicit change reasons.
+- Added persistent watchlists, scheduled checks, alerts, acknowledgement, resolution, and due-state queries.
+- Added approval-expiration and mandatory-reassessment monitoring signals.
+- Added Site Intelligence event handoffs and a unified claim-and-review timeline.
+- Added monitoring schemas, REST endpoints, CLI operations, WordPress controls, and monitoring-complete portable bundles.
+- Added deterministic migration from v1.5.0 without fabricating historical monitoring data.
+- Preserved the v1.5.0 scoring, evidence-ledger, narrative-map, and governance behavior as advisory and unchanged.
+
 ## 1.5.0 — Review, Approval, and Governance Workflow
 
 - Added versioned review templates, canonical stage order, and role-based governance permissions.

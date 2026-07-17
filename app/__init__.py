@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -78,6 +78,8 @@ def create_app(config: dict | None = None):
             "persistent_cases": True,
             "narrative_mapping": True,
             "governance_workflow": True,
+            "narrative_monitoring": True,
+            "site_intelligence_handoff": True,
             "workspace": repository.health(),
         }, 200
 
@@ -172,6 +174,15 @@ def create_app(config: dict | None = None):
     def narrative_risk_migrate_v140():
         try:
             migrated = migrate_v1_4_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+
+    @app.post("/api/narrative-risk/migrate/v1.5.0")
+    def narrative_risk_migrate_v150():
+        try:
+            migrated = migrate_v1_5_0_record(_json_object())
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
@@ -380,6 +391,108 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_reassessment_query", exc)
         return jsonify({"workflows": workflows, "count": len(workflows)}), 200
+
+
+    @app.post("/api/narrative-risk/cases/<case_id>/monitoring/snapshots")
+    def capture_monitoring_snapshot(case_id: str):
+        try:
+            payload = request.get_json(silent=True) or {}
+            if not isinstance(payload, dict):
+                raise NarrativeRiskValidationError("request body must be a JSON object")
+            snapshot = repository.capture_monitoring_snapshot(case_id, **payload)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_monitoring_snapshot", exc)
+        return jsonify(snapshot), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/monitoring/snapshots")
+    def list_monitoring_snapshots(case_id: str):
+        try:
+            values = repository.list_monitoring_snapshots(case_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_monitoring_snapshot_query", exc)
+        return jsonify({"monitoring_snapshots": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/monitoring/compare")
+    def compare_monitoring_snapshots_api():
+        try:
+            payload = _json_object()
+            comparison = repository.compare_snapshots(
+                payload.get("from_snapshot_id"), payload.get("to_snapshot_id"),
+                compared_at=payload.get("compared_at"), comparison_id=payload.get("comparison_id"),
+            )
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_monitoring_comparison", exc)
+        return jsonify(comparison), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/watchlists")
+    def create_watchlist(case_id: str):
+        try:
+            watch = repository.create_watchlist(case_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_watchlist", exc)
+        return jsonify(watch), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/watchlists")
+    def list_case_watchlists(case_id: str):
+        try:
+            values = repository.list_watchlists(case_id=case_id, status=request.args.get("status"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_watchlist_query", exc)
+        return jsonify({"watchlists": values, "count": len(values)}), 200
+
+    @app.patch("/api/narrative-risk/watchlists/<watch_id>")
+    def update_watchlist(watch_id: str):
+        try:
+            watch = repository.update_watchlist(watch_id, _json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_watchlist_update", exc)
+        return jsonify(watch), 200
+
+    @app.post("/api/narrative-risk/watchlists/<watch_id>/check")
+    def run_watchlist_check(watch_id: str):
+        try:
+            payload = request.get_json(silent=True) or {}
+            if not isinstance(payload, dict):
+                raise NarrativeRiskValidationError("request body must be a JSON object")
+            result = repository.run_watchlist_check(watch_id, **payload)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_watchlist_check", exc)
+        return jsonify(result), 200
+
+    @app.get("/api/narrative-risk/monitoring/alerts")
+    def list_monitoring_alerts():
+        try:
+            values = repository.list_monitoring_alerts(
+                case_id=request.args.get("case_id"), watch_id=request.args.get("watch_id"),
+                status=request.args.get("status"), severity=request.args.get("severity"),
+            )
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_monitoring_alert_query", exc)
+        return jsonify({"monitoring_alerts": values, "count": len(values)}), 200
+
+    @app.patch("/api/narrative-risk/monitoring/alerts/<alert_id>")
+    def update_monitoring_alert(alert_id: str):
+        try:
+            alert = repository.update_monitoring_alert_status(alert_id, **_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_monitoring_alert_update", exc)
+        return jsonify(alert), 200
+
+    @app.get("/api/narrative-risk/cases/<case_id>/timeline")
+    def case_timeline(case_id: str):
+        try:
+            timeline = repository.case_timeline(case_id)
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_case_timeline", exc)
+        return jsonify(timeline), 200
+
+    @app.post("/api/narrative-risk/monitoring/site-intelligence")
+    def ingest_site_intelligence_event():
+        try:
+            result = repository.ingest_site_intelligence_event(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_site_intelligence_handoff", exc)
+        return jsonify(result), 201
 
     @app.post("/api/narrative-risk/saved-views")
     def create_saved_view():
