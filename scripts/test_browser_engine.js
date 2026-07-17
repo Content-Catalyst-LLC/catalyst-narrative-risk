@@ -13,7 +13,7 @@ for (const testCase of fixture.valid) {
 }
 for (const testCase of fixture.invalid) {
   assert.throws(
-    () => engine.buildNarrativeRiskRecord(testCase.payload, '2026-07-17T12:00:00.000Z'),
+    () => engine.scoreNarrativeRisk(testCase.payload),
     error => error.name === 'NarrativeRiskValidationError' && error.message === testCase.message,
     testCase.name
   );
@@ -23,7 +23,22 @@ const zero = engine.scoreNarrativeRisk({
   uncertainty: 'low', narrative_volatility: 'low', stakeholder_pressure: 'low', time_sensitivity: 'low',
   consequences: 'low', review_status: 'reviewed', source_count: 5
 });
-assert.strictEqual(zero.components.source_type, 0);
-assert.strictEqual(zero.components.evidence_strength, 0);
-assert.strictEqual(zero.components.review_status, 0);
+assert.strictEqual(zero.calculations.components.source_type.weight, 0);
+assert.strictEqual(zero.calculations.components.evidence_strength.weight, 0);
+assert.strictEqual(zero.calculations.components.review_status.weight, 0);
+const record = engine.buildNarrativeRiskRecord({ claim: 'Browser reproducibility test.' }, {
+  generated_at: '2026-07-17T12:00:00+00:00',
+  record_id: 'urn:uuid:00000000-0000-4000-8000-000000000001',
+  case_id: 'urn:uuid:00000000-0000-4000-8000-000000000002'
+});
+assert.deepStrictEqual(engine.verifyRecordReproducibility(record), {
+  exact_match: true,
+  method_snapshot_hash_match: true,
+  canonical_input_hash_match: true,
+  record_payload_hash_match: true,
+  record_id: 'urn:uuid:00000000-0000-4000-8000-000000000001',
+  method_id: engine.METHOD_ID,
+  method_version: '1.1.0',
+  schema_id: engine.SCHEMA_ID
+});
 console.log(`Browser engine contract passed: ${fixture.valid.length} valid and ${fixture.invalid.length} invalid fixtures.`);

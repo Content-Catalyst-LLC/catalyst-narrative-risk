@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0",
+  "title": "Catalyst Narrative Risk Input 1.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "claim"
+  ],
+  "properties": {
+    "claim": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "source_type": {
+      "enum": [
+        "official_or_primary",
+        "peer_reviewed_or_audited",
+        "reputable_secondary",
+        "internal_unreviewed",
+        "single_report_or_media",
+        "social_or_anecdotal",
+        "unknown"
+      ],
+      "default": "reputable_secondary"
+    },
+    "evidence_strength": {
+      "enum": [
+        "strong",
+        "moderate",
+        "limited",
+        "weak",
+        "unclear"
+      ],
+      "default": "moderate"
+    },
+    "uncertainty": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "narrative_volatility": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "stakeholder_pressure": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "time_sensitivity": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "consequences": {
+      "enum": [
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ],
+      "default": "moderate"
+    },
+    "review_status": {
+      "enum": [
+        "reviewed",
+        "partly_reviewed",
+        "not_reviewed"
+      ],
+      "default": "partly_reviewed"
+    },
+    "source_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000,
+      "default": 2
+    },
+    "method_notes": {
+      "type": "string",
+      "maxLength": 50000,
+      "default": ""
+    }
+  }
+}

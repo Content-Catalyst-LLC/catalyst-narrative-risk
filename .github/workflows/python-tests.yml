@@ -1,4 +1,4 @@
-name: Release integrity
+name: Canonical release integrity
 
 on:
   push:
@@ -27,5 +27,5 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
-      - name: Run complete release suite
+      - name: Run canonical release suite
         run: bash scripts/release_check.sh

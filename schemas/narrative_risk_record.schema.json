@@ -1,218 +1,347 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://thecontentcatalyst.net/schemas/narrative_risk_record.schema.json",
-  "title": "Catalyst Narrative Risk Record",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0",
+  "title": "Catalyst Narrative Risk Record 1.1.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "record_type",
+    "contract",
+    "identifiers",
     "generated_at",
-    "claim",
-    "risk_score",
-    "risk_level",
-    "components",
-    "flags",
-    "review_actions",
-    "decision_note",
-    "inputs",
-    "method",
-    "method_version",
-    "schema_version"
+    "normalized_input",
+    "method_snapshot",
+    "method_snapshot_sha256",
+    "calculations",
+    "interpretation",
+    "human_decision",
+    "reproducibility"
   ],
   "properties": {
     "record_type": {
       "const": "catalyst_narrative_risk_record"
     },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "contract_version"
+      ],
+      "properties": {
+        "contract_id": {
+          "const": "urn:catalyst:narrative-risk:contract:canonical"
+        },
+        "contract_version": {
+          "const": "1.1.0"
+        }
+      }
+    },
+    "identifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_id",
+        "case_id",
+        "method_id",
+        "schema_id",
+        "input_schema_id"
+      ],
+      "properties": {
+        "record_id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        "case_id": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        "method_id": {
+          "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
+        },
+        "schema_id": {
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0"
+        },
+        "input_schema_id": {
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+        }
+      }
+    },
     "generated_at": {
       "type": "string",
       "format": "date-time"
     },
-    "claim": {
+    "normalized_input": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+    },
+    "method_snapshot": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.1.0"
+    },
+    "method_snapshot_sha256": {
       "type": "string",
-      "minLength": 1
+      "pattern": "^[0-9a-f]{64}$"
     },
-    "risk_score": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
-    },
-    "risk_level": {
-      "enum": [
-        "Low",
-        "Medium",
-        "High"
-      ]
-    },
-    "method": {
-      "const": "transparent heuristic scoring; not truth verification"
-    },
-    "method_version": {
-      "const": "1.0.1"
-    },
-    "schema_version": {
-      "const": "1.0.1"
-    },
-    "components": {
+    "calculations": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "source_type",
-        "evidence_strength",
-        "uncertainty",
-        "narrative_volatility",
-        "stakeholder_pressure",
-        "time_sensitivity",
-        "consequences",
-        "review_status",
-        "source_count"
+        "components",
+        "raw_total",
+        "multiplier",
+        "scaled_score",
+        "risk_score",
+        "threshold"
       ],
       "properties": {
-        "source_type": {
+        "components": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_type",
+            "evidence_strength",
+            "uncertainty",
+            "narrative_volatility",
+            "stakeholder_pressure",
+            "time_sensitivity",
+            "consequences",
+            "review_status",
+            "source_count"
+          ],
+          "properties": {
+            "source_type": {
+              "$ref": "#/$defs/component"
+            },
+            "evidence_strength": {
+              "$ref": "#/$defs/component"
+            },
+            "uncertainty": {
+              "$ref": "#/$defs/component"
+            },
+            "narrative_volatility": {
+              "$ref": "#/$defs/component"
+            },
+            "stakeholder_pressure": {
+              "$ref": "#/$defs/component"
+            },
+            "time_sensitivity": {
+              "$ref": "#/$defs/component"
+            },
+            "consequences": {
+              "$ref": "#/$defs/component"
+            },
+            "review_status": {
+              "$ref": "#/$defs/component"
+            },
+            "source_count": {
+              "$ref": "#/$defs/component"
+            }
+          }
+        },
+        "raw_total": {
           "type": "integer",
           "minimum": 0
         },
-        "evidence_strength": {
-          "type": "integer",
+        "multiplier": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "scaled_score": {
+          "type": "number",
           "minimum": 0
         },
-        "uncertainty": {
+        "risk_score": {
           "type": "integer",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 100
         },
-        "narrative_volatility": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "stakeholder_pressure": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "time_sensitivity": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "consequences": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "review_status": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "source_count": {
-          "type": "integer",
-          "minimum": 0
+        "threshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "level",
+            "minimum",
+            "maximum"
+          ],
+          "properties": {
+            "level": {
+              "enum": [
+                "Low",
+                "Medium",
+                "High"
+              ]
+            },
+            "minimum": {
+              "type": "integer"
+            },
+            "maximum": {
+              "type": "integer"
+            }
+          }
         }
       }
     },
-    "flags": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
-    },
-    "review_actions": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
-    },
-    "decision_note": {
-      "type": "string",
-      "minLength": 1
-    },
-    "inputs": {
+    "interpretation": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "claim",
-        "source_type",
-        "evidence_strength",
-        "uncertainty",
-        "narrative_volatility",
-        "stakeholder_pressure",
-        "time_sensitivity",
-        "consequences",
-        "review_status",
-        "source_count",
-        "method_notes"
+        "risk_level",
+        "flags",
+        "review_actions",
+        "decision_note"
       ],
       "properties": {
-        "claim": {
+        "risk_level": {
+          "enum": [
+            "Low",
+            "Medium",
+            "High"
+          ]
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "review_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "decision_note": {
           "type": "string",
           "minLength": 1
+        }
+      }
+    },
+    "human_decision": {
+      "$ref": "#/$defs/human_decision"
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_input_sha256",
+        "record_payload_sha256"
+      ],
+      "properties": {
+        "canonical_input_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         },
-        "source_type": {
-          "enum": [
-            "official_or_primary",
-            "peer_reviewed_or_audited",
-            "reputable_secondary",
-            "internal_unreviewed",
-            "single_report_or_media",
-            "social_or_anecdotal",
-            "unknown"
-          ]
+        "record_payload_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_schema_version",
+        "from_method_version",
+        "migrated_at",
+        "warnings"
+      ],
+      "properties": {
+        "from_schema_version": {
+          "const": "1.0.1"
         },
-        "evidence_strength": {
-          "enum": [
-            "strong",
-            "moderate",
-            "limited",
-            "weak",
-            "unclear"
-          ]
+        "from_method_version": {
+          "const": "1.0.1"
         },
-        "uncertainty": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ]
+        "migrated_at": {
+          "type": "string",
+          "format": "date-time"
         },
-        "narrative_volatility": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ]
-        },
-        "stakeholder_pressure": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ]
-        },
-        "time_sensitivity": {
-          "enum": [
-            "low",
-            "medium",
-            "high"
-          ]
-        },
-        "consequences": {
-          "enum": [
-            "low",
-            "moderate",
-            "high",
-            "critical"
-          ]
-        },
-        "review_status": {
-          "enum": [
-            "reviewed",
-            "partly_reviewed",
-            "not_reviewed"
-          ]
-        },
-        "source_count": {
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_value",
+        "weight",
+        "rationale",
+        "remediation"
+      ],
+      "properties": {
+        "input_value": {},
+        "weight": {
           "type": "integer",
           "minimum": 0
         },
-        "method_notes": {
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "remediation": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "human_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "disposition",
+        "reviewer_id",
+        "reviewer_name",
+        "reviewed_at",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "pending_review",
+            "reviewed"
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "undecided",
+            "approved",
+            "approved_with_conditions",
+            "revise",
+            "rejected"
+          ]
+        },
+        "reviewer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewer_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "notes": {
           "type": "string"
         }
       }

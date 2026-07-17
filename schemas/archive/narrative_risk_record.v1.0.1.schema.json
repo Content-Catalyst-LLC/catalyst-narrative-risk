@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thecontentcatalyst.net/schemas/narrative_risk_record.schema.json",
+  "title": "Catalyst Narrative Risk Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type",
+    "generated_at",
+    "claim",
+    "risk_score",
+    "risk_level",
+    "components",
+    "flags",
+    "review_actions",
+    "decision_note",
+    "inputs",
+    "method",
+    "method_version",
+    "schema_version"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "catalyst_narrative_risk_record"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "claim": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "risk_level": {
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "method": {
+      "const": "transparent heuristic scoring; not truth verification"
+    },
+    "method_version": {
+      "const": "1.0.1"
+    },
+    "schema_version": {
+      "const": "1.0.1"
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "evidence_strength",
+        "uncertainty",
+        "narrative_volatility",
+        "stakeholder_pressure",
+        "time_sensitivity",
+        "consequences",
+        "review_status",
+        "source_count"
+      ],
+      "properties": {
+        "source_type": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_strength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uncertainty": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "narrative_volatility": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stakeholder_pressure": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "time_sensitivity": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "consequences": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "review_status": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "review_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "decision_note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim",
+        "source_type",
+        "evidence_strength",
+        "uncertainty",
+        "narrative_volatility",
+        "stakeholder_pressure",
+        "time_sensitivity",
+        "consequences",
+        "review_status",
+        "source_count",
+        "method_notes"
+      ],
+      "properties": {
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "enum": [
+            "official_or_primary",
+            "peer_reviewed_or_audited",
+            "reputable_secondary",
+            "internal_unreviewed",
+            "single_report_or_media",
+            "social_or_anecdotal",
+            "unknown"
+          ]
+        },
+        "evidence_strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "limited",
+            "weak",
+            "unclear"
+          ]
+        },
+        "uncertainty": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "narrative_volatility": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "stakeholder_pressure": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "time_sensitivity": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "consequences": {
+          "enum": [
+            "low",
+            "moderate",
+            "high",
+            "critical"
+          ]
+        },
+        "review_status": {
+          "enum": [
+            "reviewed",
+            "partly_reviewed",
+            "not_reviewed"
+          ]
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "method_notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

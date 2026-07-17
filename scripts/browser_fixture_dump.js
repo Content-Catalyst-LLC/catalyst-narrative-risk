@@ -10,7 +10,7 @@ const output = {
   valid: fixture.valid.map(testCase => ({ name: testCase.name, result: engine.scoreNarrativeRisk(testCase.payload) })),
   invalid: fixture.invalid.map(testCase => {
     try {
-      engine.buildNarrativeRiskRecord(testCase.payload, '2026-07-17T12:00:00.000Z');
+      engine.scoreNarrativeRisk(testCase.payload);
       return { name: testCase.name, message: null };
     } catch (error) {
       return { name: testCase.name, message: error.message };

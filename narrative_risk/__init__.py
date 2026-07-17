@@ -1,27 +1,45 @@
-from .legacy import score_simple_risk
+"""Catalyst Narrative Risk public package API."""
+
+from .migrations import migrate_v1_0_1_record
 from .service import (
+    CONTRACT_ID,
+    INPUT_SCHEMA_ID,
     METHOD,
+    METHOD_ID,
+    METHOD_VERSION,
     RECORD_TYPE,
+    SCHEMA_ID,
     SCHEMA_VERSION,
     VERSION,
-    NarrativeRiskInput,
     NarrativeRiskValidationError,
     build_narrative_risk_record,
+    normalize_human_decision,
     normalize_narrative_risk_input,
+    reproduce_narrative_risk_record,
     score_narrative_risk,
+    validate_method_snapshot,
     validate_narrative_risk_record,
+    verify_record_reproducibility,
 )
 
 __all__ = [
-    "METHOD",
-    "RECORD_TYPE",
-    "SCHEMA_VERSION",
     "VERSION",
-    "NarrativeRiskInput",
+    "METHOD_VERSION",
+    "SCHEMA_VERSION",
+    "RECORD_TYPE",
+    "CONTRACT_ID",
+    "METHOD_ID",
+    "SCHEMA_ID",
+    "INPUT_SCHEMA_ID",
+    "METHOD",
     "NarrativeRiskValidationError",
-    "build_narrative_risk_record",
     "normalize_narrative_risk_input",
+    "normalize_human_decision",
     "score_narrative_risk",
+    "build_narrative_risk_record",
+    "validate_method_snapshot",
     "validate_narrative_risk_record",
-    "score_simple_risk",
+    "reproduce_narrative_risk_record",
+    "verify_record_reproducibility",
+    "migrate_v1_0_1_record",
 ]

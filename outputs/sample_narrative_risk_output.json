@@ -1,34 +1,18 @@
 {
-  "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
-  "risk_score": 80,
-  "risk_level": "High",
-  "components": {
-    "source_type": 8,
-    "evidence_strength": 20,
-    "uncertainty": 18,
-    "narrative_volatility": 10,
-    "stakeholder_pressure": 18,
-    "time_sensitivity": 10,
-    "consequences": 18,
-    "review_status": 8,
-    "source_count": 8
+  "record_type": "catalyst_narrative_risk_record",
+  "contract": {
+    "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
+    "contract_version": "1.1.0"
   },
-  "flags": [
-    "Evidence does not yet support confident use",
-    "High uncertainty should be stated explicitly",
-    "Stakeholder pressure may be influencing interpretation",
-    "High-consequence claim needs stricter review"
-  ],
-  "review_actions": [
-    "Add at least one independent source or primary reference.",
-    "Rewrite claim with narrower language until evidence improves.",
-    "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
-    "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
-    "Escalate to domain, legal, compliance, or editorial review as appropriate.",
-    "Record a reviewer, date, and decision before treating the claim as approved."
-  ],
-  "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language.",
-  "inputs": {
+  "identifiers": {
+    "record_id": "urn:uuid:20000000-0000-4000-8000-000000000001",
+    "case_id": "urn:uuid:20000000-0000-4000-8000-000000000002",
+    "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
+    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0",
+    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+  },
+  "generated_at": "2026-07-17T12:00:00+00:00",
+  "normalized_input": {
     "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
     "source_type": "reputable_secondary",
     "evidence_strength": "limited",
@@ -41,9 +25,428 @@
     "source_count": 2,
     "method_notes": "Claim needs a narrower scope, stronger baseline evidence, and a review date before publication."
   },
-  "record_type": "catalyst_narrative_risk_record",
-  "generated_at": "2026-07-17T16:54:54.551659+00:00",
-  "method": "transparent heuristic scoring; not truth verification",
-  "method_version": "1.0.1",
-  "schema_version": "1.0.1"
+  "method_snapshot": {
+    "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
+    "method_version": "1.1.0",
+    "name": "Transparent Heuristic Narrative Risk Method",
+    "description": "A weighted, inspectable review heuristic that structures risk without verifying truth or replacing human judgment.",
+    "algorithm": {
+      "type": "weighted_additive_v1",
+      "component_order": [
+        "source_type",
+        "evidence_strength",
+        "uncertainty",
+        "narrative_volatility",
+        "stakeholder_pressure",
+        "time_sensitivity",
+        "consequences",
+        "review_status",
+        "source_count"
+      ],
+      "multiplier": 0.68,
+      "rounding": "half_up",
+      "minimum_score": 0,
+      "maximum_score": 100,
+      "thresholds": [
+        {
+          "level": "Low",
+          "minimum": 0,
+          "maximum": 39
+        },
+        {
+          "level": "Medium",
+          "minimum": 40,
+          "maximum": 69
+        },
+        {
+          "level": "High",
+          "minimum": 70,
+          "maximum": 100
+        }
+      ]
+    },
+    "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
+    "controlled_vocabulary_version": "1.1.0",
+    "defaults": {
+      "source_type": "reputable_secondary",
+      "evidence_strength": "moderate",
+      "uncertainty": "medium",
+      "narrative_volatility": "medium",
+      "stakeholder_pressure": "medium",
+      "time_sensitivity": "medium",
+      "consequences": "moderate",
+      "review_status": "partly_reviewed",
+      "source_count": 2,
+      "method_notes": ""
+    },
+    "weights": {
+      "source_type": {
+        "official_or_primary": 0,
+        "peer_reviewed_or_audited": 3,
+        "reputable_secondary": 8,
+        "internal_unreviewed": 14,
+        "single_report_or_media": 18,
+        "social_or_anecdotal": 24,
+        "unknown": 28
+      },
+      "evidence_strength": {
+        "strong": 0,
+        "moderate": 10,
+        "limited": 20,
+        "weak": 30,
+        "unclear": 24
+      },
+      "three_level_scale": {
+        "low": 3,
+        "medium": 10,
+        "high": 18
+      },
+      "consequences": {
+        "low": 3,
+        "moderate": 10,
+        "high": 18,
+        "critical": 24
+      },
+      "review_status": {
+        "reviewed": 0,
+        "partly_reviewed": 8,
+        "not_reviewed": 18
+      },
+      "source_count_penalties": [
+        {
+          "minimum": 0,
+          "maximum": 0,
+          "weight": 22
+        },
+        {
+          "minimum": 1,
+          "maximum": 1,
+          "weight": 16
+        },
+        {
+          "minimum": 2,
+          "maximum": 2,
+          "weight": 8
+        },
+        {
+          "minimum": 3,
+          "maximum": 4,
+          "weight": 3
+        },
+        {
+          "minimum": 5,
+          "maximum": null,
+          "weight": 0
+        }
+      ]
+    },
+    "components": {
+      "source_type": {
+        "label": "Source type",
+        "input_field": "source_type",
+        "weight_table": "source_type",
+        "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+        "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+      },
+      "evidence_strength": {
+        "label": "Evidence strength",
+        "input_field": "evidence_strength",
+        "weight_table": "evidence_strength",
+        "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+        "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+      },
+      "uncertainty": {
+        "label": "Uncertainty",
+        "input_field": "uncertainty",
+        "weight_table": "three_level_scale",
+        "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+        "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+      },
+      "narrative_volatility": {
+        "label": "Narrative volatility",
+        "input_field": "narrative_volatility",
+        "weight_table": "three_level_scale",
+        "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+        "remediation": "Timestamp the assessment and re-check material changes before reuse."
+      },
+      "stakeholder_pressure": {
+        "label": "Stakeholder pressure",
+        "input_field": "stakeholder_pressure",
+        "weight_table": "three_level_scale",
+        "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+        "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+      },
+      "time_sensitivity": {
+        "label": "Time sensitivity",
+        "input_field": "time_sensitivity",
+        "weight_table": "three_level_scale",
+        "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+        "remediation": "Confirm source freshness and assign a reassessment date."
+      },
+      "consequences": {
+        "label": "Consequences",
+        "input_field": "consequences",
+        "weight_table": "consequences",
+        "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+        "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+      },
+      "review_status": {
+        "label": "Review completion",
+        "input_field": "review_status",
+        "weight_table": "review_status",
+        "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+        "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+      },
+      "source_count": {
+        "label": "Source count",
+        "input_field": "source_count",
+        "weight_table": "source_count_penalties",
+        "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+        "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+      }
+    },
+    "interpretation": {
+      "decision_notes": {
+        "Low": "Risk appears lower by heuristic review, but source links and review date should still be preserved.",
+        "Medium": "Use cautiously with visible uncertainty, source links, and review notes.",
+        "High": "Do not use as a confident public claim without additional review, source support, and narrowed language."
+      },
+      "flag_rules": [
+        {
+          "id": "under_sourced",
+          "field": "source_count",
+          "operator": "lte",
+          "value": 1,
+          "text": "Single-source or under-sourced claim"
+        },
+        {
+          "id": "evidence_limit",
+          "field": "evidence_strength",
+          "operator": "in",
+          "value": [
+            "weak",
+            "limited",
+            "unclear"
+          ],
+          "text": "Evidence does not yet support confident use"
+        },
+        {
+          "id": "high_uncertainty",
+          "field": "uncertainty",
+          "operator": "eq",
+          "value": "high",
+          "text": "High uncertainty should be stated explicitly"
+        },
+        {
+          "id": "volatile_narrative",
+          "field": "narrative_volatility",
+          "operator": "eq",
+          "value": "high",
+          "text": "Narrative may be changing quickly"
+        },
+        {
+          "id": "stakeholder_pressure",
+          "field": "stakeholder_pressure",
+          "operator": "eq",
+          "value": "high",
+          "text": "Stakeholder pressure may be influencing interpretation"
+        },
+        {
+          "id": "time_sensitive",
+          "field": "time_sensitivity",
+          "operator": "eq",
+          "value": "high",
+          "text": "Time-sensitive claim requires recent source check"
+        },
+        {
+          "id": "high_consequence",
+          "field": "consequences",
+          "operator": "in",
+          "value": [
+            "high",
+            "critical"
+          ],
+          "text": "High-consequence claim needs stricter review"
+        },
+        {
+          "id": "not_reviewed",
+          "field": "review_status",
+          "operator": "eq",
+          "value": "not_reviewed",
+          "text": "Claim has not completed review"
+        },
+        {
+          "id": "low_risk_fallback",
+          "operator": "if_empty_and_score_lt",
+          "value": 40,
+          "text": "No major heuristic risk flags"
+        }
+      ],
+      "action_rules": [
+        {
+          "id": "add_sources",
+          "field": "source_count",
+          "operator": "lte",
+          "value": 2,
+          "text": "Add at least one independent source or primary reference."
+        },
+        {
+          "id": "narrow_claim",
+          "field": "evidence_strength",
+          "operator": "in",
+          "value": [
+            "weak",
+            "limited",
+            "unclear"
+          ],
+          "text": "Rewrite claim with narrower language until evidence improves."
+        },
+        {
+          "id": "state_uncertainty",
+          "field": "uncertainty",
+          "operator": "eq",
+          "value": "high",
+          "text": "Add an uncertainty note that separates knowns, assumptions, and unknowns."
+        },
+        {
+          "id": "refresh_sources",
+          "fields": [
+            "narrative_volatility",
+            "time_sensitivity"
+          ],
+          "operator": "any_eq",
+          "value": "high",
+          "text": "Re-check source freshness before publication or decision use."
+        },
+        {
+          "id": "document_pressure",
+          "field": "stakeholder_pressure",
+          "operator": "eq",
+          "value": "high",
+          "text": "Document whether pressure, incentives, or reputational concerns may be shaping the claim."
+        },
+        {
+          "id": "escalate_review",
+          "field": "consequences",
+          "operator": "in",
+          "value": [
+            "high",
+            "critical"
+          ],
+          "text": "Escalate to domain, legal, compliance, or editorial review as appropriate."
+        },
+        {
+          "id": "complete_review",
+          "field": "review_status",
+          "operator": "neq",
+          "value": "reviewed",
+          "text": "Record a reviewer, date, and decision before treating the claim as approved."
+        },
+        {
+          "id": "maintenance_fallback",
+          "operator": "if_empty",
+          "text": "Maintain source links, method notes, and review date for future audit."
+        }
+      ]
+    },
+    "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score."
+  },
+  "method_snapshot_sha256": "7e498013f5c4c8c4b88d9703d8c151684f1b245baff54c35a44d75555fd169f4",
+  "calculations": {
+    "components": {
+      "source_type": {
+        "input_value": "reputable_secondary",
+        "weight": 8,
+        "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+        "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+      },
+      "evidence_strength": {
+        "input_value": "limited",
+        "weight": 20,
+        "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+        "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+      },
+      "uncertainty": {
+        "input_value": "high",
+        "weight": 18,
+        "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+        "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+      },
+      "narrative_volatility": {
+        "input_value": "medium",
+        "weight": 10,
+        "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+        "remediation": "Timestamp the assessment and re-check material changes before reuse."
+      },
+      "stakeholder_pressure": {
+        "input_value": "high",
+        "weight": 18,
+        "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+        "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+      },
+      "time_sensitivity": {
+        "input_value": "medium",
+        "weight": 10,
+        "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+        "remediation": "Confirm source freshness and assign a reassessment date."
+      },
+      "consequences": {
+        "input_value": "high",
+        "weight": 18,
+        "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+        "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+      },
+      "review_status": {
+        "input_value": "partly_reviewed",
+        "weight": 8,
+        "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+        "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+      },
+      "source_count": {
+        "input_value": 2,
+        "weight": 8,
+        "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+        "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+      }
+    },
+    "raw_total": 118,
+    "multiplier": 0.68,
+    "scaled_score": 80.24,
+    "risk_score": 80,
+    "threshold": {
+      "level": "High",
+      "minimum": 70,
+      "maximum": 100
+    }
+  },
+  "interpretation": {
+    "risk_level": "High",
+    "flags": [
+      "Evidence does not yet support confident use",
+      "High uncertainty should be stated explicitly",
+      "Stakeholder pressure may be influencing interpretation",
+      "High-consequence claim needs stricter review"
+    ],
+    "review_actions": [
+      "Add at least one independent source or primary reference.",
+      "Rewrite claim with narrower language until evidence improves.",
+      "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+      "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+      "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+      "Record a reviewer, date, and decision before treating the claim as approved."
+    ],
+    "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language."
+  },
+  "human_decision": {
+    "status": "draft",
+    "disposition": "undecided",
+    "reviewer_id": null,
+    "reviewer_name": null,
+    "reviewed_at": null,
+    "notes": ""
+  },
+  "reproducibility": {
+    "canonical_input_sha256": "45f1a7d69fd4e024265c700ec7e61ed077bea569f867d19d617bcb9134ab1bc1",
+    "record_payload_sha256": "6bddb1a0c97fbeafa2e45d2aa92d3df9d627275eaf942bab907787ac951ae8fe"
+  }
 }

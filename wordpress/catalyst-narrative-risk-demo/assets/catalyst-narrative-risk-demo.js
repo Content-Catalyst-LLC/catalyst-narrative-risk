@@ -4,8 +4,7 @@
   if (!engine) return;
 
   function readForm(form) {
-    const input = Object.fromEntries(new FormData(form).entries());
-    return input;
+    return Object.fromEntries(new FormData(form).entries());
   }
 
   function list(element, items) {
@@ -18,21 +17,27 @@
   }
 
   function render(root, record) {
+    const calculations = record.calculations;
+    const interpretation = record.interpretation;
     root._cnriskRecord = record;
     root.querySelector('[data-cnrisk-error]').hidden = true;
-    root.querySelector('[data-cnrisk-score]').textContent = record.risk_score + ' / 100';
-    root.querySelector('[data-cnrisk-level]').textContent = record.risk_level + ' narrative risk';
-    root.querySelector('[data-cnrisk-meter]').style.width = record.risk_score + '%';
-    root.querySelector('[data-cnrisk-note]').textContent = record.decision_note;
-    list(root.querySelector('[data-cnrisk-flags]'), record.flags);
-    list(root.querySelector('[data-cnrisk-actions]'), record.review_actions);
+    root.querySelector('[data-cnrisk-score]').textContent = calculations.risk_score + ' / 100';
+    root.querySelector('[data-cnrisk-level]').textContent = interpretation.risk_level + ' narrative risk';
+    root.querySelector('[data-cnrisk-meter]').style.width = calculations.risk_score + '%';
+    root.querySelector('[data-cnrisk-note]').textContent = interpretation.decision_note;
+    root.querySelector('[data-cnrisk-identity]').textContent =
+      record.identifiers.record_id + ' · method ' + record.method_snapshot.method_version + ' · schema ' + record.contract.contract_version;
+    root.querySelector('[data-cnrisk-human]').textContent =
+      record.human_decision.status.replaceAll('_', ' ') + ' · ' + record.human_decision.disposition.replaceAll('_', ' ');
+    list(root.querySelector('[data-cnrisk-flags]'), interpretation.flags);
+    list(root.querySelector('[data-cnrisk-actions]'), interpretation.review_actions);
     root.querySelector('[data-cnrisk-json]').textContent = JSON.stringify(record, null, 2);
 
     const bars = root.querySelector('[data-cnrisk-bars]');
     bars.innerHTML = '';
-    Object.entries(record.components).forEach(function (entry) {
+    Object.entries(calculations.components).forEach(function (entry) {
       const key = entry[0];
-      const value = entry[1];
+      const component = entry[1];
       const item = document.createElement('div');
       const header = document.createElement('header');
       const label = document.createElement('span');
@@ -40,9 +45,10 @@
       const track = document.createElement('div');
       const fill = document.createElement('span');
       item.className = 'cnrisk-demo__bar';
-      label.textContent = key.replaceAll('_', ' ');
-      weight.textContent = String(value);
-      fill.style.width = Math.min(100, value * 4) + '%';
+      item.title = component.rationale + ' ' + component.remediation;
+      label.textContent = key.replaceAll('_', ' ') + ' · ' + component.input_value;
+      weight.textContent = String(component.weight);
+      fill.style.width = Math.min(100, component.weight * 4) + '%';
       header.append(label, weight);
       track.appendChild(fill);
       item.append(header, track);
@@ -95,7 +101,7 @@
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'catalyst-narrative-risk-record.json';
+      anchor.download = 'catalyst-narrative-risk-record-v1.1.0.json';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();

@@ -4,8 +4,11 @@
 
 **Risk score:** 80 / 100
 **Risk level:** High
-**Method version:** 1.0.1
-**Schema version:** 1.0.1
+**Record ID:** urn:uuid:20000000-0000-4000-8000-000000000001
+**Case ID:** urn:uuid:20000000-0000-4000-8000-000000000002
+**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.1.0
+**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0
+**Method snapshot SHA-256:** `7e498013f5c4c8c4b88d9703d8c151684f1b245baff54c35a44d75555fd169f4`
 
 ## Decision note
 
@@ -27,6 +30,21 @@ Do not use as a confident public claim without additional review, source support
 - Escalate to domain, legal, compliance, or editorial review as appropriate.
 - Record a reviewer, date, and decision before treating the claim as approved.
 
-## Method
+## Component calculations
 
-transparent heuristic scoring; not truth verification
+- **Source Type:** reputable_secondary → 8 points
+- **Evidence Strength:** limited → 20 points
+- **Uncertainty:** high → 18 points
+- **Narrative Volatility:** medium → 10 points
+- **Stakeholder Pressure:** high → 18 points
+- **Time Sensitivity:** medium → 10 points
+- **Consequences:** high → 18 points
+- **Review Status:** partly_reviewed → 8 points
+- **Source Count:** 2 → 8 points
+
+## Human decision
+
+- Status: draft
+- Disposition: undecided
+
+The heuristic interpretation is advisory. Approval or rejection must be recorded separately by a human reviewer.

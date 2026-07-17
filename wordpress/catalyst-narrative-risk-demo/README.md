@@ -1,11 +1,11 @@
-# Catalyst Narrative Risk Demo v1.0.1
+# Catalyst Narrative Risk Demo v1.1.0
 
 Install this directory as a WordPress plugin and activate it.
 
-Use the shortcode:
+Use:
 
 ```text
 [catalyst_narrative_risk_demo]
 ```
 
-The demo runs entirely in the visitor's browser. v1.0.1 loads the canonical `narrative-risk-engine.js` before the interface script and preserves zero-weight values consistently with the Python engine.
+The demo runs entirely in the visitor's browser. `narrative-risk-method.js` is generated from the canonical v1.1.0 method JSON. The engine produces the same layered record, method digest, input digest, record digest, score, and interpretation as Python.

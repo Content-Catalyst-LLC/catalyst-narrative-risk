@@ -1,43 +1,39 @@
-"""Canonical scoring engine for Catalyst Narrative Risk.
+"""Canonical v1.1.0 method engine for Catalyst Narrative Risk.
 
-The engine uses transparent heuristics. It does not verify truth, certify evidence,
-or replace human review. Python and browser runtimes share the same normalized
-inputs, component weights, thresholds, flags, actions, and decision notes.
+The engine separates normalized input, deterministic calculations, machine
+interpretation, and human decisions. It structures review and does not verify
+truth, certify evidence, or replace professional judgment.
 """
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Mapping
+import math
+from typing import Any, Dict, Iterable, List, Mapping
+from uuid import UUID, uuid4
 
-VERSION = "1.0.1"
+from .contracts import (
+    INPUT_SCHEMA_PATH,
+    METHOD_SCHEMA_PATH,
+    RECORD_SCHEMA_PATH,
+    canonical_json,
+    contract_definition,
+    current_method_snapshot,
+    sha256_digest,
+    validate_against_schema,
+)
+
+VERSION = "1.1.0"
+METHOD_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.1.0"
 RECORD_TYPE = "catalyst_narrative_risk_record"
+CONTRACT_ID = "urn:catalyst:narrative-risk:contract:canonical"
+METHOD_ID = "urn:catalyst:narrative-risk:method:transparent-heuristic"
+SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0"
+INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
 METHOD = "transparent heuristic scoring; not truth verification"
-SCHEMA_VERSION = "1.0.1"
-
-SOURCE_WEIGHTS = {
-    "official_or_primary": 0,
-    "peer_reviewed_or_audited": 3,
-    "reputable_secondary": 8,
-    "internal_unreviewed": 14,
-    "single_report_or_media": 18,
-    "social_or_anecdotal": 24,
-    "unknown": 28,
-}
-
-EVIDENCE_WEIGHTS = {
-    "strong": 0,
-    "moderate": 10,
-    "limited": 20,
-    "weak": 30,
-    "unclear": 24,
-}
-
-SCALE_WEIGHTS = {"low": 3, "medium": 10, "high": 18}
-CONSEQUENCE_WEIGHTS = {"low": 3, "moderate": 10, "high": 18, "critical": 24}
-REVIEW_STATUS_WEIGHTS = {"reviewed": 0, "partly_reviewed": 8, "not_reviewed": 18}
 
 INPUT_FIELDS = {
     "claim",
@@ -53,6 +49,18 @@ INPUT_FIELDS = {
     "method_notes",
 }
 
+HUMAN_DECISION_FIELDS = {
+    "status",
+    "disposition",
+    "reviewer_id",
+    "reviewer_name",
+    "reviewed_at",
+    "notes",
+}
+
+HUMAN_DECISION_STATUS = {"draft", "pending_review", "reviewed"}
+HUMAN_DISPOSITIONS = {"undecided", "approved", "approved_with_conditions", "revise", "rejected"}
+
 
 class NarrativeRiskValidationError(ValueError):
     """Raised when a narrative-risk payload cannot be normalized safely."""
@@ -61,23 +69,16 @@ class NarrativeRiskValidationError(ValueError):
 @dataclass(frozen=True)
 class NarrativeRiskInput:
     claim: str
-    source_type: str = "reputable_secondary"
-    evidence_strength: str = "moderate"
-    uncertainty: str = "medium"
-    narrative_volatility: str = "medium"
-    stakeholder_pressure: str = "medium"
-    time_sensitivity: str = "medium"
-    consequences: str = "moderate"
-    review_status: str = "partly_reviewed"
-    source_count: int = 2
-    method_notes: str = ""
-
-
-def _clean_choice(value: Any, allowed: Mapping[str, int], default: str) -> str:
-    if not isinstance(value, str):
-        return default
-    cleaned = value.strip().lower()
-    return cleaned if cleaned in allowed else default
+    source_type: str
+    evidence_strength: str
+    uncertainty: str
+    narrative_volatility: str
+    stakeholder_pressure: str
+    time_sensitivity: str
+    consequences: str
+    review_status: str
+    source_count: int
+    method_notes: str
 
 
 def _clean_text(value: Any, field: str, *, required: bool = False) -> str:
@@ -91,9 +92,21 @@ def _clean_text(value: Any, field: str, *, required: bool = False) -> str:
     return cleaned
 
 
-def _clean_source_count(value: Any) -> int:
+def _clean_choice(value: Any, *, field: str, allowed: Iterable[str], default: str) -> str:
+    if value is None:
+        return default
+    if not isinstance(value, str):
+        raise NarrativeRiskValidationError(f"{field} must be a string")
+    cleaned = value.strip().lower()
+    allowed_values = list(allowed)
+    if cleaned not in allowed_values:
+        raise NarrativeRiskValidationError(f"{field} must be one of: {', '.join(allowed_values)}")
+    return cleaned
+
+
+def _clean_source_count(value: Any, default: int) -> int:
     if value is None or value == "":
-        return 0
+        return default
     if isinstance(value, bool):
         raise NarrativeRiskValidationError("source_count must be a non-negative integer")
     if isinstance(value, int):
@@ -109,161 +122,319 @@ def _clean_source_count(value: Any) -> int:
         raise NarrativeRiskValidationError("source_count must be a non-negative integer")
     if parsed < 0:
         raise NarrativeRiskValidationError("source_count must be a non-negative integer")
+    if parsed > 1_000_000:
+        raise NarrativeRiskValidationError("source_count must be no greater than 1000000")
     return parsed
 
 
-def normalize_narrative_risk_input(payload: Mapping[str, Any]) -> NarrativeRiskInput:
-    """Normalize a mapping into the canonical v1.0.1 input contract."""
+def validate_method_snapshot(method_snapshot: Mapping[str, Any]) -> None:
+    if not isinstance(method_snapshot, Mapping):
+        raise NarrativeRiskValidationError("method_snapshot must be a JSON object")
+    try:
+        validate_against_schema(method_snapshot, METHOD_SCHEMA_PATH)
+    except Exception as exc:
+        if exc.__class__.__module__.startswith("jsonschema"):
+            raise NarrativeRiskValidationError(f"invalid method_snapshot: {exc.message}") from exc
+        raise
+
+
+def normalize_narrative_risk_input(
+    payload: Mapping[str, Any],
+    *,
+    method_snapshot: Mapping[str, Any] | None = None,
+) -> NarrativeRiskInput:
+    """Normalize and strictly validate a payload against the canonical input contract."""
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
     unknown = sorted(set(payload) - INPUT_FIELDS)
     if unknown:
         raise NarrativeRiskValidationError(f"unsupported input field(s): {', '.join(unknown)}")
 
-    return NarrativeRiskInput(
+    method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
+    validate_method_snapshot(method)
+    defaults = method["defaults"]
+    weights = method["weights"]
+
+    normalized = NarrativeRiskInput(
         claim=_clean_text(payload.get("claim"), "claim", required=True),
-        source_type=_clean_choice(payload.get("source_type", "reputable_secondary"), SOURCE_WEIGHTS, "reputable_secondary"),
-        evidence_strength=_clean_choice(payload.get("evidence_strength", "moderate"), EVIDENCE_WEIGHTS, "moderate"),
-        uncertainty=_clean_choice(payload.get("uncertainty", "medium"), SCALE_WEIGHTS, "medium"),
-        narrative_volatility=_clean_choice(payload.get("narrative_volatility", "medium"), SCALE_WEIGHTS, "medium"),
-        stakeholder_pressure=_clean_choice(payload.get("stakeholder_pressure", "medium"), SCALE_WEIGHTS, "medium"),
-        time_sensitivity=_clean_choice(payload.get("time_sensitivity", "medium"), SCALE_WEIGHTS, "medium"),
-        consequences=_clean_choice(payload.get("consequences", "moderate"), CONSEQUENCE_WEIGHTS, "moderate"),
-        review_status=_clean_choice(payload.get("review_status", "partly_reviewed"), REVIEW_STATUS_WEIGHTS, "partly_reviewed"),
-        source_count=_clean_source_count(payload.get("source_count", 2)),
-        method_notes=_clean_text(payload.get("method_notes", ""), "method_notes"),
+        source_type=_clean_choice(payload.get("source_type"), field="source_type", allowed=weights["source_type"], default=defaults["source_type"]),
+        evidence_strength=_clean_choice(payload.get("evidence_strength"), field="evidence_strength", allowed=weights["evidence_strength"], default=defaults["evidence_strength"]),
+        uncertainty=_clean_choice(payload.get("uncertainty"), field="uncertainty", allowed=weights["three_level_scale"], default=defaults["uncertainty"]),
+        narrative_volatility=_clean_choice(payload.get("narrative_volatility"), field="narrative_volatility", allowed=weights["three_level_scale"], default=defaults["narrative_volatility"]),
+        stakeholder_pressure=_clean_choice(payload.get("stakeholder_pressure"), field="stakeholder_pressure", allowed=weights["three_level_scale"], default=defaults["stakeholder_pressure"]),
+        time_sensitivity=_clean_choice(payload.get("time_sensitivity"), field="time_sensitivity", allowed=weights["three_level_scale"], default=defaults["time_sensitivity"]),
+        consequences=_clean_choice(payload.get("consequences"), field="consequences", allowed=weights["consequences"], default=defaults["consequences"]),
+        review_status=_clean_choice(payload.get("review_status"), field="review_status", allowed=weights["review_status"], default=defaults["review_status"]),
+        source_count=_clean_source_count(payload.get("source_count"), int(defaults["source_count"])),
+        method_notes=_clean_text(payload.get("method_notes", defaults["method_notes"]), "method_notes"),
     )
+    validate_against_schema(asdict(normalized), INPUT_SCHEMA_PATH)
+    return normalized
 
 
-def _clamp(value: float, low: int = 0, high: int = 100) -> int:
-    return max(low, min(high, int(round(value))))
+def _source_count_weight(source_count: int, ranges: List[Mapping[str, Any]]) -> int:
+    for item in ranges:
+        minimum = int(item["minimum"])
+        maximum = item["maximum"]
+        if source_count >= minimum and (maximum is None or source_count <= int(maximum)):
+            return int(item["weight"])
+    raise NarrativeRiskValidationError("method_snapshot has no source-count range for the normalized input")
 
 
-def _source_count_penalty(source_count: int) -> int:
-    if source_count <= 0:
-        return 22
-    if source_count == 1:
-        return 16
-    if source_count == 2:
-        return 8
-    if source_count <= 4:
-        return 3
-    return 0
+def _half_up(value: float) -> int:
+    return int(math.floor(value + 0.5))
 
 
-def _level(score: int) -> str:
-    if score >= 70:
-        return "High"
-    if score >= 40:
-        return "Medium"
-    return "Low"
+def _threshold(score: int, method: Mapping[str, Any]) -> Dict[str, Any]:
+    for threshold in method["algorithm"]["thresholds"]:
+        if int(threshold["minimum"]) <= score <= int(threshold["maximum"]):
+            return deepcopy(dict(threshold))
+    raise NarrativeRiskValidationError("method_snapshot thresholds do not cover the calculated score")
 
 
-def _flags(inp: NarrativeRiskInput, score: int) -> List[str]:
-    flags: List[str] = []
-    if inp.source_count <= 1:
-        flags.append("Single-source or under-sourced claim")
-    if inp.evidence_strength in {"weak", "limited", "unclear"}:
-        flags.append("Evidence does not yet support confident use")
-    if inp.uncertainty == "high":
-        flags.append("High uncertainty should be stated explicitly")
-    if inp.narrative_volatility == "high":
-        flags.append("Narrative may be changing quickly")
-    if inp.stakeholder_pressure == "high":
-        flags.append("Stakeholder pressure may be influencing interpretation")
-    if inp.time_sensitivity == "high":
-        flags.append("Time-sensitive claim requires recent source check")
-    if inp.consequences in {"high", "critical"}:
-        flags.append("High-consequence claim needs stricter review")
-    if inp.review_status == "not_reviewed":
-        flags.append("Claim has not completed review")
-    if not flags and score < 40:
-        flags.append("No major heuristic risk flags")
-    return flags
+def _evaluate_rule(rule: Mapping[str, Any], normalized: Mapping[str, Any], *, score: int, current: List[str]) -> bool:
+    operator = rule["operator"]
+    if operator == "if_empty":
+        return not current
+    if operator == "if_empty_and_score_lt":
+        return not current and score < int(rule["value"])
+    if operator == "any_eq":
+        return any(normalized.get(field) == rule.get("value") for field in rule.get("fields", []))
+
+    field = rule.get("field")
+    actual = normalized.get(field)
+    expected = rule.get("value")
+    if operator == "lte":
+        return actual <= expected
+    if operator == "eq":
+        return actual == expected
+    if operator == "neq":
+        return actual != expected
+    if operator == "in":
+        return actual in expected
+    raise NarrativeRiskValidationError(f"unsupported method rule operator: {operator}")
 
 
-def _review_actions(inp: NarrativeRiskInput) -> List[str]:
-    actions: List[str] = []
-    if inp.source_count <= 2:
-        actions.append("Add at least one independent source or primary reference.")
-    if inp.evidence_strength in {"weak", "limited", "unclear"}:
-        actions.append("Rewrite claim with narrower language until evidence improves.")
-    if inp.uncertainty == "high":
-        actions.append("Add an uncertainty note that separates knowns, assumptions, and unknowns.")
-    if inp.narrative_volatility == "high" or inp.time_sensitivity == "high":
-        actions.append("Re-check source freshness before publication or decision use.")
-    if inp.stakeholder_pressure == "high":
-        actions.append("Document whether pressure, incentives, or reputational concerns may be shaping the claim.")
-    if inp.consequences in {"high", "critical"}:
-        actions.append("Escalate to domain, legal, compliance, or editorial review as appropriate.")
-    if inp.review_status != "reviewed":
-        actions.append("Record a reviewer, date, and decision before treating the claim as approved.")
-    if not actions:
-        actions.append("Maintain source links, method notes, and review date for future audit.")
-    return actions
+def _apply_rules(rules: Iterable[Mapping[str, Any]], normalized: Mapping[str, Any], score: int) -> List[str]:
+    output: List[str] = []
+    for rule in rules:
+        if _evaluate_rule(rule, normalized, score=score, current=output):
+            output.append(str(rule["text"]))
+    return output
 
 
-def score_narrative_risk(**payload: Any) -> Dict[str, Any]:
-    """Score a narrative-risk payload using the canonical v1.0.1 heuristics."""
-    inp = normalize_narrative_risk_input(payload)
-    components = {
-        "source_type": SOURCE_WEIGHTS[inp.source_type],
-        "evidence_strength": EVIDENCE_WEIGHTS[inp.evidence_strength],
-        "uncertainty": SCALE_WEIGHTS[inp.uncertainty],
-        "narrative_volatility": SCALE_WEIGHTS[inp.narrative_volatility],
-        "stakeholder_pressure": SCALE_WEIGHTS[inp.stakeholder_pressure],
-        "time_sensitivity": SCALE_WEIGHTS[inp.time_sensitivity],
-        "consequences": CONSEQUENCE_WEIGHTS[inp.consequences],
-        "review_status": REVIEW_STATUS_WEIGHTS[inp.review_status],
-        "source_count": _source_count_penalty(inp.source_count),
-    }
-    score = _clamp(sum(components.values()) * 0.68)
-    risk_level = _level(score)
+def score_narrative_risk(
+    payload: Mapping[str, Any] | None = None,
+    *,
+    method_snapshot: Mapping[str, Any] | None = None,
+    **fields: Any,
+) -> Dict[str, Any]:
+    """Return the canonical normalized/calculation/interpretation analysis layers."""
+    if payload is not None and fields:
+        raise NarrativeRiskValidationError("provide either payload or keyword fields, not both")
+    source = payload if payload is not None else fields
+    method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
+    validate_method_snapshot(method)
+    inp = normalize_narrative_risk_input(source, method_snapshot=method)
+    normalized = asdict(inp)
 
-    if risk_level == "High":
-        decision_note = "Do not use as a confident public claim without additional review, source support, and narrowed language."
-    elif risk_level == "Medium":
-        decision_note = "Use cautiously with visible uncertainty, source links, and review notes."
-    else:
-        decision_note = "Risk appears lower by heuristic review, but source links and review date should still be preserved."
+    component_results: Dict[str, Dict[str, Any]] = {}
+    for component_key in method["algorithm"]["component_order"]:
+        metadata = method["components"][component_key]
+        input_field = metadata["input_field"]
+        input_value = normalized[input_field]
+        table_name = metadata["weight_table"]
+        if table_name == "source_count_penalties":
+            weight = _source_count_weight(int(input_value), method["weights"][table_name])
+        else:
+            weight = int(method["weights"][table_name][input_value])
+        component_results[component_key] = {
+            "input_value": input_value,
+            "weight": weight,
+            "rationale": metadata["rationale"],
+            "remediation": metadata["remediation"],
+        }
 
-    return {
-        "claim": inp.claim,
-        "risk_score": score,
+    raw_total = sum(item["weight"] for item in component_results.values())
+    multiplier = float(method["algorithm"]["multiplier"])
+    scaled_score = round(raw_total * multiplier, 6)
+    minimum = int(method["algorithm"]["minimum_score"])
+    maximum = int(method["algorithm"]["maximum_score"])
+    risk_score = max(minimum, min(maximum, _half_up(scaled_score)))
+    threshold = _threshold(risk_score, method)
+    risk_level = threshold["level"]
+
+    interpretation_spec = method["interpretation"]
+    interpretation = {
         "risk_level": risk_level,
-        "components": components,
-        "flags": _flags(inp, score),
-        "review_actions": _review_actions(inp),
-        "decision_note": decision_note,
-        "inputs": asdict(inp),
+        "flags": _apply_rules(interpretation_spec["flag_rules"], normalized, risk_score),
+        "review_actions": _apply_rules(interpretation_spec["action_rules"], normalized, risk_score),
+        "decision_note": interpretation_spec["decision_notes"][risk_level],
+    }
+    return {
+        "normalized_input": normalized,
+        "calculations": {
+            "components": component_results,
+            "raw_total": raw_total,
+            "multiplier": multiplier,
+            "scaled_score": scaled_score,
+            "risk_score": risk_score,
+            "threshold": threshold,
+        },
+        "interpretation": interpretation,
     }
 
 
-def build_narrative_risk_record(payload: Mapping[str, Any], *, generated_at: str | None = None) -> Dict[str, Any]:
-    """Build a complete export record from a canonical payload."""
+def _iso_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _validate_datetime(value: str, field: str) -> str:
+    if not isinstance(value, str):
+        raise NarrativeRiskValidationError(f"{field} must be an ISO 8601 date-time string")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise NarrativeRiskValidationError(f"{field} must be an ISO 8601 date-time string") from exc
+    if parsed.tzinfo is None:
+        raise NarrativeRiskValidationError(f"{field} must include a timezone")
+    return value
+
+
+def _urn_uuid(value: str | None, field: str) -> str:
+    if value is None:
+        return f"urn:uuid:{uuid4()}"
+    if not isinstance(value, str) or not value.startswith("urn:uuid:"):
+        raise NarrativeRiskValidationError(f"{field} must be a urn:uuid identifier")
+    try:
+        UUID(value[9:])
+    except (ValueError, AttributeError) as exc:
+        raise NarrativeRiskValidationError(f"{field} must be a urn:uuid identifier") from exc
+    return value.lower()
+
+
+def normalize_human_decision(payload: Mapping[str, Any] | None = None) -> Dict[str, Any]:
+    source = {} if payload is None else payload
+    if not isinstance(source, Mapping):
+        raise NarrativeRiskValidationError("human_decision must be a JSON object")
+    unknown = sorted(set(source) - HUMAN_DECISION_FIELDS)
+    if unknown:
+        raise NarrativeRiskValidationError(f"unsupported human_decision field(s): {', '.join(unknown)}")
+
+    status = _clean_choice(source.get("status"), field="human_decision.status", allowed=HUMAN_DECISION_STATUS, default="draft")
+    disposition = _clean_choice(source.get("disposition"), field="human_decision.disposition", allowed=HUMAN_DISPOSITIONS, default="undecided")
+    reviewer_id = source.get("reviewer_id")
+    reviewer_name = source.get("reviewer_name")
+    reviewed_at = source.get("reviewed_at")
+    for field, value in (("reviewer_id", reviewer_id), ("reviewer_name", reviewer_name)):
+        if value is not None and not isinstance(value, str):
+            raise NarrativeRiskValidationError(f"human_decision.{field} must be a string or null")
+    if reviewed_at is not None:
+        _validate_datetime(reviewed_at, "human_decision.reviewed_at")
+    notes = _clean_text(source.get("notes", ""), "human_decision.notes")
+    return {
+        "status": status,
+        "disposition": disposition,
+        "reviewer_id": reviewer_id,
+        "reviewer_name": reviewer_name,
+        "reviewed_at": reviewed_at,
+        "notes": notes,
+    }
+
+
+def build_narrative_risk_record(
+    payload: Mapping[str, Any],
+    *,
+    generated_at: str | None = None,
+    record_id: str | None = None,
+    case_id: str | None = None,
+    human_decision: Mapping[str, Any] | None = None,
+    method_snapshot: Mapping[str, Any] | None = None,
+    migration: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    """Build a complete canonical record with an embedded reproducible method."""
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
-    result = score_narrative_risk(**dict(payload))
-    result.update(
-        {
-            "record_type": RECORD_TYPE,
-            "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
-            "method": METHOD,
-            "method_version": VERSION,
-            "schema_version": SCHEMA_VERSION,
-        }
-    )
-    return result
+    method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
+    validate_method_snapshot(method)
+    if method["method_id"] != METHOD_ID or method["method_version"] != METHOD_VERSION:
+        raise NarrativeRiskValidationError("method_snapshot identifier or version is not supported by this release")
+
+    analysis = score_narrative_risk(payload, method_snapshot=method)
+    generated = _validate_datetime(generated_at, "generated_at") if generated_at is not None else _iso_now()
+    contract = contract_definition()
+    record: Dict[str, Any] = {
+        "record_type": RECORD_TYPE,
+        "contract": {"contract_id": contract["contract_id"], "contract_version": contract["contract_version"]},
+        "identifiers": {
+            "record_id": _urn_uuid(record_id, "record_id"),
+            "case_id": _urn_uuid(case_id, "case_id"),
+            "method_id": method["method_id"],
+            "schema_id": contract["record_schema_id"],
+            "input_schema_id": contract["input_schema_id"],
+        },
+        "generated_at": generated,
+        "normalized_input": analysis["normalized_input"],
+        "method_snapshot": method,
+        "method_snapshot_sha256": sha256_digest(method),
+        "calculations": analysis["calculations"],
+        "interpretation": analysis["interpretation"],
+        "human_decision": normalize_human_decision(human_decision),
+    }
+    if migration is not None:
+        record["migration"] = deepcopy(dict(migration))
+    record["reproducibility"] = {
+        "canonical_input_sha256": sha256_digest(record["normalized_input"]),
+        "record_payload_sha256": sha256_digest(record),
+    }
+    validate_narrative_risk_record(record)
+    return record
 
 
 def validate_narrative_risk_record(record: Mapping[str, Any]) -> None:
-    """Validate a generated record against the packaged JSON Schema."""
+    if not isinstance(record, Mapping):
+        raise NarrativeRiskValidationError("record must be a JSON object")
     try:
-        import json
-        from jsonschema import Draft202012Validator
-    except ImportError as exc:  # pragma: no cover - dependency contract
-        raise RuntimeError("jsonschema is required to validate narrative-risk records") from exc
+        validate_against_schema(record, RECORD_SCHEMA_PATH)
+    except Exception as exc:
+        if exc.__class__.__module__.startswith("jsonschema"):
+            raise NarrativeRiskValidationError(f"invalid narrative-risk record: {exc.message}") from exc
+        raise
 
-    schema_path = Path(__file__).resolve().parents[1] / "schemas" / "narrative_risk_record.schema.json"
-    schema = json.loads(schema_path.read_text(encoding="utf-8"))
-    Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER).validate(dict(record))
+
+def reproduce_narrative_risk_record(record: Mapping[str, Any]) -> Dict[str, Any]:
+    """Rebuild a record from its stored normalized input and method snapshot."""
+    validate_narrative_risk_record(record)
+    method = record["method_snapshot"]
+    if sha256_digest(method) != record["method_snapshot_sha256"]:
+        raise NarrativeRiskValidationError("method_snapshot_sha256 does not match the embedded method snapshot")
+    return build_narrative_risk_record(
+        record["normalized_input"],
+        generated_at=record["generated_at"],
+        record_id=record["identifiers"]["record_id"],
+        case_id=record["identifiers"]["case_id"],
+        human_decision=record["human_decision"],
+        method_snapshot=method,
+        migration=record.get("migration"),
+    )
+
+
+def verify_record_reproducibility(record: Mapping[str, Any]) -> Dict[str, Any]:
+    """Return a deterministic verification report for an exported record."""
+    validate_narrative_risk_record(record)
+    expected_method_hash = sha256_digest(record["method_snapshot"])
+    payload = dict(record)
+    reproducibility = payload.pop("reproducibility")
+    expected_payload_hash = sha256_digest(payload)
+    reproduced = reproduce_narrative_risk_record(record)
+    exact_match = canonical_json(reproduced) == canonical_json(record)
+    return {
+        "exact_match": exact_match,
+        "method_snapshot_hash_match": expected_method_hash == record["method_snapshot_sha256"],
+        "canonical_input_hash_match": sha256_digest(record["normalized_input"]) == reproducibility["canonical_input_sha256"],
+        "record_payload_hash_match": expected_payload_hash == reproducibility["record_payload_sha256"],
+        "record_id": record["identifiers"]["record_id"],
+        "method_id": record["identifiers"]["method_id"],
+        "method_version": record["method_snapshot"]["method_version"],
+        "schema_id": record["identifiers"]["schema_id"],
+    }

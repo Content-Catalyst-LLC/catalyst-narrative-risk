@@ -1,0 +1,78 @@
+{
+  "vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
+  "vocabulary_version": "1.1.0",
+  "vocabularies": {
+    "source_type": {
+      "default": "reputable_secondary",
+      "values": [
+        "official_or_primary",
+        "peer_reviewed_or_audited",
+        "reputable_secondary",
+        "internal_unreviewed",
+        "single_report_or_media",
+        "social_or_anecdotal",
+        "unknown"
+      ]
+    },
+    "evidence_strength": {
+      "default": "moderate",
+      "values": [
+        "strong",
+        "moderate",
+        "limited",
+        "weak",
+        "unclear"
+      ]
+    },
+    "three_level_scale": {
+      "default": "medium",
+      "values": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "consequences": {
+      "default": "moderate",
+      "values": [
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ]
+    },
+    "review_status": {
+      "default": "partly_reviewed",
+      "values": [
+        "reviewed",
+        "partly_reviewed",
+        "not_reviewed"
+      ]
+    },
+    "risk_level": {
+      "values": [
+        "Low",
+        "Medium",
+        "High"
+      ]
+    },
+    "human_decision_status": {
+      "default": "draft",
+      "values": [
+        "draft",
+        "pending_review",
+        "reviewed"
+      ]
+    },
+    "human_disposition": {
+      "default": "undecided",
+      "values": [
+        "undecided",
+        "approved",
+        "approved_with_conditions",
+        "revise",
+        "rejected"
+      ]
+    }
+  }
+}

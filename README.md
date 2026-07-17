@@ -1,86 +1,94 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.0.1 — Scoring Parity and Release Integrity**
+**Current release: v1.1.0 — Canonical Narrative Risk Contract and Method Engine**
 
-Catalyst Narrative Risk is an open-source module for separating claims, sources, evidence strength, uncertainty, timeline pressure, stakeholder pressure, and interpretation risk.
+Catalyst Narrative Risk is the Sustainable Catalyst platform layer for separating claims, evidence strength, uncertainty, volatility, pressure, consequences, machine interpretation, and accountable human decisions.
 
-It is part of the Sustainable Catalyst platform. The module does not decide whether a claim is true automatically. It makes the review path visible: what is being claimed, what supports it, what remains uncertain, how quickly the narrative is changing, and what should be reviewed before the claim is used in public strategy, reporting, research, or decision support.
+The module does not decide whether a claim is true. It creates a stable, reproducible review record that shows what entered the method, how every component was weighted, what the method inferred, and what a human reviewer ultimately decided.
 
-## What the module does
+## v1.1.0 contract
 
-- Scores narrative risk using transparent, versioned heuristics.
-- Produces equivalent analytical results in Python and browser JavaScript.
-- Separates evidence strength from stakeholder and timeline pressure.
-- Flags claims that may be under-sourced, overconfident, volatile, or consequential.
-- Produces schema-validated JSON and Markdown review briefs.
-- Provides a client-side WordPress demo for public exploration.
-- Rejects missing claims, malformed source counts, and unsupported fields explicitly.
-- Includes canonical parity fixtures, tests, schemas, sample inputs, outputs, and release contracts.
+Every canonical record contains four distinct layers:
 
-## v1.0.1 integrity repair
+1. `normalized_input` — strict, controlled-vocabulary inputs with documented defaults.
+2. `calculations` — component values, weights, rationale, remediation, totals, multiplier, score, and threshold.
+3. `interpretation` — risk level, flags, actions, and the method's decision note.
+4. `human_decision` — reviewer status and disposition, stored separately and never inferred from the score.
 
-The original browser scorer used JavaScript truthy fallbacks. Valid zero weights for primary sources, strong evidence, and completed review were therefore replaced by fallback values. v1.0.1 extracts a reusable browser engine and requires exact parity with the Python engine across valid, invalid, and score-boundary fixtures.
+Each record also carries:
 
-## WordPress demo
+- Stable record and case identifiers
+- Method, record-schema, and input-schema identifiers
+- The complete versioned method snapshot
+- SHA-256 method, input, and record-payload digests
+- Exact record reproduction and verification support
+- v1.0.1 migration metadata when applicable
 
-The WordPress plugin lives in:
-
-```text
-wordpress/catalyst-narrative-risk-demo/
-```
-
-Shortcode:
+## Canonical assets
 
 ```text
-[catalyst_narrative_risk_demo]
+contracts/narrative-risk-contract.v1.1.0.json     Contract registry
+contracts/controlled-vocabularies.v1.1.0.json    Controlled vocabularies and defaults
+methods/transparent-heuristic.v1.1.0.json         Complete scoring and interpretation method
+schemas/narrative_risk_input.schema.json          Canonical input schema
+schemas/narrative_risk_method_snapshot.schema.json Method snapshot schema
+schemas/narrative_risk_record.schema.json         Canonical record schema
+schemas/archive/                                  Retained legacy schema for migration
 ```
-
-The demo is client-side. It does not submit visitor inputs to Sustainable Catalyst. It generates a structured narrative-risk record in the browser for exploratory use.
 
 ## Python usage
 
-Install dependencies:
-
 ```bash
 python -m pip install -r requirements.txt
-```
 
-Generate the sample brief:
-
-```bash
 python python/narrative_risk_brief.py \
   --input data/sample_narrative_risk_input.json \
   --json-out outputs/sample_narrative_risk_output.json \
   --markdown-out outputs/sample_narrative_risk_output.md
 ```
 
-## Release validation
+Verify an exported record:
 
-Install development dependencies and run the full cross-runtime release suite:
+```bash
+python python/verify_narrative_risk_record.py \
+  --input outputs/sample_narrative_risk_output.json
+```
+
+Migrate a v1.0.1 record:
+
+```bash
+python python/migrate_narrative_risk_record.py \
+  --input tests/fixtures/legacy-v1.0.1-record.json \
+  --output migrated-record.json
+```
+
+## API
+
+- `POST /api/narrative-risk` — create a canonical record
+- `POST /api/narrative-risk/verify` — validate and reproduce a record
+- `POST /api/narrative-risk/migrate/v1.0.1` — migrate a legacy record
+- `GET /api/narrative-risk/contract` — retrieve the contract registry
+- `GET /api/narrative-risk/methods/current` — retrieve the current method snapshot and hash
+
+## WordPress demo
+
+Install `wordpress/catalyst-narrative-risk-demo/` and use:
+
+```text
+[catalyst_narrative_risk_demo]
+```
+
+The demo runs in the browser. It uses a generated method asset derived from the same canonical JSON method used by Python.
+
+## Release validation
 
 ```bash
 python -m pip install -r requirements-dev.txt
 bash scripts/release_check.sh
 ```
 
-The suite covers Python 3 tests, schema validation, version consistency, JSON syntax, JavaScript syntax, browser fixtures, direct Python–JavaScript parity, CLI generation, and WordPress PHP syntax.
-
-## Repository structure
-
-```text
-narrative_risk/                         Canonical scoring, validation, and isolated legacy shim
-python/narrative_risk_brief.py          Validated CLI generator
-schemas/                                Strict JSON Schema for exports
-data/                                   Sample input records
-outputs/                                Schema-valid example outputs
-docs/                                   Methodology, parity, review, and release documentation
-tests/fixtures/scoring-parity.json      Shared Python/browser scoring contract
-scripts/                                Release, parity, and browser validation tools
-wordpress/catalyst-narrative-risk-demo/ WordPress shortcode plugin
-.github/workflows/                       Python, Node, and PHP CI validation
-release/                                Version-specific release notes
-```
+The release suite covers Python tests, strict schemas, contract identity, method-asset synchronization, JavaScript and PHP syntax, browser fixtures, exact Python–JavaScript score and record parity, SHA-256 parity, CLI generation, migration, and reproducibility.
 
 ## Methodological boundary
 
-Catalyst Narrative Risk is not a fact-checking oracle, legal review, communications approval system, or automatic truth engine. It structures review. Human judgment, source evaluation, and domain expertise remain responsible for final interpretation.
+Catalyst Narrative Risk structures evidence and review. It is not a fact-checking oracle, legal opinion, scientific certification, communications approval system, or automatic truth engine. Human judgment and domain expertise remain responsible for final decisions.

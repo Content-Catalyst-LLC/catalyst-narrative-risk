@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.1.0 - 2026-07-17
+
+### Added
+
+- Canonical contract registry with stable contract, record, case, method, record-schema, and input-schema identifiers.
+- Strict input, method-snapshot, and record schemas using JSON Schema Draft 2020-12.
+- Versioned controlled vocabularies, defaults, weights, score thresholds, component metadata, and interpretation rules.
+- Four-layer records separating normalized input, calculations, machine interpretation, and human decisions.
+- Embedded method snapshots with SHA-256 method, input, and record-payload digests.
+- Exact reproduction and verification APIs, Python functions, and command-line tools.
+- Deterministic migration from schema-valid v1.0.1 records without inferring approval.
+- Cross-runtime full-record and digest parity, including Unicode input.
+- Contract and current-method API endpoints.
+
+### Changed
+
+- Invalid supplied vocabulary values now fail explicitly instead of silently falling back.
+- Component outputs now include selected input, weight, rationale, and remediation.
+- WordPress demo now displays canonical identity and separates human disposition from heuristic interpretation.
+- Browser method data is generated from the canonical JSON method file and checked during release validation.
+
 ## 1.0.1 - 2026-07-17
 
 ### Fixed

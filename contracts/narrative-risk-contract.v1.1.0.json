@@ -1,0 +1,24 @@
+{
+  "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
+  "contract_version": "1.1.0",
+  "record_type": "catalyst_narrative_risk_record",
+  "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0",
+  "record_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0",
+  "method_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.1.0",
+  "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
+  "method_version": "1.1.0",
+  "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
+  "controlled_vocabulary_version": "1.1.0",
+  "layers": [
+    "normalized_input",
+    "calculations",
+    "interpretation",
+    "human_decision"
+  ],
+  "compatibility": {
+    "migrates_from": [
+      "1.0.1"
+    ],
+    "legacy_schema": "schemas/archive/narrative_risk_record.v1.0.1.schema.json"
+  }
+}

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk Demo
  * Description: Browser-based Sustainable Catalyst Narrative Risk demo with shortcode [catalyst_narrative_risk_demo].
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,9 +13,10 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.0.1');
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array(), '1.0.1', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.0.1', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.1.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.1.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.1.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.1.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -151,8 +152,18 @@ function cnrisk_demo_shortcode() {
           <div class="cnrisk-demo__bars" data-cnrisk-bars></div>
 
           <div class="cnrisk-demo__block">
+            <h4>Contract identity</h4>
+            <p data-cnrisk-identity>No record generated yet.</p>
+          </div>
+
+          <div class="cnrisk-demo__block">
             <h4>Decision note</h4>
             <p data-cnrisk-note>Complete the form to generate an interpretation note.</p>
+          </div>
+
+          <div class="cnrisk-demo__block">
+            <h4>Human decision</h4>
+            <p data-cnrisk-human>Draft · undecided</p>
           </div>
 
           <div class="cnrisk-demo__block">
