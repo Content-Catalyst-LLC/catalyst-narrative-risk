@@ -46,8 +46,12 @@ from .monitoring import (
     build_alert, build_monitoring_snapshot, compare_monitoring_snapshots, normalize_watchlist,
     validate_site_intelligence_handoff, validate_datetime as monitoring_datetime, urn_uuid as monitoring_urn_uuid,
 )
+from .stakeholders import (
+    build_stakeholder_intelligence, normalize_actor, normalize_relationship, normalize_incentive,
+    normalize_pressure, normalize_consequence, validate_canvas_handoff,
+)
 
-VERSION = "1.6.0"
+VERSION = "1.7.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
@@ -403,6 +407,43 @@ class SQLiteCaseRepository:
         CREATE TRIGGER IF NOT EXISTS site_intelligence_events_no_delete
         BEFORE DELETE ON site_intelligence_events BEGIN SELECT RAISE(ABORT, 'site intelligence events are append-only'); END;
 
+        CREATE TABLE IF NOT EXISTS stakeholder_actors (
+            actor_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            actor_json TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_stakeholder_actors_case ON stakeholder_actors(case_id, created_at);
+        CREATE TABLE IF NOT EXISTS stakeholder_relationships (
+            relationship_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            source_actor_id TEXT NOT NULL REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            target_actor_id TEXT NOT NULL REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            relationship_json TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_stakeholder_relationships_case ON stakeholder_relationships(case_id, created_at);
+        CREATE TABLE IF NOT EXISTS stakeholder_incentives (
+            incentive_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            actor_id TEXT NOT NULL REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            incentive_json TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_stakeholder_incentives_case ON stakeholder_incentives(case_id, created_at);
+        CREATE TABLE IF NOT EXISTS stakeholder_pressures (
+            pressure_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            actor_id TEXT NOT NULL REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            source_actor_id TEXT REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            pressure_json TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_stakeholder_pressures_case ON stakeholder_pressures(case_id, created_at);
+        CREATE TABLE IF NOT EXISTS stakeholder_consequences (
+            consequence_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            actor_id TEXT NOT NULL REFERENCES stakeholder_actors(actor_id) ON DELETE RESTRICT,
+            consequence_json TEXT NOT NULL, created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_stakeholder_consequences_case ON stakeholder_consequences(case_id, created_at);
+        CREATE TABLE IF NOT EXISTS catalyst_canvas_handoffs (
+            handoff_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            canvas_id TEXT NOT NULL, handoff_json TEXT NOT NULL, handoff_sha256 TEXT NOT NULL, imported_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_canvas_handoffs_case ON catalyst_canvas_handoffs(case_id, imported_at);
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -439,7 +480,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -479,6 +520,14 @@ class SQLiteCaseRepository:
         last_snapshot = self._connection.execute("SELECT captured_at FROM monitoring_snapshots WHERE case_id=? ORDER BY captured_at DESC LIMIT 1", (case_id,)).fetchone()
         critical_alerts = int(self._connection.execute("SELECT COUNT(*) FROM monitoring_alerts WHERE case_id=? AND status='open' AND severity='critical'", (case_id,)).fetchone()[0])
         monitoring_status = "critical" if critical_alerts else "attention_required" if open_alert_count else "current" if snapshot_count else "not_monitored"
+        stakeholder_counts = {
+            "actors": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_actors WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "relationships": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_relationships WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "incentives": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_incentives WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "pressures": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_pressures WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "consequences": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_consequences WHERE case_id=?", (case_id,)).fetchone()[0]),
+        }
+        stakeholder_summary = self.get_stakeholder_intelligence(case_id, generated_at=row["updated_at"]) if stakeholder_counts["actors"] else None
         case = {
             "case_id": case_id,
             "organization_id": row["organization_id"],
@@ -509,6 +558,12 @@ class SQLiteCaseRepository:
             "open_alert_count": open_alert_count,
             "last_monitored_at": last_snapshot["captured_at"] if last_snapshot else None,
             "monitoring_status": monitoring_status,
+            "stakeholder_actor_count": stakeholder_counts["actors"],
+            "stakeholder_relationship_count": stakeholder_counts["relationships"],
+            "stakeholder_incentive_count": stakeholder_counts["incentives"],
+            "stakeholder_pressure_count": stakeholder_counts["pressures"],
+            "stakeholder_consequence_count": stakeholder_counts["consequences"],
+            "suggested_stakeholder_pressure": stakeholder_summary["suggested_stakeholder_pressure"] if stakeholder_summary else None,
         }
         _schema_error("case", case, CASE_SCHEMA_PATH)
         return case
@@ -918,6 +973,13 @@ class SQLiteCaseRepository:
             "watchlists": self.list_watchlists(case_id=case["case_id"]),
             "monitoring_alerts": self.list_monitoring_alerts(case_id=case["case_id"]),
             "site_intelligence_events": self.list_site_intelligence_events(case["case_id"]),
+            "stakeholder_actors": self.list_stakeholder_actors(case["case_id"]),
+            "stakeholder_relationships": self.list_stakeholder_relationships(case["case_id"]),
+            "stakeholder_incentives": self.list_stakeholder_incentives(case["case_id"]),
+            "stakeholder_pressures": self.list_stakeholder_pressures(case["case_id"]),
+            "stakeholder_consequences": self.list_stakeholder_consequences(case["case_id"]),
+            "stakeholder_intelligence": self.get_stakeholder_intelligence(case["case_id"]),
+            "catalyst_canvas_handoffs": self.list_canvas_handoffs(case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -963,6 +1025,13 @@ class SQLiteCaseRepository:
                 sha256_digest({k: v for k, v in item.items() if k != "comparison_sha256"}) == item["comparison_sha256"]
                 for item in bundle.get("monitoring_comparisons", [])
             ),
+            "stakeholder_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in list(bundle.get("stakeholder_actors", [])) + list(bundle.get("stakeholder_relationships", []))
+                + list(bundle.get("stakeholder_incentives", [])) + list(bundle.get("stakeholder_pressures", []))
+                + list(bundle.get("stakeholder_consequences", []))
+            ) and bundle.get("stakeholder_intelligence", {}).get("case_id") == bundle["case"]["case_id"],
+            "stakeholder_intelligence_hash_match": sha256_digest({k: v for k, v in bundle["stakeholder_intelligence"].items() if k != "intelligence_sha256"}) == bundle["stakeholder_intelligence"]["intelligence_sha256"],
         }
 
     def import_case_bundle(self, bundle: Mapping[str, Any]) -> Dict[str, Any]:
@@ -981,6 +1050,10 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains a monitoring snapshot hash mismatch")
         if not report["all_comparison_hashes_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains a monitoring comparison hash mismatch")
+        if not report["stakeholder_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains stakeholder records for another case")
+        if not report["stakeholder_intelligence_hash_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a stakeholder intelligence hash mismatch")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -1062,6 +1135,18 @@ class SQLiteCaseRepository:
                     "INSERT INTO site_intelligence_events(event_id,case_id,event_type,observed_at,handoff_json,handoff_sha256,ingested_at) VALUES(?,?,?,?,?,?,?)",
                     (handoff["event_id"], handoff["case_id"], handoff["event_type"], handoff["observed_at"], _json_dump(handoff), sha256_digest(handoff), bundle["exported_at"]),
                 )
+            for actor in bundle.get("stakeholder_actors", []):
+                connection.execute("INSERT INTO stakeholder_actors(actor_id,case_id,actor_json,created_at) VALUES(?,?,?,?)", (actor["actor_id"], actor["case_id"], _json_dump(actor), actor["created_at"]))
+            for relationship in bundle.get("stakeholder_relationships", []):
+                connection.execute("INSERT INTO stakeholder_relationships(relationship_id,case_id,source_actor_id,target_actor_id,relationship_json,created_at) VALUES(?,?,?,?,?,?)", (relationship["relationship_id"], relationship["case_id"], relationship["source_actor_id"], relationship["target_actor_id"], _json_dump(relationship), relationship["created_at"]))
+            for incentive in bundle.get("stakeholder_incentives", []):
+                connection.execute("INSERT INTO stakeholder_incentives(incentive_id,case_id,actor_id,incentive_json,created_at) VALUES(?,?,?,?,?)", (incentive["incentive_id"], incentive["case_id"], incentive["actor_id"], _json_dump(incentive), incentive["created_at"]))
+            for pressure in bundle.get("stakeholder_pressures", []):
+                connection.execute("INSERT INTO stakeholder_pressures(pressure_id,case_id,actor_id,source_actor_id,pressure_json,created_at) VALUES(?,?,?,?,?,?)", (pressure["pressure_id"], pressure["case_id"], pressure["actor_id"], pressure["source_actor_id"], _json_dump(pressure), pressure["created_at"]))
+            for consequence in bundle.get("stakeholder_consequences", []):
+                connection.execute("INSERT INTO stakeholder_consequences(consequence_id,case_id,actor_id,consequence_json,created_at) VALUES(?,?,?,?,?)", (consequence["consequence_id"], consequence["case_id"], consequence["actor_id"], _json_dump(consequence), consequence["created_at"]))
+            for handoff in bundle.get("catalyst_canvas_handoffs", []):
+                connection.execute("INSERT INTO catalyst_canvas_handoffs(handoff_id,case_id,canvas_id,handoff_json,handoff_sha256,imported_at) VALUES(?,?,?,?,?,?)", (handoff["handoff_id"], handoff["case_id"], handoff["canvas_id"], _json_dump(handoff["handoff"]), handoff["handoff_sha256"], handoff["imported_at"]))
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -1071,7 +1156,98 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.6.0 narrative change, freshness, and monitoring
+    # v1.7.0 stakeholder, incentive, and pressure intelligence
+
+    def _ensure_actor(self, actor_id: str, case_id: str) -> None:
+        row = self._connection.execute("SELECT case_id FROM stakeholder_actors WHERE actor_id=?", (actor_id,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError(f"stakeholder actor not found: {actor_id}")
+        if row["case_id"] != case_id: raise NarrativeRiskValidationError("stakeholder actor belongs to another case")
+
+    def add_stakeholder_actor(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        case = self.get_case(case_id); actor = normalize_actor(payload, case_id=case["case_id"])
+        with self._transaction() as connection:
+            try: connection.execute("INSERT INTO stakeholder_actors(actor_id,case_id,actor_json,created_at) VALUES(?,?,?,?)", (actor["actor_id"], actor["case_id"], _json_dump(actor), actor["created_at"]))
+            except sqlite3.IntegrityError as exc: raise NarrativeRiskValidationError(f"stakeholder actor already exists: {actor['actor_id']}") from exc
+            self._activity(connection, case["case_id"], "stakeholder_actor_added", entity_id=actor["actor_id"], payload={"name": actor["name"], "actor_type": actor["actor_type"]}, created_at=actor["created_at"])
+        return actor
+
+    def list_stakeholder_actors(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT actor_json FROM stakeholder_actors WHERE case_id=? ORDER BY created_at,actor_id", (case_id,)).fetchall(); return [_json_load(r["actor_json"]) for r in rows]
+
+    def add_stakeholder_relationship(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        self.get_case(case_id); item=normalize_relationship(payload,case_id=case_id); self._ensure_actor(item["source_actor_id"],case_id); self._ensure_actor(item["target_actor_id"],case_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO stakeholder_relationships(relationship_id,case_id,source_actor_id,target_actor_id,relationship_json,created_at) VALUES(?,?,?,?,?,?)", (item["relationship_id"],case_id,item["source_actor_id"],item["target_actor_id"],_json_dump(item),item["created_at"]))
+            self._activity(connection,case_id,"stakeholder_relationship_added",entity_id=item["relationship_id"],payload={"relationship_type":item["relationship_type"]},created_at=item["created_at"])
+        return item
+
+    def list_stakeholder_relationships(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT relationship_json FROM stakeholder_relationships WHERE case_id=? ORDER BY created_at,relationship_id",(case_id,)).fetchall(); return [_json_load(r["relationship_json"]) for r in rows]
+
+    def add_stakeholder_incentive(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        self.get_case(case_id); item=normalize_incentive(payload,case_id=case_id); self._ensure_actor(item["actor_id"],case_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO stakeholder_incentives(incentive_id,case_id,actor_id,incentive_json,created_at) VALUES(?,?,?,?,?)",(item["incentive_id"],case_id,item["actor_id"],_json_dump(item),item["created_at"]))
+            self._activity(connection,case_id,"stakeholder_incentive_added",entity_id=item["incentive_id"],payload={"incentive_type":item["incentive_type"],"conflict_status":item["conflict_status"]},created_at=item["created_at"])
+        return item
+
+    def list_stakeholder_incentives(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT incentive_json FROM stakeholder_incentives WHERE case_id=? ORDER BY created_at,incentive_id",(case_id,)).fetchall(); return [_json_load(r["incentive_json"]) for r in rows]
+
+    def add_stakeholder_pressure(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        self.get_case(case_id); item=normalize_pressure(payload,case_id=case_id); self._ensure_actor(item["actor_id"],case_id)
+        if item["source_actor_id"]: self._ensure_actor(item["source_actor_id"],case_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO stakeholder_pressures(pressure_id,case_id,actor_id,source_actor_id,pressure_json,created_at) VALUES(?,?,?,?,?,?)",(item["pressure_id"],case_id,item["actor_id"],item["source_actor_id"],_json_dump(item),item["created_at"]))
+            self._activity(connection,case_id,"stakeholder_pressure_added",entity_id=item["pressure_id"],payload={"pressure_type":item["pressure_type"],"intensity":item["intensity"]},created_at=item["created_at"])
+        return item
+
+    def list_stakeholder_pressures(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT pressure_json FROM stakeholder_pressures WHERE case_id=? ORDER BY created_at,pressure_id",(case_id,)).fetchall(); return [_json_load(r["pressure_json"]) for r in rows]
+
+    def add_stakeholder_consequence(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        self.get_case(case_id); item=normalize_consequence(payload,case_id=case_id); self._ensure_actor(item["actor_id"],case_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO stakeholder_consequences(consequence_id,case_id,actor_id,consequence_json,created_at) VALUES(?,?,?,?,?)",(item["consequence_id"],case_id,item["actor_id"],_json_dump(item),item["created_at"]))
+            self._activity(connection,case_id,"stakeholder_consequence_added",entity_id=item["consequence_id"],payload={"impact_type":item["impact_type"],"direction":item["direction"],"severity":item["severity"]},created_at=item["created_at"])
+        return item
+
+    def list_stakeholder_consequences(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT consequence_json FROM stakeholder_consequences WHERE case_id=? ORDER BY created_at,consequence_id",(case_id,)).fetchall(); return [_json_load(r["consequence_json"]) for r in rows]
+
+    def get_stakeholder_intelligence(self, case_id: str, *, generated_at: str | None = None) -> Dict[str, Any]:
+        normalized_case_id = _urn_uuid(case_id, "case_id")
+        row = self._connection.execute("SELECT updated_at FROM cases WHERE case_id=?", (normalized_case_id,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"case not found: {normalized_case_id}")
+        return build_stakeholder_intelligence(case_id=normalized_case_id,actors=self.list_stakeholder_actors(normalized_case_id),relationships=self.list_stakeholder_relationships(normalized_case_id),incentives=self.list_stakeholder_incentives(normalized_case_id),pressures=self.list_stakeholder_pressures(normalized_case_id),consequences=self.list_stakeholder_consequences(normalized_case_id),generated_at=generated_at or row["updated_at"])
+
+    def import_catalyst_canvas_stakeholders(self, case_id: str, payload: Mapping[str, Any], *, imported_at: str | None = None) -> Dict[str, Any]:
+        self.get_case(case_id); handoff=validate_canvas_handoff(payload); timestamp=_validate_datetime(imported_at,"imported_at") if imported_at else _iso_now(); ids={}
+        canvas_ids = {item["canvas_stakeholder_id"] for item in handoff["stakeholders"]}
+        for index, relationship in enumerate(handoff.get("relationships", [])):
+            for field in ("source_canvas_stakeholder_id", "target_canvas_stakeholder_id"):
+                if relationship[field] not in canvas_ids:
+                    raise NarrativeRiskValidationError(f"relationships[{index}].{field} does not reference a handoff stakeholder")
+        actors=[]
+        for raw in handoff["stakeholders"]:
+            actor_payload=dict(raw); external=actor_payload.pop("canvas_stakeholder_id"); actor_payload["external_id"]=f"catalyst-canvas:{handoff['canvas_id']}:{external}"; actor_payload["created_at"]=timestamp
+            actor=self.add_stakeholder_actor(case_id,actor_payload); ids[external]=actor["actor_id"]; actors.append(actor)
+        relationships=[]
+        for raw in handoff.get("relationships",[]):
+            rel={"source_actor_id":ids[raw["source_canvas_stakeholder_id"]],"target_actor_id":ids[raw["target_canvas_stakeholder_id"]],"relationship_type":raw["relationship_type"],"strength":raw.get("strength","unknown"),"description":raw.get("description","") ,"created_at":timestamp}
+            relationships.append(self.add_stakeholder_relationship(case_id,rel))
+        handoff_id=_urn_uuid(None,"handoff_id"); stored={"handoff_id":handoff_id,"case_id":case_id,"canvas_id":handoff["canvas_id"],"handoff":handoff,"handoff_sha256":sha256_digest(handoff),"imported_at":timestamp}
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO catalyst_canvas_handoffs(handoff_id,case_id,canvas_id,handoff_json,handoff_sha256,imported_at) VALUES(?,?,?,?,?,?)",(handoff_id,case_id,handoff["canvas_id"],_json_dump(handoff),stored["handoff_sha256"],timestamp))
+            self._activity(connection,case_id,"catalyst_canvas_stakeholders_imported",entity_id=handoff_id,payload={"canvas_id":handoff["canvas_id"],"actor_count":len(actors),"relationship_count":len(relationships)},created_at=timestamp)
+        return {"handoff":stored,"actors":actors,"relationships":relationships,"intelligence":self.get_stakeholder_intelligence(case_id,generated_at=timestamp)}
+
+    def list_canvas_handoffs(self, case_id: str) -> List[Dict[str, Any]]:
+        rows=self._connection.execute("SELECT * FROM catalyst_canvas_handoffs WHERE case_id=? ORDER BY imported_at,handoff_id",(case_id,)).fetchall(); return [{"handoff_id":r["handoff_id"],"case_id":r["case_id"],"canvas_id":r["canvas_id"],"handoff":_json_load(r["handoff_json"]),"handoff_sha256":r["handoff_sha256"],"imported_at":r["imported_at"]} for r in rows]
+
+    # ------------------------------------------------------------------
+    # v1.7.0 narrative change, freshness, and monitoring
 
     def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         snapshot = _json_load(row["snapshot_json"])
@@ -1433,7 +1609,7 @@ class SQLiteCaseRepository:
         return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
 
     # ------------------------------------------------------------------
-    # v1.6.0 governed review workflow
+    # v1.7.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {

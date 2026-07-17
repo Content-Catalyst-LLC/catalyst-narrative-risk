@@ -1,6 +1,6 @@
 {
   "handoff_type": "site_intelligence_monitoring_event",
-  "handoff_version": "1.6.0",
+  "handoff_version": "1.7.0",
   "event_id": "urn:uuid:50000000-0000-4000-8000-000000000001",
   "observed_at": "2026-07-20T12:00:00+00:00",
   "case_id": "urn:uuid:40000000-0000-4000-8000-000000000001",

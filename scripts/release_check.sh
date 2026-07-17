@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHON="${PYTHON:-python3}"
 NODE="${NODE:-node}"
 PHP="${PHP:-php}"
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v160.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v170.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 export CNRISK_DATABASE_PATH="$TMP_DIR/api-tests.sqlite3"
 
@@ -52,11 +52,11 @@ grep -q 'relationship_id,claim_id,claim_text' "$TMP_DIR/ledger.csv"
 grep -q 'flowchart TD' "$TMP_DIR/map.mmd"
 grep -q 'Narrative Map' "$TMP_DIR/map.md"
 
-printf '\n==> Persistent workspace, governance, monitoring CLI, and portable bundle round trip\n'
+printf '\n==> Persistent workspace, governance, monitoring, stakeholder CLI, and portable bundle round trip\n'
 SOURCE_DB="$TMP_DIR/source.sqlite3"; TARGET_DB="$TMP_DIR/target.sqlite3"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" init > "$TMP_DIR/workspace-health.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create \
-  --title "Release narrative-map case" --summary "Persistent v1.6.0 release verification." \
+  --title "Release narrative-map case" --summary "Persistent v1.7.0 release verification." \
   --status in_review --priority high --tag release --tag narrative-map \
   --input data/sample_narrative_risk_input.json --created-by release-suite > "$TMP_DIR/case.json"
 CASE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["case_id"])' "$TMP_DIR/case.json")"
@@ -127,6 +127,30 @@ json.dump(payload,open(target,"w"),indent=2); open(target,"a").write("\n")
 PY
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" ingest-site-intelligence \
   --input "$TMP_DIR/site-event.json" --ingested-at 2026-07-20T12:01:00+00:00 > "$TMP_DIR/site-intelligence.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" import-catalyst-canvas "$CASE_ID" \
+  --input data/handoffs/catalyst_canvas_stakeholder_handoff.json --imported-at 2026-07-17T19:00:00+00:00 > "$TMP_DIR/canvas-import.json"
+"$PYTHON" - "$TMP_DIR/canvas-import.json" "$TMP_DIR/incentive.json" "$TMP_DIR/pressure.json" "$TMP_DIR/consequence.json" <<'PYDATA'
+import json,sys
+source,incentive_path,pressure_path,consequence_path=sys.argv[1:]
+data=json.load(open(source)); actors=data["actors"]
+funder=next(item for item in actors if item.get("external_id","").endswith(":funder"))
+evaluator=next(item for item in actors if item.get("external_id","").endswith(":evaluator"))
+community=next(item for item in actors if item.get("external_id","").endswith(":community"))
+json.dump({"actor_id":funder["actor_id"],"incentive_type":"reputational","description":"Demonstrate measurable public impact.","magnitude":"high","alignment":"mixed","disclosed":True,"conflict_status":"potential"},open(incentive_path,"w"),indent=2)
+json.dump({"actor_id":evaluator["actor_id"],"source_actor_id":funder["actor_id"],"pressure_type":"deadline","description":"Publish before board review.","intensity":"critical","time_horizon":"immediate","status":"active"},open(pressure_path,"w"),indent=2)
+json.dump({"actor_id":community["actor_id"],"impact_type":"financial","direction":"mixed","severity":"high","description":"Overstatement could distort affordability expectations.","mitigation":"Publish confidence limits and measurement dates."},open(consequence_path,"w"),indent=2)
+PYDATA
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-stakeholder-incentive "$CASE_ID" --input "$TMP_DIR/incentive.json" > "$TMP_DIR/incentive-output.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-stakeholder-pressure "$CASE_ID" --input "$TMP_DIR/pressure.json" > "$TMP_DIR/pressure-output.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-stakeholder-consequence "$CASE_ID" --input "$TMP_DIR/consequence.json" > "$TMP_DIR/consequence-output.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" stakeholder-intelligence "$CASE_ID" --generated-at 2026-07-17T20:00:00+00:00 > "$TMP_DIR/stakeholder-intelligence.json"
+"$PYTHON" - "$TMP_DIR/stakeholder-intelligence.json" <<'PYDATA'
+import json,sys
+value=json.load(open(sys.argv[1]))
+assert value["counts"] == {"actors":3,"relationships":2,"incentives":1,"pressures":1,"consequences":1}
+assert value["suggested_stakeholder_pressure"] == "high"
+assert value["intelligence_sha256"]
+PYDATA
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" export "$CASE_ID" \
   --output "$TMP_DIR/case-bundle.json" --exported-at 2026-07-17T17:00:00+00:00
 "$PYTHON" python/narrative_risk_workspace.py verify-bundle --input "$TMP_DIR/case-bundle.json" > "$TMP_DIR/bundle-verification.json"
@@ -136,7 +160,7 @@ PY
 cmp "$TMP_DIR/case-bundle.json" "$TMP_DIR/reexported.json"
 
 printf '\n==> Legacy migrations and post-migration reproduction\n'
-for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0; do
+for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0 1.6.0; do
   "$PYTHON" python/migrate_narrative_risk_record.py \
     --input "tests/fixtures/legacy-v${legacy}-record.json" \
     --output "$TMP_DIR/migrated-${legacy}.json" --migrated-at 2026-07-17T18:00:00+00:00
@@ -146,4 +170,4 @@ done
 printf '\n==> WordPress PHP syntax\n'
 "$PHP" -l wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php
 
-printf '\nCatalyst Narrative Risk v1.6.0 release suite passed.\n'
+printf '\nCatalyst Narrative Risk v1.7.0 release suite passed.\n'

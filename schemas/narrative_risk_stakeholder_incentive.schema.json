@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-incentive/1.7.0",
+  "title": "Catalyst Narrative Risk Stakeholder Incentive 1.7.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "incentive_id",
+    "case_id",
+    "actor_id",
+    "incentive_type",
+    "description",
+    "magnitude",
+    "alignment",
+    "disclosed",
+    "conflict_status",
+    "evidence_ids",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "incentive_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "actor_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "incentive_type": {
+      "enum": [
+        "financial",
+        "political",
+        "reputational",
+        "legal",
+        "social",
+        "operational",
+        "mission",
+        "career",
+        "ideological",
+        "other"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "magnitude": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "alignment": {
+      "enum": [
+        "aligned",
+        "mixed",
+        "opposed",
+        "unknown"
+      ]
+    },
+    "disclosed": {
+      "type": "boolean"
+    },
+    "conflict_status": {
+      "enum": [
+        "none",
+        "potential",
+        "confirmed",
+        "managed",
+        "unknown"
+      ]
+    },
+    "evidence_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

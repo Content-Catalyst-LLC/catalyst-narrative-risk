@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-relationship/1.7.0",
+  "title": "Catalyst Narrative Risk Stakeholder Relationship 1.7.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "relationship_id",
+    "case_id",
+    "source_actor_id",
+    "target_actor_id",
+    "relationship_type",
+    "direction",
+    "strength",
+    "description",
+    "evidence_ids",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "source_actor_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "target_actor_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "relationship_type": {
+      "enum": [
+        "funds",
+        "employs",
+        "governs",
+        "regulates",
+        "represents",
+        "advises",
+        "partners_with",
+        "competes_with",
+        "depends_on",
+        "supplies",
+        "influences",
+        "amplifies",
+        "contests",
+        "benefits_from",
+        "harmed_by",
+        "other"
+      ]
+    },
+    "direction": {
+      "enum": [
+        "directed",
+        "mutual",
+        "undirected"
+      ]
+    },
+    "strength": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical",
+        "unknown"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "evidence_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

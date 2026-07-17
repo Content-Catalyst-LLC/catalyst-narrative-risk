@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Catalyst Narrative Risk
- * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, narrative monitoring, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.6.0
+ * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, monitoring, stakeholder intelligence, and persistent review workspace interfaces for Sustainable Catalyst.
+ * Version: 1.7.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.6.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.6.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.6.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.6.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.6.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.6.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.6.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.7.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.7.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.7.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.7.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.7.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.7.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.7.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -234,7 +234,7 @@ function cnrisk_workspace_shortcode() {
     <div class="cnrisk-workspace" data-cnrisk-workspace>
       <header class="cnrisk-workspace__head">
         <h3>Narrative Risk Review Workspace</h3>
-        <p>Create durable cases, add immutable revisions, govern approvals, capture monitoring snapshots, detect narrative change, and export checksummed case bundles.</p>
+        <p>Create durable cases, add immutable revisions, govern approvals, monitor narrative change, map stakeholders and pressures, and export checksummed case bundles.</p>
       </header>
       <div class="cnrisk-workspace__layout">
         <aside class="cnrisk-workspace__sidebar">
@@ -273,7 +273,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.6.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.7.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -323,6 +323,65 @@ function cnrisk_workspace_shortcode() {
               <button type="button" data-cnrisk-run-watch>Run monitoring check</button>
             </div>
             <div data-cnrisk-monitoring-detail></div>
+          </section>
+          <section class="cnrisk-workspace__governance cnrisk-workspace__stakeholders" aria-labelledby="cnrisk-stakeholder-heading">
+            <h4 id="cnrisk-stakeholder-heading">Stakeholder, incentive, and pressure intelligence</h4>
+            <p data-cnrisk-stakeholder-summary>No stakeholder records yet.</p>
+            <p><small>Record observable actors, relationships, incentives, pressures, and consequences. The advisory summary does not infer hidden motives or change the analytical score automatically.</small></p>
+            <h5>Add stakeholder</h5>
+            <div class="cnrisk-workspace__two">
+              <label><span>Name</span><input data-cnrisk-actor-name placeholder="Organization, community, or person" /></label>
+              <label><span>Actor type</span><select data-cnrisk-actor-type><option value="organization">Organization</option><option value="individual">Individual</option><option value="community">Community</option><option value="company">Company</option><option value="government">Government</option><option value="regulator">Regulator</option><option value="funder">Funder</option><option value="media">Media</option><option value="research_institution">Research institution</option><option value="advocacy_group">Advocacy group</option><option value="public">Public</option><option value="other">Other</option></select></label>
+              <label><span>Influence</span><select data-cnrisk-actor-influence><option>low</option><option selected>medium</option><option>high</option><option>critical</option></select></label>
+              <label><span>Stance</span><select data-cnrisk-actor-stance><option>supportive</option><option>neutral</option><option>opposed</option><option>mixed</option><option selected>unknown</option></select></label>
+              <label><span>Disclosure status</span><select data-cnrisk-actor-disclosure><option>not_required</option><option>disclosed</option><option>partially_disclosed</option><option>not_disclosed</option><option selected>unknown</option></select></label>
+              <label><span>Interests, one per line</span><textarea rows="2" data-cnrisk-actor-interests></textarea></label>
+            </div>
+            <label><span>Description</span><textarea rows="2" data-cnrisk-actor-description></textarea></label>
+            <button type="button" data-cnrisk-add-actor>Add stakeholder</button>
+            <hr />
+            <h5>Add relationship</h5>
+            <div class="cnrisk-workspace__two">
+              <label><span>Source actor</span><select data-cnrisk-actor-select data-cnrisk-relationship-source><option value="">Select stakeholder</option></select></label>
+              <label><span>Target actor</span><select data-cnrisk-actor-select data-cnrisk-relationship-target><option value="">Select stakeholder</option></select></label>
+              <label><span>Relationship type</span><select data-cnrisk-relationship-type><option>funds</option><option>employs</option><option>governs</option><option>regulates</option><option>represents</option><option>advises</option><option>partners_with</option><option>competes_with</option><option>depends_on</option><option>supplies</option><option>influences</option><option>amplifies</option><option>contests</option><option>benefits_from</option><option>harmed_by</option><option selected>other</option></select></label>
+              <label><span>Strength</span><select data-cnrisk-relationship-strength><option>low</option><option>medium</option><option>high</option><option>critical</option><option selected>unknown</option></select></label>
+            </div>
+            <label><span>Relationship description</span><textarea rows="2" data-cnrisk-relationship-description></textarea></label>
+            <button type="button" data-cnrisk-add-relationship>Add relationship</button>
+            <hr />
+            <h5>Add incentive</h5>
+            <div class="cnrisk-workspace__two">
+              <label><span>Stakeholder</span><select data-cnrisk-actor-select data-cnrisk-incentive-actor><option value="">Select stakeholder</option></select></label>
+              <label><span>Type</span><select data-cnrisk-incentive-type><option>financial</option><option>political</option><option>reputational</option><option>legal</option><option>social</option><option>operational</option><option>mission</option><option>career</option><option>ideological</option><option selected>other</option></select></label>
+              <label><span>Magnitude</span><select data-cnrisk-incentive-magnitude><option>low</option><option selected>medium</option><option>high</option><option>critical</option></select></label>
+              <label><span>Alignment</span><select data-cnrisk-incentive-alignment><option>aligned</option><option>mixed</option><option>opposed</option><option selected>unknown</option></select></label>
+              <label><span>Conflict status</span><select data-cnrisk-incentive-conflict><option>none</option><option>potential</option><option>managed</option><option selected>unknown</option></select></label>
+              <label><span><input type="checkbox" data-cnrisk-incentive-disclosed /> Disclosed</span></label>
+            </div>
+            <label><span>Incentive description</span><textarea rows="2" data-cnrisk-incentive-description></textarea></label>
+            <button type="button" data-cnrisk-add-incentive>Add incentive</button>
+            <hr />
+            <h5>Add pressure</h5>
+            <div class="cnrisk-workspace__two">
+              <label><span>Stakeholder</span><select data-cnrisk-actor-select data-cnrisk-pressure-actor><option value="">Select stakeholder</option></select></label>
+              <label><span>Type</span><select data-cnrisk-pressure-type><option>financial</option><option>political</option><option>reputational</option><option>legal</option><option>social</option><option>operational</option><option>deadline</option><option>funding</option><option>media</option><option>public</option><option selected>other</option></select></label>
+              <label><span>Intensity</span><select data-cnrisk-pressure-intensity><option>low</option><option selected>medium</option><option>high</option><option>critical</option></select></label>
+              <label><span>Time horizon</span><select data-cnrisk-pressure-horizon><option>immediate</option><option>short_term</option><option>medium_term</option><option>long_term</option><option selected>ongoing</option></select></label>
+            </div>
+            <label><span>Pressure description</span><textarea rows="2" data-cnrisk-pressure-description></textarea></label>
+            <button type="button" data-cnrisk-add-pressure>Add pressure</button>
+            <hr />
+            <h5>Add consequence</h5>
+            <div class="cnrisk-workspace__two">
+              <label><span>Stakeholder</span><select data-cnrisk-actor-select data-cnrisk-consequence-actor><option value="">Select stakeholder</option></select></label>
+              <label><span>Impact type</span><select data-cnrisk-consequence-type><option>financial</option><option>reputational</option><option>legal</option><option>operational</option><option>social</option><option>environmental</option><option>political</option><option>health</option><option>safety</option><option>rights</option><option selected>other</option></select></label>
+              <label><span>Direction</span><select data-cnrisk-consequence-direction><option>benefit</option><option>harm</option><option>mixed</option><option selected>unknown</option></select></label>
+              <label><span>Severity</span><select data-cnrisk-consequence-severity><option>low</option><option selected>moderate</option><option>high</option><option>critical</option></select></label>
+            </div>
+            <label><span>Consequence description</span><textarea rows="2" data-cnrisk-consequence-description></textarea></label>
+            <button type="button" data-cnrisk-add-consequence>Add consequence</button>
+            <div data-cnrisk-stakeholder-detail></div>
           </section>
           <div class="cnrisk-workspace__reviews">
             <label><span>Add review comment</span><textarea rows="2" data-cnrisk-review-body></textarea></label>

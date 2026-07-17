@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -80,6 +80,8 @@ def create_app(config: dict | None = None):
             "governance_workflow": True,
             "narrative_monitoring": True,
             "site_intelligence_handoff": True,
+            "stakeholder_intelligence": True,
+            "catalyst_canvas_handoff": True,
             "workspace": repository.health(),
         }, 200
 
@@ -183,6 +185,14 @@ def create_app(config: dict | None = None):
     def narrative_risk_migrate_v150():
         try:
             migrated = migrate_v1_5_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+    @app.post("/api/narrative-risk/migrate/v1.6.0")
+    def narrative_risk_migrate_v160():
+        try:
+            migrated = migrate_v1_6_0_record(_json_object())
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
@@ -392,6 +402,54 @@ def create_app(config: dict | None = None):
             return _bad_request("invalid_reassessment_query", exc)
         return jsonify({"workflows": workflows, "count": len(workflows)}), 200
 
+
+    @app.post("/api/narrative-risk/cases/<case_id>/stakeholders/actors")
+    def add_stakeholder_actor(case_id: str):
+        try: value = repository.add_stakeholder_actor(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_actor", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/stakeholders/actors")
+    def list_stakeholder_actors(case_id: str):
+        try: values = repository.list_stakeholder_actors(case_id)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_query", exc)
+        return jsonify({"stakeholder_actors": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/stakeholders/relationships")
+    def add_stakeholder_relationship(case_id: str):
+        try: value = repository.add_stakeholder_relationship(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_relationship", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/stakeholders/incentives")
+    def add_stakeholder_incentive(case_id: str):
+        try: value = repository.add_stakeholder_incentive(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_incentive", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/stakeholders/pressures")
+    def add_stakeholder_pressure(case_id: str):
+        try: value = repository.add_stakeholder_pressure(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_pressure", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/stakeholders/consequences")
+    def add_stakeholder_consequence(case_id: str):
+        try: value = repository.add_stakeholder_consequence(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_consequence", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/stakeholder-intelligence")
+    def stakeholder_intelligence(case_id: str):
+        try: value = repository.get_stakeholder_intelligence(case_id, generated_at=request.args.get("generated_at"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_stakeholder_intelligence", exc)
+        return jsonify(value), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/import/catalyst-canvas")
+    def import_catalyst_canvas(case_id: str):
+        try: value = repository.import_catalyst_canvas_stakeholders(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_catalyst_canvas_handoff", exc)
+        return jsonify(value), 201
 
     @app.post("/api/narrative-risk/cases/<case_id>/monitoring/snapshots")
     def capture_monitoring_snapshot(case_id: str):

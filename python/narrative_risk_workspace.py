@@ -207,6 +207,11 @@ def parser() -> argparse.ArgumentParser:
     site = commands.add_parser("ingest-site-intelligence")
     site.add_argument("--input", required=True)
     site.add_argument("--ingested-at")
+
+    for command in ("add-stakeholder-actor", "add-stakeholder-relationship", "add-stakeholder-incentive", "add-stakeholder-pressure", "add-stakeholder-consequence"):
+        item = commands.add_parser(command); item.add_argument("case_id"); item.add_argument("--input", required=True)
+    stakeholder_list = commands.add_parser("stakeholder-intelligence"); stakeholder_list.add_argument("case_id"); stakeholder_list.add_argument("--generated-at")
+    canvas = commands.add_parser("import-catalyst-canvas"); canvas.add_argument("case_id"); canvas.add_argument("--input", required=True); canvas.add_argument("--imported-at")
     return root
 
 
@@ -334,6 +339,20 @@ def main() -> int:
             write_json(repository.case_timeline(args.case_id))
         elif args.command == "ingest-site-intelligence":
             write_json(repository.ingest_site_intelligence_event(read_json(args.input), ingested_at=args.ingested_at))
+        elif args.command == "add-stakeholder-actor":
+            write_json(repository.add_stakeholder_actor(args.case_id, read_json(args.input)))
+        elif args.command == "add-stakeholder-relationship":
+            write_json(repository.add_stakeholder_relationship(args.case_id, read_json(args.input)))
+        elif args.command == "add-stakeholder-incentive":
+            write_json(repository.add_stakeholder_incentive(args.case_id, read_json(args.input)))
+        elif args.command == "add-stakeholder-pressure":
+            write_json(repository.add_stakeholder_pressure(args.case_id, read_json(args.input)))
+        elif args.command == "add-stakeholder-consequence":
+            write_json(repository.add_stakeholder_consequence(args.case_id, read_json(args.input)))
+        elif args.command == "stakeholder-intelligence":
+            write_json(repository.get_stakeholder_intelligence(args.case_id, generated_at=args.generated_at))
+        elif args.command == "import-catalyst-canvas":
+            write_json(repository.import_catalyst_canvas_stakeholders(args.case_id, read_json(args.input), imported_at=args.imported_at))
         else:  # pragma: no cover
             raise AssertionError(args.command)
     finally:

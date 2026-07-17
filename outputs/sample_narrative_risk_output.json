@@ -2,16 +2,16 @@
   "record_type": "catalyst_narrative_risk_record",
   "contract": {
     "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-    "contract_version": "1.6.0"
+    "contract_version": "1.7.0"
   },
   "identifiers": {
-    "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
-    "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
+    "record_id": "urn:uuid:00000000-0000-4000-8000-000000000001",
+    "case_id": "urn:uuid:00000000-0000-4000-8000-000000000002",
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.6.0",
-    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.6.0",
-    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.6.0",
-    "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.6.0"
+    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.7.0",
+    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.7.0",
+    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.7.0",
+    "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.7.0"
   },
   "generated_at": "2026-07-17T12:00:00+00:00",
   "normalized_input": {
@@ -28,7 +28,7 @@
     "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
   },
   "evidence_ledger": {
-    "ledger_version": "1.6.0",
+    "ledger_version": "1.7.0",
     "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "claims": [
       {
@@ -220,11 +220,11 @@
       "source_type": "official_or_primary",
       "evidence_strength": "strong",
       "source_count": 2,
-      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.6.0 ledger policy."
+      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.7.0 ledger policy."
     }
   },
   "narrative_map": {
-    "map_version": "1.6.0",
+    "map_version": "1.7.0",
     "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
     "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666",
     "nodes": [
@@ -419,7 +419,7 @@
   },
   "method_snapshot": {
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "method_version": "1.6.0",
+    "method_version": "1.7.0",
     "name": "Transparent Heuristic Narrative Risk Method",
     "description": "A weighted, inspectable review heuristic with traceable evidence, advisory narrative mapping, governed human review, and explicit monitoring for source freshness and material narrative change. Monitoring remains advisory and cannot modify scores or grant approval automatically.",
     "algorithm": {
@@ -458,7 +458,7 @@
       ]
     },
     "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-    "controlled_vocabulary_version": "1.6.0",
+    "controlled_vocabulary_version": "1.7.0",
     "defaults": {
       "source_type": "reputable_secondary",
       "evidence_strength": "moderate",
@@ -743,7 +743,7 @@
     },
     "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
     "ledger_policy": {
-      "policy_version": "1.6.0",
+      "policy_version": "1.7.0",
       "primary_claim_role": "primary",
       "positive_relation_types": [
         "support",
@@ -795,7 +795,7 @@
       }
     },
     "narrative_map_policy": {
-      "policy_version": "1.6.0",
+      "policy_version": "1.7.0",
       "node_types": [
         "factual_claim",
         "causal_claim",
@@ -838,7 +838,7 @@
       "high_severity_action": "Resolve high-severity map issues before confident public use."
     },
     "governance_policy": {
-      "policy_version": "1.6.0",
+      "policy_version": "1.7.0",
       "boundary": "Heuristic scores and narrative diagnostics are advisory. Only authorized human reviewers may create governance decisions.",
       "stage_order": [
         "intake",
@@ -926,7 +926,7 @@
       "reassessment_behavior": "A reassessment_at date creates a due item even when valid_until has not elapsed."
     },
     "monitoring_policy": {
-      "policy_version": "1.6.0",
+      "policy_version": "1.7.0",
       "boundary": "Monitoring detects change, freshness, and reassessment needs; it does not verify truth, alter the analytical score, or approve publication.",
       "source_age_days": {
         "default": {
@@ -987,9 +987,39 @@
         "reassessment_due"
       ],
       "default_cadence": "daily"
+    },
+    "stakeholder_policy": {
+      "policy_version": "1.7.0",
+      "boundary": "Stakeholder intelligence documents observable actors, relationships, incentives, pressures, disclosures, and consequences. It does not infer undisclosed motives, certify conflicts, or silently change the analytical score.",
+      "pressure_intensity_weights": {
+        "low": 1,
+        "medium": 2,
+        "high": 3,
+        "critical": 4
+      },
+      "influence_weights": {
+        "low": 1,
+        "medium": 2,
+        "high": 3,
+        "critical": 4
+      },
+      "conflict_weights": {
+        "none": 0,
+        "managed": 1,
+        "potential": 2,
+        "confirmed": 3,
+        "unknown": 1
+      },
+      "pressure_level_thresholds": {
+        "low_max": 3,
+        "medium_max": 5,
+        "high_min": 6
+      },
+      "evidence_required_for_confirmed_conflict": true,
+      "canvas_handoff_mode": "Explicit import; preserve Canvas identifiers and source provenance."
     }
   },
-  "method_snapshot_sha256": "2534a78a40e8740306667d502f6ea503f08239830cc7c2e3588f402a5ce5fb72",
+  "method_snapshot_sha256": "f68ac31a745517aeaaafee0f801ec2707961e743ed99dc815f91459ef7c4cb90",
   "calculations": {
     "components": {
       "source_type": {
@@ -1080,8 +1110,8 @@
   },
   "reproducibility": {
     "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-    "evidence_ledger_sha256": "acc84aa7e16f5e823a840a4f8ade381faa7f105817f93c8d490d30015a063e8e",
-    "narrative_map_sha256": "c36d6529fbc6702f4215bf0a08b3a1d6cbf419054b836149ad723dd9c50c6d28",
-    "record_payload_sha256": "22b8e10287cee50378b24b010920cf4d4b0e2c75769e2f70b528fca59ec2a3ce"
+    "evidence_ledger_sha256": "ee8865f55bc46056295a11a43c3bde0fe53d53f1e877e0c03445dec3d3023013",
+    "narrative_map_sha256": "6a84eb1b96daa4e1249fa2233160b12b23ba29a2519693c4bf5eacdd3a66a42f",
+    "record_payload_sha256": "d82e22bbf253606208404496e4d75137543385218c8d670c8d3a0b2e16f5c454"
   }
 }

@@ -1,17 +1,14 @@
 # Changelog
 
-## 1.6.0 — Narrative Change, Freshness, and Monitoring
+## 1.7.0 — Stakeholder, Incentive, and Pressure Intelligence
 
-- Added immutable monitoring snapshots with record, freshness, confidence, narrative, and governance state.
-- Added versioned source-age thresholds and current, aging, stale, and unknown freshness reporting.
-- Added snapshot comparison for score, risk level, claim wording, confidence, evidence, source content, narrative structure, and governance change.
-- Added advisory materiality scores, severity, and explicit change reasons.
-- Added persistent watchlists, scheduled checks, alerts, acknowledgement, resolution, and due-state queries.
-- Added approval-expiration and mandatory-reassessment monitoring signals.
-- Added Site Intelligence event handoffs and a unified claim-and-review timeline.
-- Added monitoring schemas, REST endpoints, CLI operations, WordPress controls, and monitoring-complete portable bundles.
-- Added deterministic migration from v1.5.0 without fabricating historical monitoring data.
-- Preserved the v1.5.0 scoring, evidence-ledger, narrative-map, and governance behavior as advisory and unchanged.
+- Added structured actors with interests, influence, stance, disclosure, and external identifiers.
+- Added typed actor relationships and evidence-linked incentive, conflict, pressure, and consequence records.
+- Added advisory actor-pressure ranking, flags, and suggested stakeholder-pressure classification.
+- Added Catalyst Canvas handoffs with full reference validation before persistence.
+- Added SQLite tables, REST endpoints, CLI commands, WordPress controls, and portable-bundle support.
+- Added deterministic v1.6.0 migration without fabricating stakeholder history.
+- Preserved v1.6.0 scoring, evidence, narrative, governance, and monitoring behavior.
 
 ## 1.5.0 — Review, Approval, and Governance Workflow
 

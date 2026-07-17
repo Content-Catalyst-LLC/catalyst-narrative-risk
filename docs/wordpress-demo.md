@@ -1,6 +1,6 @@
 # WordPress Interfaces
 
-Catalyst Narrative Risk v1.6.0 provides:
+Catalyst Narrative Risk v1.7.0 provides:
 
 ```text
 [catalyst_narrative_risk_demo]
@@ -13,4 +13,4 @@ The browser engine uses the generated canonical method asset plus the standalone
 
 The workspace shortcode demonstrates local cases, immutable revisions, comments, search, archive, and bundle transfer with browser storage. Shared persistence belongs in the SQLite-backed REST API.
 
-The browser-local workspace also demonstrates the v1.6.0 governance contract: standard staged workflows, reviewer assignments, append-only decisions, conditions, required wording, publication restrictions, approval validity, reassessment, and complete portable governance bundles. Shared production governance belongs on the SQLite-backed REST API.
+The browser-local workspace also demonstrates the v1.7.0 governance contract: standard staged workflows, reviewer assignments, append-only decisions, conditions, required wording, publication restrictions, approval validity, reassessment, and complete portable governance bundles. Shared production governance belongs on the SQLite-backed REST API.

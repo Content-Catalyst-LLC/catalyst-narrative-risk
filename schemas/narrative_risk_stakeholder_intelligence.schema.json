@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-intelligence/1.7.0",
+  "title": "Catalyst Narrative Risk Stakeholder Intelligence Summary 1.7.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intelligence_version",
+    "case_id",
+    "generated_at",
+    "counts",
+    "suggested_stakeholder_pressure",
+    "maximum_actor_pressure_score",
+    "flags",
+    "actor_pressure_ranking",
+    "boundary",
+    "intelligence_sha256"
+  ],
+  "properties": {
+    "intelligence_version": {
+      "const": "1.7.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actors",
+        "relationships",
+        "incentives",
+        "pressures",
+        "consequences"
+      ],
+      "properties": {
+        "actors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "relationships": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "incentives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pressures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "consequences": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "suggested_stakeholder_pressure": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "maximum_actor_pressure_score": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "flags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "actor_pressure_ranking": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "actor_id",
+          "name",
+          "score",
+          "influence",
+          "stance"
+        ],
+        "properties": {
+          "actor_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "influence": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "stance": {
+            "enum": [
+              "supportive",
+              "neutral",
+              "opposed",
+              "mixed",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intelligence_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

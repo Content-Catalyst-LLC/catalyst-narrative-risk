@@ -239,7 +239,7 @@
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'catalyst-narrative-risk-record-v1.6.0.json';
+      anchor.download = 'catalyst-narrative-risk-record-v1.7.0.json';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();

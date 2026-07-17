@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.6.0",
+  "contract_version": "1.7.0",
   "valid": [
     {
       "name": "zero_weight_low",
@@ -31,7 +31,7 @@
           "method_notes": "Reviewed against the primary record."
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
           "claims": [
             {
@@ -88,7 +88,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:952e20fec6477dab1f44a71bf5ec7e15bfc7faf4df13d5970f6654f01d1452bf",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:39b6024a699e88087df27a47b1e7ff5b50a3a83bb65f0ee2e30baf984b290006",
           "nodes": [
@@ -254,7 +254,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
           "claims": [
             {
@@ -311,7 +311,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:7e6a757ec2e34dfac82a2ac2cf4526bc96a477c32b1f8c61499ec25cba32bdd1",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:3b8406f7397d589b06ae5d186268f486b654710eca69da3153cd15e6da2a4ad0",
           "nodes": [
@@ -487,7 +487,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
           "claims": [
             {
@@ -544,7 +544,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:a2c0a1b30f84ed86826b386bbc52ebe6e64fd23bfe3d63485bc1027f6fbc66fb",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:b832496fd99de6eecbc132ab2f5f82f4279eeab6113c0b908d54d12e82872d8c",
           "nodes": [
@@ -733,7 +733,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
           "claims": [
             {
@@ -790,7 +790,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:c6b008a4c5ec297ae5604e2589be419aa63182e9ad47ceee28960ce8ff8bf5af",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:12cf7b7c198b2102ea3c8d4edce3a1c1e705fe2af566797373fe65fb9b0a81f0",
           "nodes": [
@@ -968,7 +968,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
           "claims": [
             {
@@ -1025,7 +1025,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:656f6609d95cd276bb9a611bf3cf864fd8daee84e08874cce33681d0fa940910",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:f1054b026e2052e477c375c89f1964aa33fdfce69369564daee14de56609798d",
           "nodes": [
@@ -1202,7 +1202,7 @@
           "method_notes": "normalized notes"
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
           "claims": [
             {
@@ -1259,7 +1259,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:f4d4d4199fda59b7ce0efadd4acbf5a5360ec6bb41ef75535d90e94cc6809fa7",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:79d3c87de8c56c0c8b1f857b6c711779f527c8c4b227fca2ea7e775d0ad0e6bc",
           "nodes": [
@@ -1554,7 +1554,7 @@
           "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "claims": [
             {
@@ -1746,11 +1746,11 @@
             "source_type": "official_or_primary",
             "evidence_strength": "strong",
             "source_count": 2,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.6.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.7.0 ledger policy."
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:afec70718406e41c697620c3694a3e6795610cc908d34ea81cc21f4313f5d84f",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:5a1196a9f495e908022f2ed683466a6261b73890bc039bdef2430f0c95a4f81b",
           "nodes": [
@@ -2039,7 +2039,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "claims": [
             {
@@ -2161,11 +2161,11 @@
             "source_type": "internal_unreviewed",
             "evidence_strength": "limited",
             "source_count": 1,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.6.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.7.0 ledger policy."
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:ac1923f044a4abb0658d54dd35e7f94db833781f079cce18b638e80864f31ae4",
           "nodes": [
@@ -2389,7 +2389,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:596c452826f9c81ad4c9e4c70c22e3b15af799f725296bd00aec0900d4196216",
           "claims": [
             {
@@ -2446,7 +2446,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:c7b47a44d64001a9d7afabd122d2e409e52866fadce4c1b006cee2f18350a50f",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888",
           "nodes": [
@@ -2669,7 +2669,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.6.0",
+          "ledger_version": "1.7.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
           "claims": [
             {
@@ -2726,7 +2726,7 @@
           }
         },
         "narrative_map": {
-          "map_version": "1.6.0",
+          "map_version": "1.7.0",
           "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
           "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:2ccf308bd83ac18bccde4fe46e6dafc762ba9c5df5eec846da3a5f51ef6270e5",
           "nodes": [

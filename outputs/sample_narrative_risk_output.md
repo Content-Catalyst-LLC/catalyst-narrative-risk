@@ -8,13 +8,13 @@
 **Sources / evidence / relationships:** 2 / 2 / 3
 **Independent source groups:** 2
 **Narrative map:** partial · 3 nodes · 2 links · 1 issues
-**Record ID:** urn:uuid:30000000-0000-4000-8000-000000000001
-**Case ID:** urn:uuid:30000000-0000-4000-8000-000000000002
-**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.6.0
-**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.6.0
-**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.6.0
-**Narrative map schema:** https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.6.0
-**Method snapshot SHA-256:** `2534a78a40e8740306667d502f6ea503f08239830cc7c2e3588f402a5ce5fb72`
+**Record ID:** urn:uuid:00000000-0000-4000-8000-000000000001
+**Case ID:** urn:uuid:00000000-0000-4000-8000-000000000002
+**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.7.0
+**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.7.0
+**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.7.0
+**Narrative map schema:** https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.7.0
+**Method snapshot SHA-256:** `f68ac31a745517aeaaafee0f801ec2707961e743ed99dc815f91459ef7c4cb90`
 
 ## Decision note
 

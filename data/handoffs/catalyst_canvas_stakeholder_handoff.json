@@ -1,0 +1,55 @@
+{
+  "handoff_type": "catalyst_canvas_stakeholder_handoff",
+  "handoff_version": "1.7.0",
+  "canvas_id": "canvas:energy-pilot",
+  "case_id": null,
+  "exported_at": "2026-07-17T19:00:00+00:00",
+  "stakeholders": [
+    {
+      "canvas_stakeholder_id": "community",
+      "name": "Pilot community residents",
+      "actor_type": "community",
+      "description": "Residents affected by energy-cost and service changes.",
+      "interests": ["affordability", "service reliability", "transparent reporting"],
+      "influence": "medium",
+      "stance": "mixed",
+      "disclosure_status": "not_required"
+    },
+    {
+      "canvas_stakeholder_id": "funder",
+      "name": "Program funder",
+      "actor_type": "funder",
+      "description": "Institution financing the pilot and public reporting.",
+      "interests": ["demonstrated impact", "continued funding"],
+      "influence": "high",
+      "stance": "supportive",
+      "disclosure_status": "disclosed"
+    },
+    {
+      "canvas_stakeholder_id": "evaluator",
+      "name": "Independent evaluator",
+      "actor_type": "research_institution",
+      "description": "External team responsible for measurement and validation.",
+      "interests": ["method integrity", "reproducibility"],
+      "influence": "high",
+      "stance": "neutral",
+      "disclosure_status": "disclosed"
+    }
+  ],
+  "relationships": [
+    {
+      "source_canvas_stakeholder_id": "funder",
+      "target_canvas_stakeholder_id": "evaluator",
+      "relationship_type": "funds",
+      "strength": "high",
+      "description": "The evaluator is paid through the pilot evaluation budget."
+    },
+    {
+      "source_canvas_stakeholder_id": "evaluator",
+      "target_canvas_stakeholder_id": "community",
+      "relationship_type": "represents",
+      "strength": "medium",
+      "description": "Community outcomes are represented in evaluation findings."
+    }
+  ]
+}

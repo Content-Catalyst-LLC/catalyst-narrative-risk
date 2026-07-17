@@ -6,7 +6,7 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.6.0
+## Current implementation — v1.7.0
 
 The repository now provides:
 
@@ -115,7 +115,7 @@ Turn narrative-risk analysis into an accountable institutional process.
 
 **Release gate:** every approved narrative has an identifiable reviewer, decision, date, conditions, and complete audit trail.
 
-### v1.6.0 — Narrative Change, Freshness, and Monitoring
+### v1.7.0 — Narrative Change, Freshness, and Monitoring
 
 Make time and change first-class review dimensions.
 
@@ -212,7 +212,7 @@ Deliver the complete institutional claims-governance system.
 4. Persistence and workspaces: v1.3.0.
 5. Complex claim modeling: v1.4.0.
 6. Institutional review governance: v1.5.0.
-7. Time-based monitoring: v1.6.0.
+7. Time-based monitoring: v1.7.0.
 8. Stakeholder and pressure intelligence: v1.7.0.
 9. Comparative and scenario analysis: v1.8.0.
 10. Publication and integration: v1.9.0.

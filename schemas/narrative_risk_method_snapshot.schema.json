@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.6.0",
-  "title": "Catalyst Narrative Risk Method Snapshot 1.6.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.7.0",
+  "title": "Catalyst Narrative Risk Method Snapshot 1.7.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,14 +22,15 @@
     "narrative_map_policy",
     "narrative_map_interpretation",
     "governance_policy",
-    "monitoring_policy"
+    "monitoring_policy",
+    "stakeholder_policy"
   ],
   "properties": {
     "method_id": {
       "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
     },
     "method_version": {
-      "const": "1.6.0"
+      "const": "1.7.0"
     },
     "name": {
       "type": "string",
@@ -122,7 +123,7 @@
       "const": "urn:catalyst:narrative-risk:vocabularies:canonical"
     },
     "controlled_vocabulary_version": {
-      "const": "1.6.0"
+      "const": "1.7.0"
     },
     "defaults": {
       "type": "object",
@@ -541,7 +542,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.6.0"
+          "const": "1.7.0"
         },
         "primary_claim_role": {
           "const": "primary"
@@ -731,7 +732,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.6.0"
+          "const": "1.7.0"
         },
         "node_types": {
           "type": "array",
@@ -782,7 +783,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.6.0"
+          "const": "1.7.0"
         },
         "boundary": {
           "type": "string",
@@ -874,7 +875,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.6.0"
+          "const": "1.7.0"
         },
         "boundary": {
           "type": "string",
@@ -1009,6 +1010,80 @@
             "weekly",
             "monthly"
           ]
+        }
+      }
+    },
+    "stakeholder_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "boundary",
+        "pressure_intensity_weights",
+        "influence_weights",
+        "conflict_weights",
+        "pressure_level_thresholds",
+        "evidence_required_for_confirmed_conflict",
+        "canvas_handoff_mode"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "1.7.0"
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pressure_intensity_weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "influence_weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "conflict_weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "pressure_level_thresholds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "low_max",
+            "medium_max",
+            "high_min"
+          ],
+          "properties": {
+            "low_max": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "medium_max": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "high_min": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "evidence_required_for_confirmed_conflict": {
+          "type": "boolean"
+        },
+        "canvas_handoff_mode": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

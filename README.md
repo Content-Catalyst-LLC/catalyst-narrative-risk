@@ -1,21 +1,19 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.6.0 — Narrative Change, Freshness, and Monitoring**
+**Current release: v1.7.0 — Stakeholder, Incentive, and Pressure Intelligence**
 
-Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, interpretation, and accountable human review. It does not certify truth or infer intent. It makes the reasoning, review, approval, and publication path inspectable.
+Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, and evidence-linked stakeholder intelligence. It does not certify truth or infer intent.
 
-## What v1.6.0 adds
+## What v1.7.0 adds
 
-- Immutable monitoring snapshots for analytical revisions and governance state.
-- Versioned source-freshness policies with current, aging, stale, and unknown states.
-- Claim wording, evidence, narrative-map, score, confidence, and governance comparisons.
-- Advisory materiality scoring with explicit reasons and severity.
-- Persistent watchlists, monitoring checks, alerts, acknowledgement, and resolution.
-- Approval-expiration and reassessment-due monitoring signals.
-- Site Intelligence monitoring handoffs without automatic record mutation.
-- Unified case timelines and monitoring-complete portable bundles.
+- Structured stakeholder actors with interests, influence, stance, and disclosure status.
+- Typed actor relationships, dependencies, funding, influence, amplification, contestation, benefit, and harm links.
+- Explicit incentives, conflicts, pressures, and stakeholder-specific consequences.
+- Advisory actor-pressure ranking, transparent flags, and a suggested stakeholder-pressure level.
+- Catalyst Canvas stakeholder import with complete preflight validation.
+- Persistent SQLite, REST, CLI, WordPress, and portable-bundle support.
 
-The v1.5.0 analytical and governance boundaries remain intact. Monitoring never verifies truth, changes an analytical score silently, or grants approval automatically.
+The v1.6.0 analytical, governance, and monitoring behavior remains unchanged. Stakeholder intelligence does not infer hidden motives or alter the canonical score automatically.
 
 ## Repository layout
 
@@ -114,3 +112,15 @@ Browser workspace storage is a local demonstration. Shared institutional persist
 ## Boundary
 
 Catalyst Narrative Risk structures claims, evidence, assumptions, wording, and review decisions. It does not automatically determine truth, intent, legal sufficiency, scientific validity, or publication approval.
+
+## Stakeholder intelligence workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" add-stakeholder-actor CASE_ID --input actor.json
+python python/narrative_risk_workspace.py --database "$DB" add-stakeholder-pressure CASE_ID --input pressure.json
+python python/narrative_risk_workspace.py --database "$DB" stakeholder-intelligence CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" import-catalyst-canvas CASE_ID --input data/handoffs/catalyst_canvas_stakeholder_handoff.json
+```
+
+See `docs/stakeholder-incentive-pressure-intelligence.md` and `docs/catalyst-canvas-stakeholder-handoff.md`.

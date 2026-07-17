@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-pressure/1.7.0",
+  "title": "Catalyst Narrative Risk Stakeholder Pressure 1.7.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pressure_id",
+    "case_id",
+    "actor_id",
+    "source_actor_id",
+    "pressure_type",
+    "description",
+    "intensity",
+    "time_horizon",
+    "status",
+    "evidence_ids",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "pressure_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "actor_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "source_actor_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pressure_type": {
+      "enum": [
+        "financial",
+        "political",
+        "reputational",
+        "legal",
+        "social",
+        "operational",
+        "deadline",
+        "funding",
+        "media",
+        "public",
+        "other"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "intensity": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "time_horizon": {
+      "enum": [
+        "immediate",
+        "short_term",
+        "medium_term",
+        "long_term",
+        "ongoing"
+      ]
+    },
+    "status": {
+      "enum": [
+        "active",
+        "historical",
+        "anticipated",
+        "disputed"
+      ]
+    },
+    "evidence_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Canonical Contract
 
-Catalyst Narrative Risk v1.6.0 uses a six-layer canonical record:
+Catalyst Narrative Risk v1.7.0 uses a six-layer canonical record:
 
 1. `normalized_input` — validated inputs and explicit map source material
 2. `evidence_ledger` — claims, sources, excerpts, relationships, provenance, citations, and coverage
@@ -15,4 +15,4 @@ The scoring algorithm and ledger derivation policy remain unchanged from v1.3.0.
 
 ## Workspace governance records
 
-The six-layer analytical record remains immutable. v1.6.0 stores governance around a revision as separate review-template, governance-workflow, review-assignment, and governance-decision records. This separation prevents a heuristic score or prior `human_decision` field from becoming an institutional approval implicitly.
+The six-layer analytical record remains immutable. v1.7.0 stores governance around a revision as separate review-template, governance-workflow, review-assignment, and governance-decision records. This separation prevents a heuristic score or prior `human_decision` field from becoming an institutional approval implicitly.

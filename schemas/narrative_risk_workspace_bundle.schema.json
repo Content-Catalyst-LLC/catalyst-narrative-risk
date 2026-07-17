@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/workspace-bundle/1.6.0",
-  "title": "Catalyst Narrative Risk Portable Case Bundle 1.6.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/workspace-bundle/1.7.0",
+  "title": "Catalyst Narrative Risk Portable Case Bundle 1.7.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,32 +20,39 @@
     "monitoring_comparisons",
     "watchlists",
     "monitoring_alerts",
-    "site_intelligence_events"
+    "site_intelligence_events",
+    "stakeholder_actors",
+    "stakeholder_relationships",
+    "stakeholder_incentives",
+    "stakeholder_pressures",
+    "stakeholder_consequences",
+    "stakeholder_intelligence",
+    "catalyst_canvas_handoffs"
   ],
   "properties": {
     "bundle_type": {
       "const": "catalyst_narrative_risk_case_bundle"
     },
     "bundle_version": {
-      "const": "1.6.0"
+      "const": "1.7.0"
     },
     "exported_at": {
       "type": "string",
       "format": "date-time"
     },
     "case": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.6.0"
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.7.0"
     },
     "revisions": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.7.0"
       }
     },
     "review_events": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.7.0"
       }
     },
     "activity": {
@@ -99,7 +106,7 @@
     "governance_workflow": {
       "anyOf": [
         {
-          "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-workflow/1.6.0"
+          "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-workflow/1.7.0"
         },
         {
           "type": "null"
@@ -109,43 +116,115 @@
     "review_assignments": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-assignment/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-assignment/1.7.0"
       }
     },
     "governance_decisions": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-decision/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/governance-decision/1.7.0"
       }
     },
     "monitoring_snapshots": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-snapshot/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-snapshot/1.7.0"
       }
     },
     "monitoring_comparisons": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-comparison/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-comparison/1.7.0"
       }
     },
     "watchlists": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/watchlist/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/watchlist/1.7.0"
       }
     },
     "monitoring_alerts": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-alert/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/monitoring-alert/1.7.0"
       }
     },
     "site_intelligence_events": {
       "type": "array",
       "items": {
-        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/site-intelligence-monitoring/1.6.0"
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/site-intelligence-monitoring/1.7.0"
+      }
+    },
+    "stakeholder_actors": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-actor/1.7.0"
+      }
+    },
+    "stakeholder_relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-relationship/1.7.0"
+      }
+    },
+    "stakeholder_incentives": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-incentive/1.7.0"
+      }
+    },
+    "stakeholder_pressures": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-pressure/1.7.0"
+      }
+    },
+    "stakeholder_consequences": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-consequence/1.7.0"
+      }
+    },
+    "stakeholder_intelligence": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-intelligence/1.7.0"
+    },
+    "catalyst_canvas_handoffs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "handoff_id",
+          "case_id",
+          "canvas_id",
+          "handoff",
+          "handoff_sha256",
+          "imported_at"
+        ],
+        "properties": {
+          "handoff_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "case_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "canvas_id": {
+            "type": "string"
+          },
+          "handoff": {
+            "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/catalyst-canvas-stakeholders/1.7.0"
+          },
+          "handoff_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "imported_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       }
     }
   }

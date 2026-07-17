@@ -1,6 +1,6 @@
 # Workspace API
 
-The v1.6.0 Flask API combines the canonical analytical engine with SQLite-backed cases, immutable revisions, review history, and governed approvals.
+The v1.7.0 Flask API combines the canonical analytical engine with SQLite-backed cases, immutable revisions, review history, and governed approvals.
 
 Analytical endpoints include health, score, record verification, evidence-ledger analysis, narrative-map analysis, and legacy migration through v1.4.0.
 

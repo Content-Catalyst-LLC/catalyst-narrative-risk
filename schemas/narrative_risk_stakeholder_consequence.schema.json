@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/stakeholder-consequence/1.7.0",
+  "title": "Catalyst Narrative Risk Stakeholder Consequence 1.7.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "consequence_id",
+    "case_id",
+    "actor_id",
+    "impact_type",
+    "direction",
+    "severity",
+    "description",
+    "affected_claim_ids",
+    "mitigation",
+    "evidence_ids",
+    "created_at",
+    "created_by"
+  ],
+  "properties": {
+    "consequence_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "actor_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "impact_type": {
+      "enum": [
+        "financial",
+        "reputational",
+        "legal",
+        "operational",
+        "social",
+        "environmental",
+        "political",
+        "health",
+        "safety",
+        "rights",
+        "other"
+      ]
+    },
+    "direction": {
+      "enum": [
+        "benefit",
+        "harm",
+        "mixed",
+        "unknown"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "low",
+        "moderate",
+        "high",
+        "critical"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20000
+    },
+    "affected_claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "mitigation": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "evidence_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 100,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}
