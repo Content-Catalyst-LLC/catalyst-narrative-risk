@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/decision-studio-handoff/1.8.0",
+  "title": "Catalyst Narrative Risk Decision Studio Handoff 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "handoff_type",
+    "handoff_version",
+    "handoff_id",
+    "case_id",
+    "comparison_id",
+    "selected_scenario_ids",
+    "comparison_set",
+    "evidence_matrix",
+    "scenario_results",
+    "sensitivity_analysis",
+    "portfolio",
+    "governance",
+    "generated_at",
+    "handoff_sha256"
+  ],
+  "properties": {
+    "handoff_type": {
+      "const": "catalyst_narrative_risk_decision_studio_handoff"
+    },
+    "handoff_version": {
+      "const": "1.8.0"
+    },
+    "handoff_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "selected_scenario_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+      },
+      "uniqueItems": true
+    },
+    "comparison_set": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/comparison-set/1.8.0"
+    },
+    "evidence_matrix": {
+      "anyOf": [
+        {
+          "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-evidence-matrix/1.8.0"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scenario_results": {
+      "type": "array",
+      "items": {
+        "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/scenario-result/1.8.0"
+      }
+    },
+    "sensitivity_analysis": {
+      "anyOf": [
+        {
+          "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/sensitivity-analysis/1.8.0"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "portfolio": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-portfolio/1.8.0"
+    },
+    "governance": {
+      "type": "object"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "handoff_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0 — Comparative Narratives and Scenario Analysis
+
+- Added persistent comparison sets with explicit baselines, frames, assumptions, and immutable record references.
+- Added claim-by-claim comparative evidence matrices and coverage-divergence summaries.
+- Added best-case, base-case, worst-case, counterfactual, adversarial, and custom scenarios.
+- Added checksummed scenario evaluation without modifying baseline records.
+- Added sensitivity analysis, ranked score drivers, comparative portfolios, and Decision Studio handoffs.
+- Added SQLite, REST, CLI, WordPress, and portable-bundle support.
+- Added deterministic v1.7.0 migration without inventing comparison history.
+- Preserved v1.7.0 scoring, evidence, narrative, governance, monitoring, and stakeholder behavior.
+
 ## 1.7.0 — Stakeholder, Incentive, and Pressure Intelligence
 
 - Added structured actors with interests, influence, stance, disclosure, and external identifiers.

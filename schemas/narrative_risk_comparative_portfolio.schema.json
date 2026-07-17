@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-portfolio/1.8.0",
+  "title": "Catalyst Narrative Risk Comparative Portfolio 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "portfolio_id",
+    "case_id",
+    "generated_at",
+    "comparison_count",
+    "member_count",
+    "scenario_count",
+    "evaluated_scenario_count",
+    "risk_distribution",
+    "scenario_score_range",
+    "top_drivers",
+    "publication_readiness",
+    "portfolio_sha256"
+  ],
+  "properties": {
+    "portfolio_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "comparison_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "member_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "scenario_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evaluated_scenario_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "risk_distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "properties": {
+        "Low": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "Medium": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "High": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "scenario_score_range": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimum",
+            "maximum",
+            "spread"
+          ],
+          "properties": {
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "spread": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "top_drivers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "publication_readiness": {
+      "enum": [
+        "not_assessed",
+        "blocked",
+        "conditional",
+        "ready"
+      ]
+    },
+    "portfolio_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

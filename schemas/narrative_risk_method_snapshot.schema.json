@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.7.0",
-  "title": "Catalyst Narrative Risk Method Snapshot 1.7.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.8.0",
+  "title": "Catalyst Narrative Risk Method Snapshot 1.8.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,14 +23,15 @@
     "narrative_map_interpretation",
     "governance_policy",
     "monitoring_policy",
-    "stakeholder_policy"
+    "stakeholder_policy",
+    "comparative_policy"
   ],
   "properties": {
     "method_id": {
       "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
     },
     "method_version": {
-      "const": "1.7.0"
+      "const": "1.8.0"
     },
     "name": {
       "type": "string",
@@ -123,7 +124,7 @@
       "const": "urn:catalyst:narrative-risk:vocabularies:canonical"
     },
     "controlled_vocabulary_version": {
-      "const": "1.7.0"
+      "const": "1.8.0"
     },
     "defaults": {
       "type": "object",
@@ -542,7 +543,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.7.0"
+          "const": "1.8.0"
         },
         "primary_claim_role": {
           "const": "primary"
@@ -732,7 +733,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.7.0"
+          "const": "1.8.0"
         },
         "node_types": {
           "type": "array",
@@ -783,7 +784,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.7.0"
+          "const": "1.8.0"
         },
         "boundary": {
           "type": "string",
@@ -875,7 +876,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.7.0"
+          "const": "1.8.0"
         },
         "boundary": {
           "type": "string",
@@ -1028,7 +1029,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.7.0"
+          "const": "1.8.0"
         },
         "boundary": {
           "type": "string",
@@ -1082,6 +1083,56 @@
           "type": "boolean"
         },
         "canvas_handoff_mode": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "comparative_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "boundary",
+        "comparison_member_minimum",
+        "comparison_member_maximum",
+        "scenario_types",
+        "sensitivity_dimensions",
+        "decision_studio_handoff_mode"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "1.8.0"
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "comparison_member_minimum": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "comparison_member_maximum": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "scenario_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "sensitivity_dimensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "decision_studio_handoff_mode": {
           "type": "string",
           "minLength": 1
         }

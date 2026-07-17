@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/scenario/1.8.0",
+  "title": "Catalyst Narrative Risk Scenario 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id",
+    "comparison_id",
+    "case_id",
+    "name",
+    "scenario_type",
+    "description",
+    "assumptions",
+    "probability",
+    "parameter_overrides",
+    "evidence_adjustments",
+    "narrative_adjustments",
+    "status",
+    "created_at",
+    "updated_at",
+    "created_by"
+  ],
+  "properties": {
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "scenario_type": {
+      "enum": [
+        "best_case",
+        "base_case",
+        "worst_case",
+        "counterfactual",
+        "adversarial",
+        "custom"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 3000
+      },
+      "uniqueItems": true,
+      "maxItems": 100
+    },
+    "probability": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "parameter_overrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "type": "string"
+        },
+        "evidence_strength": {
+          "type": "string"
+        },
+        "uncertainty": {
+          "type": "string"
+        },
+        "narrative_volatility": {
+          "type": "string"
+        },
+        "stakeholder_pressure": {
+          "type": "string"
+        },
+        "time_sensitivity": {
+          "type": "string"
+        },
+        "consequences": {
+          "type": "string"
+        },
+        "review_status": {
+          "type": "string"
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "evidence_adjustments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target",
+          "operation",
+          "value",
+          "rationale"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "operation": {
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "increase",
+              "decrease",
+              "hold"
+            ]
+          },
+          "value": {},
+          "rationale": {
+            "type": "string",
+            "maxLength": 5000
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "narrative_adjustments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target",
+          "operation",
+          "value",
+          "rationale"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "operation": {
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "increase",
+              "decrease",
+              "hold"
+            ]
+          },
+          "value": {},
+          "rationale": {
+            "type": "string",
+            "maxLength": 5000
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "evaluated",
+        "retired"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.7.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v1.8.0."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.7.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.7.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.7.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.7.0.json"
+VERSION = "1.8.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.8.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.8.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.8.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_narrative_map.schema.json"
@@ -41,11 +41,23 @@ STAKEHOLDER_PRESSURE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_stakeholde
 STAKEHOLDER_CONSEQUENCE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_stakeholder_consequence.schema.json"
 STAKEHOLDER_INTELLIGENCE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_stakeholder_intelligence.schema.json"
 CATALYST_CANVAS_STAKEHOLDER_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "catalyst_canvas_stakeholder_handoff.schema.json"
+COMPARISON_SET_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_comparison_set.schema.json"
+COMPARATIVE_EVIDENCE_MATRIX_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_comparative_evidence_matrix.schema.json"
+SCENARIO_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_scenario.schema.json"
+SCENARIO_RESULT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_scenario_result.schema.json"
+SENSITIVITY_ANALYSIS_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_sensitivity_analysis.schema.json"
+COMPARATIVE_PORTFOLIO_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_comparative_portfolio.schema.json"
+DECISION_STUDIO_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_decision_studio_handoff.schema.json"
 LEGACY_V160_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.6.0.schema.json"
 LEGACY_V160_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.6.0.schema.json"
 LEGACY_V160_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.6.0.schema.json"
 LEGACY_V160_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.6.0.schema.json"
 LEGACY_V160_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.6.0.schema.json"
+LEGACY_V170_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.7.0.schema.json"
+LEGACY_V170_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.7.0.schema.json"
+LEGACY_V170_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.7.0.schema.json"
+LEGACY_V170_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.7.0.schema.json"
+LEGACY_V170_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.7.0.schema.json"
 LEGACY_V101_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.0.1.schema.json"
 LEGACY_V110_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.1.0.schema.json"
 LEGACY_V110_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.1.0.schema.json"
@@ -142,6 +154,9 @@ def _registry():
         STAKEHOLDER_INCENTIVE_SCHEMA_PATH, STAKEHOLDER_PRESSURE_SCHEMA_PATH,
         STAKEHOLDER_CONSEQUENCE_SCHEMA_PATH, STAKEHOLDER_INTELLIGENCE_SCHEMA_PATH,
         CATALYST_CANVAS_STAKEHOLDER_HANDOFF_SCHEMA_PATH,
+        COMPARISON_SET_SCHEMA_PATH, COMPARATIVE_EVIDENCE_MATRIX_SCHEMA_PATH,
+        SCENARIO_SCHEMA_PATH, SCENARIO_RESULT_SCHEMA_PATH, SENSITIVITY_ANALYSIS_SCHEMA_PATH,
+        COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
@@ -163,6 +178,9 @@ def _registry():
         LEGACY_V160_INPUT_SCHEMA_PATH, LEGACY_V160_LEDGER_SCHEMA_PATH,
         LEGACY_V160_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V160_METHOD_SCHEMA_PATH,
         LEGACY_V160_RECORD_SCHEMA_PATH,
+        LEGACY_V170_INPUT_SCHEMA_PATH, LEGACY_V170_LEDGER_SCHEMA_PATH,
+        LEGACY_V170_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V170_METHOD_SCHEMA_PATH,
+        LEGACY_V170_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:

@@ -1,19 +1,20 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.7.0 — Stakeholder, Incentive, and Pressure Intelligence**
+**Current release: v1.8.0 — Comparative Narratives and Scenario Analysis**
 
-Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, and evidence-linked stakeholder intelligence. It does not certify truth or infer intent.
+Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, stakeholder intelligence, and comparative scenario analysis. It does not certify truth, infer intent, or select a preferred narrative automatically.
 
-## What v1.7.0 adds
+## What v1.8.0 adds
 
-- Structured stakeholder actors with interests, influence, stance, and disclosure status.
-- Typed actor relationships, dependencies, funding, influence, amplification, contestation, benefit, and harm links.
-- Explicit incentives, conflicts, pressures, and stakeholder-specific consequences.
-- Advisory actor-pressure ranking, transparent flags, and a suggested stakeholder-pressure level.
-- Catalyst Canvas stakeholder import with complete preflight validation.
-- Persistent SQLite, REST, CLI, WordPress, and portable-bundle support.
+- Persistent comparison sets for multiple immutable revisions and records.
+- Claim-by-claim evidence matrices for competing narratives.
+- Best, base, worst, counterfactual, adversarial, and custom scenarios.
+- Explicit scenario assumptions and checksummed evaluations.
+- Multi-dimensional sensitivity analysis and ranked score drivers.
+- Comparative portfolio dashboards and Decision Studio handoffs.
+- SQLite, REST, CLI, WordPress, and portable-bundle support.
 
-The v1.6.0 analytical, governance, and monitoring behavior remains unchanged. Stakeholder intelligence does not infer hidden motives or alter the canonical score automatically.
+The v1.7.0 scoring, evidence, narrative, governance, monitoring, and stakeholder behavior remains unchanged. Comparative analysis does not identify a true or preferred narrative automatically.
 
 ## Repository layout
 
@@ -39,7 +40,7 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 PYTHON=.venv/bin/python bash scripts/release_check.sh
 ```
 
-The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all six legacy migrations, JavaScript syntax, and WordPress PHP syntax.
+The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all eight legacy migrations, JavaScript syntax, and WordPress PHP syntax.
 
 ## Generate a canonical record
 
@@ -124,3 +125,19 @@ python python/narrative_risk_workspace.py --database "$DB" import-catalyst-canva
 ```
 
 See `docs/stakeholder-incentive-pressure-intelligence.md` and `docs/catalyst-canvas-stakeholder-handoff.md`.
+
+
+## Comparative workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" create-comparison CASE_ID --input comparison.json
+python python/narrative_risk_workspace.py --database "$DB" evidence-matrix COMPARISON_ID
+python python/narrative_risk_workspace.py --database "$DB" create-scenario COMPARISON_ID --input scenario.json
+python python/narrative_risk_workspace.py --database "$DB" evaluate-scenario SCENARIO_ID
+python python/narrative_risk_workspace.py --database "$DB" sensitivity COMPARISON_ID --dimension uncertainty --dimension consequences
+python python/narrative_risk_workspace.py --database "$DB" comparative-portfolio CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" decision-studio-handoff COMPARISON_ID
+```
+
+See `docs/comparative-narratives-scenario-analysis.md` and `docs/decision-studio-handoff.md`.

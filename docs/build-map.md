@@ -146,18 +146,14 @@ Expand stakeholder pressure from a single dropdown into an inspectable model.
 
 ### v1.8.0 — Comparative Narratives and Scenario Analysis
 
-Enable structured comparison and stress testing.
+- Side-by-side narrative and immutable record comparisons.
+- Comparative claim and evidence matrices.
+- Competing frames, assumptions, and scenarios.
+- Best, base, worst, counterfactual, and adversarial analysis.
+- Method-input sensitivity analysis and ranked score drivers.
+- Comparative portfolios and Decision Studio handoffs.
 
-- Compare competing claims, frames, source bases, assumptions, confidence levels, and review outcomes.
-- Add side-by-side narrative dossiers and evidence matrices.
-- Add counterfactual, best-case, base-case, worst-case, and adversarial review scenarios.
-- Test sensitivity to scoring weights, source exclusions, new evidence, and altered consequence levels.
-- Identify which assumptions or evidence items drive the largest change in disposition.
-- Add narrative portfolios for campaigns, reports, decisions, institutions, and public issues.
-- Add aggregate dashboards while preserving drill-down to individual records.
-- Add Decision Studio scenario and decision-packet handoffs.
-
-**Release gate:** comparative outputs remain transparent, reproducible, and traceable to the exact records and method versions used.
+**Release gate:** all comparisons and scenarios are reproducible, checksummed, traceable to exact records, and advisory.
 
 ### v1.9.0 — Briefing, Publication, API, and Platform Integration
 

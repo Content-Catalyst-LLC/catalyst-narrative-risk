@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Catalyst Narrative Risk
- * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, monitoring, stakeholder intelligence, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.7.0
+ * Description: Narrative-risk scoring, evidence ledger, claim decomposition, governance, monitoring, stakeholder intelligence, comparative scenarios, and persistent review workspace interfaces for Sustainable Catalyst.
+ * Version: 1.8.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.7.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.7.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.7.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.7.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.7.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.7.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.7.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.8.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.8.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.8.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.8.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.8.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.8.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.8.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -234,7 +234,7 @@ function cnrisk_workspace_shortcode() {
     <div class="cnrisk-workspace" data-cnrisk-workspace>
       <header class="cnrisk-workspace__head">
         <h3>Narrative Risk Review Workspace</h3>
-        <p>Create durable cases, add immutable revisions, govern approvals, monitor narrative change, map stakeholders and pressures, and export checksummed case bundles.</p>
+        <p>Create durable cases, add immutable revisions, govern approvals, monitor narrative change, map stakeholders and pressures, compare narratives, evaluate scenarios, and export checksummed case bundles.</p>
       </header>
       <div class="cnrisk-workspace__layout">
         <aside class="cnrisk-workspace__sidebar">
@@ -273,7 +273,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.7.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.8.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -382,6 +382,24 @@ function cnrisk_workspace_shortcode() {
             <label><span>Consequence description</span><textarea rows="2" data-cnrisk-consequence-description></textarea></label>
             <button type="button" data-cnrisk-add-consequence>Add consequence</button>
             <div data-cnrisk-stakeholder-detail></div>
+          </section>
+          <section class="cnrisk-workspace__governance cnrisk-workspace__comparative" aria-labelledby="cnrisk-comparative-heading">
+            <h4 id="cnrisk-comparative-heading">Comparative narratives and scenario analysis</h4>
+            <p data-cnrisk-comparative-summary>No comparison set created.</p>
+            <p><small>Compare immutable revisions, inspect claim-and-evidence divergence, stress-test explicit assumptions, and export an advisory Decision Studio handoff. No scenario is selected automatically.</small></p>
+            <div class="cnrisk-workspace__two">
+              <label><span>Comparison title</span><input data-cnrisk-comparison-title value="Comparative narrative review" /></label>
+              <label><span>Scenario name</span><input data-cnrisk-scenario-name placeholder="Adversarial evidence challenge" /></label>
+              <label><span>Scenario type</span><select data-cnrisk-scenario-type><option value="best_case">Best case</option><option value="base_case">Base case</option><option value="worst_case">Worst case</option><option value="counterfactual">Counterfactual</option><option value="adversarial" selected>Adversarial</option><option value="custom">Custom</option></select></label>
+              <label><span>Scenario assumptions, one per line</span><textarea rows="2" data-cnrisk-scenario-assumptions></textarea></label>
+            </div>
+            <div class="cnrisk-workspace__actions">
+              <button type="button" data-cnrisk-create-comparison>Create comparison from latest revisions</button>
+              <button type="button" data-cnrisk-add-scenario>Evaluate scenario</button>
+              <button type="button" data-cnrisk-run-sensitivity>Run sensitivity</button>
+              <button type="button" data-cnrisk-decision-studio-handoff>Export Decision Studio handoff</button>
+            </div>
+            <div data-cnrisk-comparative-detail></div>
           </section>
           <div class="cnrisk-workspace__reviews">
             <label><span>Add review comment</span><textarea rows="2" data-cnrisk-review-body></textarea></label>

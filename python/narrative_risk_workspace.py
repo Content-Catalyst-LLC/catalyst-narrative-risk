@@ -212,6 +212,25 @@ def parser() -> argparse.ArgumentParser:
         item = commands.add_parser(command); item.add_argument("case_id"); item.add_argument("--input", required=True)
     stakeholder_list = commands.add_parser("stakeholder-intelligence"); stakeholder_list.add_argument("case_id"); stakeholder_list.add_argument("--generated-at")
     canvas = commands.add_parser("import-catalyst-canvas"); canvas.add_argument("case_id"); canvas.add_argument("--input", required=True); canvas.add_argument("--imported-at")
+
+    comparison = commands.add_parser("create-comparison")
+    comparison.add_argument("case_id"); comparison.add_argument("--input", required=True)
+    comparisons = commands.add_parser("list-comparisons")
+    comparisons.add_argument("--case-id"); comparisons.add_argument("--status")
+    matrix = commands.add_parser("evidence-matrix")
+    matrix.add_argument("comparison_id"); matrix.add_argument("--generated-at")
+    scenario = commands.add_parser("create-scenario")
+    scenario.add_argument("comparison_id"); scenario.add_argument("--input", required=True)
+    scenarios = commands.add_parser("list-scenarios")
+    scenarios.add_argument("--comparison-id"); scenarios.add_argument("--case-id"); scenarios.add_argument("--status")
+    evaluate = commands.add_parser("evaluate-scenario")
+    evaluate.add_argument("scenario_id"); evaluate.add_argument("--generated-at")
+    sensitivity = commands.add_parser("sensitivity")
+    sensitivity.add_argument("comparison_id"); sensitivity.add_argument("--dimension", action="append", default=[]); sensitivity.add_argument("--generated-at")
+    portfolio = commands.add_parser("comparative-portfolio")
+    portfolio.add_argument("case_id"); portfolio.add_argument("--generated-at")
+    decision = commands.add_parser("decision-studio-handoff")
+    decision.add_argument("comparison_id"); decision.add_argument("--scenario-id", action="append", default=[]); decision.add_argument("--generated-at")
     return root
 
 
@@ -353,6 +372,26 @@ def main() -> int:
             write_json(repository.get_stakeholder_intelligence(args.case_id, generated_at=args.generated_at))
         elif args.command == "import-catalyst-canvas":
             write_json(repository.import_catalyst_canvas_stakeholders(args.case_id, read_json(args.input), imported_at=args.imported_at))
+        elif args.command == "create-comparison":
+            write_json(repository.create_comparison_set(args.case_id, read_json(args.input)))
+        elif args.command == "list-comparisons":
+            values = repository.list_comparison_sets(case_id=args.case_id, status=args.status)
+            write_json({"comparison_sets": values, "count": len(values)})
+        elif args.command == "evidence-matrix":
+            write_json(repository.generate_comparative_evidence_matrix(args.comparison_id, generated_at=args.generated_at))
+        elif args.command == "create-scenario":
+            write_json(repository.create_scenario(args.comparison_id, read_json(args.input)))
+        elif args.command == "list-scenarios":
+            values = repository.list_scenarios(comparison_id=args.comparison_id, case_id=args.case_id, status=args.status)
+            write_json({"scenarios": values, "count": len(values)})
+        elif args.command == "evaluate-scenario":
+            write_json(repository.evaluate_scenario(args.scenario_id, generated_at=args.generated_at))
+        elif args.command == "sensitivity":
+            write_json(repository.run_comparative_sensitivity(args.comparison_id, dimensions=args.dimension or None, generated_at=args.generated_at))
+        elif args.command == "comparative-portfolio":
+            write_json(repository.get_comparative_portfolio(args.case_id, generated_at=args.generated_at))
+        elif args.command == "decision-studio-handoff":
+            write_json(repository.create_decision_studio_handoff(args.comparison_id, selected_scenario_ids=args.scenario_id or None, generated_at=args.generated_at))
         else:  # pragma: no cover
             raise AssertionError(args.command)
     finally:

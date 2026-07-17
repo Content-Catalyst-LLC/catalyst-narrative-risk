@@ -12,14 +12,14 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (DEFAULT_METHOD, NARRATIVE_MAP) {
   'use strict';
 
-  const VERSION = '1.7.0';
+  const VERSION = '1.8.0';
   const RECORD_TYPE = 'catalyst_narrative_risk_record';
   const CONTRACT_ID = 'urn:catalyst:narrative-risk:contract:canonical';
   const METHOD_ID = 'urn:catalyst:narrative-risk:method:transparent-heuristic';
-  const SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/record/1.7.0';
-  const INPUT_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/input/1.7.0';
-  const LEDGER_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.7.0';
-  const NARRATIVE_MAP_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.7.0';
+  const SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/record/1.8.0';
+  const INPUT_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/input/1.8.0';
+  const LEDGER_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.8.0';
+  const NARRATIVE_MAP_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.8.0';
   const INPUT_FIELDS = new Set([
     'claim', 'source_type', 'evidence_strength', 'uncertainty', 'narrative_volatility',
     'stakeholder_pressure', 'time_sensitivity', 'consequences', 'review_status', 'source_count',
@@ -390,7 +390,7 @@
     const policy = method.ledger_policy;
     if (positive.length && groups.size < policy.minimum_independent_groups_for_no_downgrade) strength = downgrade(strength, policy.single_group_downgrade_steps, order);
     if (primary.some(function (item) { return item.relation_type === 'contradict'; })) strength = downgrade(strength, policy.contradiction_downgrade_steps, order);
-    return { ledger_applied:true, source_type:sourceType, evidence_strength:strength, source_count:sourceIds.size, basis:'Derived from evidence relationships linked to the primary claim using the embedded v1.7.0 ledger policy.' };
+    return { ledger_applied:true, source_type:sourceType, evidence_strength:strength, source_count:sourceIds.size, basis:'Derived from evidence relationships linked to the primary claim using the embedded v1.8.0 ledger policy.' };
   }
   function buildEvidenceLedger(payload, narrativeClaim, method, fallback) {
     const claims = normalizeClaims(payload.claims, narrativeClaim);

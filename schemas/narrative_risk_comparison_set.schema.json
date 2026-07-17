@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/comparison-set/1.8.0",
+  "title": "Catalyst Narrative Risk Comparison Set 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "comparison_id",
+    "case_id",
+    "title",
+    "description",
+    "status",
+    "comparison_mode",
+    "baseline_member_id",
+    "members",
+    "created_at",
+    "updated_at",
+    "created_by"
+  ],
+  "properties": {
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "complete",
+        "archived"
+      ]
+    },
+    "comparison_mode": {
+      "enum": [
+        "revision",
+        "record",
+        "scenario",
+        "mixed"
+      ]
+    },
+    "baseline_member_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "member_id",
+          "label",
+          "revision_id",
+          "record_id",
+          "frame",
+          "assumptions",
+          "tags",
+          "selected",
+          "added_at"
+        ],
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "revision_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "record_id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+          },
+          "frame": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "uniqueItems": true,
+            "maxItems": 100
+          },
+          "selected": {
+            "type": "boolean"
+          },
+          "added_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 50
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    }
+  }
+}

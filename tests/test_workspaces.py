@@ -183,7 +183,7 @@ def test_workspace_health_reports_persistent_counts(tmp_path):
     repository.create_case(case_id=CASE_ID, title="Health", initial_payload={"claim": "Health claim."})
     repository.save_view(name="All", filters={})
     health = repository.health()
-    assert health["workspace_version"] == "1.7.0"
+    assert health["workspace_version"] == "1.8.0"
     assert health["counts"]["cases"] == 1
     assert health["counts"]["revisions"] == 1
     assert health["counts"]["saved_views"] == 1

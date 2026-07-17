@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/scenario-result/1.8.0",
+  "title": "Catalyst Narrative Risk Scenario Result 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "result_id",
+    "scenario_id",
+    "comparison_id",
+    "case_id",
+    "baseline_member_id",
+    "generated_at",
+    "simulated_input",
+    "calculations",
+    "interpretation",
+    "deltas",
+    "result_sha256"
+  ],
+  "properties": {
+    "result_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "scenario_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "baseline_member_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "simulated_input": {
+      "type": "object"
+    },
+    "calculations": {
+      "type": "object"
+    },
+    "interpretation": {
+      "type": "object"
+    },
+    "deltas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "risk_score",
+        "risk_level_changed",
+        "component_weights"
+      ],
+      "properties": {
+        "risk_score": {
+          "type": "integer",
+          "minimum": -100,
+          "maximum": 100
+        },
+        "risk_level_changed": {
+          "type": "boolean"
+        },
+        "component_weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "result_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-"""Narrative change, source freshness, snapshots, and monitoring primitives for v1.7.0.
+"""Narrative change, source freshness, snapshots, and monitoring primitives for v1.8.0.
 
 Monitoring remains advisory. It detects changes and schedules reassessment but does
 not alter analytical scores, approve content, or replace human review.
@@ -23,7 +23,7 @@ from .contracts import (
 )
 from .errors import NarrativeRiskValidationError
 
-VERSION = "1.7.0"
+VERSION = "1.8.0"
 SNAPSHOT_TRIGGERS = {"manual", "revision_created", "scheduled", "site_intelligence", "import"}
 WATCH_STATUSES = {"active", "paused", "closed"}
 WATCH_CADENCES = {"manual", "hourly", "daily", "weekly", "monthly"}

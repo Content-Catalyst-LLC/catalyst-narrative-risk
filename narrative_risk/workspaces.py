@@ -30,6 +30,9 @@ from .contracts import (
     REVIEW_TEMPLATE_SCHEMA_PATH,
     MONITORING_SNAPSHOT_SCHEMA_PATH, MONITORING_COMPARISON_SCHEMA_PATH,
     WATCHLIST_SCHEMA_PATH, MONITORING_ALERT_SCHEMA_PATH,
+    COMPARISON_SET_SCHEMA_PATH, COMPARATIVE_EVIDENCE_MATRIX_SCHEMA_PATH,
+    SCENARIO_SCHEMA_PATH, SCENARIO_RESULT_SCHEMA_PATH, SENSITIVITY_ANALYSIS_SCHEMA_PATH,
+    COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
     canonical_json,
     sha256_digest,
     validate_against_schema,
@@ -50,8 +53,13 @@ from .stakeholders import (
     build_stakeholder_intelligence, normalize_actor, normalize_relationship, normalize_incentive,
     normalize_pressure, normalize_consequence, validate_canvas_handoff,
 )
+from .comparisons import (
+    normalize_comparison_set, build_evidence_matrix, normalize_scenario, evaluate_scenario,
+    run_sensitivity_analysis, build_comparative_portfolio, build_decision_studio_handoff,
+    urn as comparison_urn,
+)
 
-VERSION = "1.7.0"
+VERSION = "1.8.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
@@ -444,6 +452,38 @@ class SQLiteCaseRepository:
         );
         CREATE INDEX IF NOT EXISTS idx_canvas_handoffs_case ON catalyst_canvas_handoffs(case_id, imported_at);
 
+        CREATE TABLE IF NOT EXISTS comparison_sets (
+            comparison_id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            comparison_json TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_comparison_sets_case ON comparison_sets(case_id, status, updated_at);
+        CREATE TABLE IF NOT EXISTS comparative_evidence_matrices (
+            matrix_id TEXT PRIMARY KEY, comparison_id TEXT NOT NULL REFERENCES comparison_sets(comparison_id) ON DELETE RESTRICT,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT, matrix_json TEXT NOT NULL, matrix_sha256 TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_comparative_matrices_case ON comparative_evidence_matrices(case_id, generated_at);
+        CREATE TABLE IF NOT EXISTS scenarios (
+            scenario_id TEXT PRIMARY KEY, comparison_id TEXT NOT NULL REFERENCES comparison_sets(comparison_id) ON DELETE RESTRICT,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT, scenario_json TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_scenarios_comparison ON scenarios(comparison_id, status, updated_at);
+        CREATE TABLE IF NOT EXISTS scenario_results (
+            result_id TEXT PRIMARY KEY, scenario_id TEXT NOT NULL REFERENCES scenarios(scenario_id) ON DELETE RESTRICT,
+            comparison_id TEXT NOT NULL REFERENCES comparison_sets(comparison_id) ON DELETE RESTRICT,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT, result_json TEXT NOT NULL, result_sha256 TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_scenario_results_comparison ON scenario_results(comparison_id, generated_at);
+        CREATE TABLE IF NOT EXISTS sensitivity_analyses (
+            analysis_id TEXT PRIMARY KEY, comparison_id TEXT NOT NULL REFERENCES comparison_sets(comparison_id) ON DELETE RESTRICT,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT, analysis_json TEXT NOT NULL, analysis_sha256 TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_sensitivity_case ON sensitivity_analyses(case_id, generated_at);
+        CREATE TABLE IF NOT EXISTS decision_studio_handoffs (
+            handoff_id TEXT PRIMARY KEY, comparison_id TEXT NOT NULL REFERENCES comparison_sets(comparison_id) ON DELETE RESTRICT,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT, handoff_json TEXT NOT NULL, handoff_sha256 TEXT NOT NULL, generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_decision_handoffs_case ON decision_studio_handoffs(case_id, generated_at);
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -480,7 +520,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -528,6 +568,14 @@ class SQLiteCaseRepository:
             "consequences": int(self._connection.execute("SELECT COUNT(*) FROM stakeholder_consequences WHERE case_id=?", (case_id,)).fetchone()[0]),
         }
         stakeholder_summary = self.get_stakeholder_intelligence(case_id, generated_at=row["updated_at"]) if stakeholder_counts["actors"] else None
+        comparative_counts = {
+            "comparison_sets": int(self._connection.execute("SELECT COUNT(*) FROM comparison_sets WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "scenarios": int(self._connection.execute("SELECT COUNT(*) FROM scenarios WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "scenario_results": int(self._connection.execute("SELECT COUNT(*) FROM scenario_results WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "sensitivity_analyses": int(self._connection.execute("SELECT COUNT(*) FROM sensitivity_analyses WHERE case_id=?", (case_id,)).fetchone()[0]),
+            "decision_studio_handoffs": int(self._connection.execute("SELECT COUNT(*) FROM decision_studio_handoffs WHERE case_id=?", (case_id,)).fetchone()[0]),
+        }
+        comparative_status = "not_started" if comparative_counts["comparison_sets"] == 0 else "scenario_ready" if comparative_counts["scenario_results"] else "comparison_ready"
         case = {
             "case_id": case_id,
             "organization_id": row["organization_id"],
@@ -564,6 +612,12 @@ class SQLiteCaseRepository:
             "stakeholder_pressure_count": stakeholder_counts["pressures"],
             "stakeholder_consequence_count": stakeholder_counts["consequences"],
             "suggested_stakeholder_pressure": stakeholder_summary["suggested_stakeholder_pressure"] if stakeholder_summary else None,
+            "comparison_set_count": comparative_counts["comparison_sets"],
+            "scenario_count": comparative_counts["scenarios"],
+            "evaluated_scenario_count": comparative_counts["scenario_results"],
+            "sensitivity_analysis_count": comparative_counts["sensitivity_analyses"],
+            "decision_studio_handoff_count": comparative_counts["decision_studio_handoffs"],
+            "comparative_status": comparative_status,
         }
         _schema_error("case", case, CASE_SCHEMA_PATH)
         return case
@@ -980,6 +1034,13 @@ class SQLiteCaseRepository:
             "stakeholder_consequences": self.list_stakeholder_consequences(case["case_id"]),
             "stakeholder_intelligence": self.get_stakeholder_intelligence(case["case_id"]),
             "catalyst_canvas_handoffs": self.list_canvas_handoffs(case["case_id"]),
+            "comparison_sets": self.list_comparison_sets(case_id=case["case_id"]),
+            "comparative_evidence_matrices": [matrix for comparison in self.list_comparison_sets(case_id=case["case_id"]) for matrix in self.list_comparative_evidence_matrices(comparison["comparison_id"])],
+            "scenarios": self.list_scenarios(case_id=case["case_id"]),
+            "scenario_results": self.list_scenario_results(case_id=case["case_id"]),
+            "sensitivity_analyses": [analysis for comparison in self.list_comparison_sets(case_id=case["case_id"]) for analysis in self.list_sensitivity_analyses(comparison["comparison_id"])],
+            "comparative_portfolio": self.get_comparative_portfolio(case["case_id"], generated_at=timestamp),
+            "decision_studio_handoffs": self.list_decision_studio_handoffs(case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -1032,6 +1093,21 @@ class SQLiteCaseRepository:
                 + list(bundle.get("stakeholder_consequences", []))
             ) and bundle.get("stakeholder_intelligence", {}).get("case_id") == bundle["case"]["case_id"],
             "stakeholder_intelligence_hash_match": sha256_digest({k: v for k, v in bundle["stakeholder_intelligence"].items() if k != "intelligence_sha256"}) == bundle["stakeholder_intelligence"]["intelligence_sha256"],
+            "comparative_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in list(bundle.get("comparison_sets", [])) + list(bundle.get("comparative_evidence_matrices", []))
+                + list(bundle.get("scenarios", [])) + list(bundle.get("scenario_results", []))
+                + list(bundle.get("sensitivity_analyses", [])) + list(bundle.get("decision_studio_handoffs", []))
+            ) and bundle.get("comparative_portfolio", {}).get("case_id") == bundle["case"]["case_id"],
+            "comparative_hashes_match": all(
+                sha256_digest({k: v for k, v in item.items() if k != hash_field}) == item[hash_field]
+                for values, hash_field in (
+                    (bundle.get("comparative_evidence_matrices", []), "matrix_sha256"),
+                    (bundle.get("scenario_results", []), "result_sha256"),
+                    (bundle.get("sensitivity_analyses", []), "analysis_sha256"),
+                    (bundle.get("decision_studio_handoffs", []), "handoff_sha256"),
+                ) for item in values
+            ) and sha256_digest({k: v for k, v in bundle["comparative_portfolio"].items() if k != "portfolio_sha256"}) == bundle["comparative_portfolio"]["portfolio_sha256"],
         }
 
     def import_case_bundle(self, bundle: Mapping[str, Any]) -> Dict[str, Any]:
@@ -1054,6 +1130,10 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains stakeholder records for another case")
         if not report["stakeholder_intelligence_hash_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains a stakeholder intelligence hash mismatch")
+        if not report["comparative_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains comparative records for another case")
+        if not report["comparative_hashes_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a comparative artifact hash mismatch")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -1147,6 +1227,18 @@ class SQLiteCaseRepository:
                 connection.execute("INSERT INTO stakeholder_consequences(consequence_id,case_id,actor_id,consequence_json,created_at) VALUES(?,?,?,?,?)", (consequence["consequence_id"], consequence["case_id"], consequence["actor_id"], _json_dump(consequence), consequence["created_at"]))
             for handoff in bundle.get("catalyst_canvas_handoffs", []):
                 connection.execute("INSERT INTO catalyst_canvas_handoffs(handoff_id,case_id,canvas_id,handoff_json,handoff_sha256,imported_at) VALUES(?,?,?,?,?,?)", (handoff["handoff_id"], handoff["case_id"], handoff["canvas_id"], _json_dump(handoff["handoff"]), handoff["handoff_sha256"], handoff["imported_at"]))
+            for comparison in bundle.get("comparison_sets", []):
+                connection.execute("INSERT INTO comparison_sets(comparison_id,case_id,comparison_json,status,created_at,updated_at) VALUES(?,?,?,?,?,?)", (comparison["comparison_id"], comparison["case_id"], _json_dump(comparison), comparison["status"], comparison["created_at"], comparison["updated_at"]))
+            for matrix in bundle.get("comparative_evidence_matrices", []):
+                connection.execute("INSERT INTO comparative_evidence_matrices(matrix_id,comparison_id,case_id,matrix_json,matrix_sha256,generated_at) VALUES(?,?,?,?,?,?)", (matrix["matrix_id"], matrix["comparison_id"], matrix["case_id"], _json_dump(matrix), matrix["matrix_sha256"], matrix["generated_at"]))
+            for scenario in bundle.get("scenarios", []):
+                connection.execute("INSERT INTO scenarios(scenario_id,comparison_id,case_id,scenario_json,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?)", (scenario["scenario_id"], scenario["comparison_id"], scenario["case_id"], _json_dump(scenario), scenario["status"], scenario["created_at"], scenario["updated_at"]))
+            for result in bundle.get("scenario_results", []):
+                connection.execute("INSERT INTO scenario_results(result_id,scenario_id,comparison_id,case_id,result_json,result_sha256,generated_at) VALUES(?,?,?,?,?,?,?)", (result["result_id"], result["scenario_id"], result["comparison_id"], result["case_id"], _json_dump(result), result["result_sha256"], result["generated_at"]))
+            for analysis in bundle.get("sensitivity_analyses", []):
+                connection.execute("INSERT INTO sensitivity_analyses(analysis_id,comparison_id,case_id,analysis_json,analysis_sha256,generated_at) VALUES(?,?,?,?,?,?)", (analysis["analysis_id"], analysis["comparison_id"], analysis["case_id"], _json_dump(analysis), analysis["analysis_sha256"], analysis["generated_at"]))
+            for handoff in bundle.get("decision_studio_handoffs", []):
+                connection.execute("INSERT INTO decision_studio_handoffs(handoff_id,comparison_id,case_id,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?)", (handoff["handoff_id"], handoff["comparison_id"], handoff["case_id"], _json_dump(handoff), handoff["handoff_sha256"], handoff["generated_at"]))
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -1156,7 +1248,7 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.7.0 stakeholder, incentive, and pressure intelligence
+    # v1.8.0 stakeholder, incentive, and pressure intelligence
 
     def _ensure_actor(self, actor_id: str, case_id: str) -> None:
         row = self._connection.execute("SELECT case_id FROM stakeholder_actors WHERE actor_id=?", (actor_id,)).fetchone()
@@ -1247,7 +1339,195 @@ class SQLiteCaseRepository:
         rows=self._connection.execute("SELECT * FROM catalyst_canvas_handoffs WHERE case_id=? ORDER BY imported_at,handoff_id",(case_id,)).fetchall(); return [{"handoff_id":r["handoff_id"],"case_id":r["case_id"],"canvas_id":r["canvas_id"],"handoff":_json_load(r["handoff_json"]),"handoff_sha256":r["handoff_sha256"],"imported_at":r["imported_at"]} for r in rows]
 
     # ------------------------------------------------------------------
-    # v1.7.0 narrative change, freshness, and monitoring
+    # v1.8.0 comparative narratives and scenario analysis
+
+    def _records_for_comparison(self, comparison: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+        records: Dict[str, Dict[str, Any]] = {}
+        for member in comparison["members"]:
+            if member.get("revision_id"):
+                revision = self.get_revision(member["revision_id"])
+                if revision["case_id"] != comparison["case_id"]:
+                    raise NarrativeRiskValidationError("comparison revision belongs to another case")
+                record = revision["record"]
+            else:
+                with self._lock:
+                    row = self._connection.execute(
+                        "SELECT record_json, case_id FROM revisions WHERE record_id=?", (member["record_id"],)
+                    ).fetchone()
+                if row is None:
+                    raise NarrativeRiskValidationError(f"comparison record not found: {member['record_id']}")
+                if row["case_id"] != comparison["case_id"]:
+                    raise NarrativeRiskValidationError("comparison record belongs to another case")
+                record = _json_load(row["record_json"])
+            if record["identifiers"]["record_id"] != member["record_id"]:
+                raise NarrativeRiskValidationError("comparison member record_id does not match its revision")
+            records[member["record_id"]] = record
+        return records
+
+    def create_comparison_set(self, case_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        comparison = normalize_comparison_set(payload, case_id=case["case_id"])
+        self._records_for_comparison(comparison)
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO comparison_sets(comparison_id, case_id, comparison_json, status, created_at, updated_at) VALUES(?,?,?,?,?,?)",
+                    (comparison["comparison_id"], comparison["case_id"], _json_dump(comparison), comparison["status"], comparison["created_at"], comparison["updated_at"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"comparison set already exists: {comparison['comparison_id']}") from exc
+            self._activity(connection, case["case_id"], "comparison_set_created", entity_id=comparison["comparison_id"], payload={"title": comparison["title"], "member_count": len(comparison["members"])}, created_at=comparison["created_at"])
+        return comparison
+
+    def get_comparison_set(self, comparison_id: str) -> Dict[str, Any]:
+        normalized = comparison_urn(comparison_id, "comparison_id")
+        with self._lock:
+            row = self._connection.execute("SELECT comparison_json FROM comparison_sets WHERE comparison_id=?", (normalized,)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError(f"comparison set not found: {normalized}")
+        value = _json_load(row["comparison_json"])
+        _schema_error("comparison set", value, COMPARISON_SET_SCHEMA_PATH)
+        return value
+
+    def list_comparison_sets(self, *, case_id: str | None = None, status: str | None = None) -> List[Dict[str, Any]]:
+        clauses: List[str] = []
+        params: List[Any] = []
+        if case_id:
+            clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if status:
+            clauses.append("status=?"); params.append(status)
+        sql = "SELECT comparison_json FROM comparison_sets" + (" WHERE " + " AND ".join(clauses) if clauses else "") + " ORDER BY updated_at, comparison_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        values = [_json_load(row["comparison_json"]) for row in rows]
+        for value in values: _schema_error("comparison set", value, COMPARISON_SET_SCHEMA_PATH)
+        return values
+
+    def generate_comparative_evidence_matrix(self, comparison_id: str, *, generated_at: str | None = None) -> Dict[str, Any]:
+        comparison = self.get_comparison_set(comparison_id)
+        records = self._records_for_comparison(comparison)
+        matrix = build_evidence_matrix(comparison, records, generated_at=generated_at)
+        with self._transaction() as connection:
+            connection.execute(
+                "INSERT OR REPLACE INTO comparative_evidence_matrices(matrix_id, comparison_id, case_id, matrix_json, matrix_sha256, generated_at) VALUES(?,?,?,?,?,?)",
+                (matrix["matrix_id"], matrix["comparison_id"], matrix["case_id"], _json_dump(matrix), matrix["matrix_sha256"], matrix["generated_at"]),
+            )
+            self._activity(connection, matrix["case_id"], "comparative_evidence_matrix_generated", entity_id=matrix["matrix_id"], payload=matrix["summary"], created_at=matrix["generated_at"])
+        return matrix
+
+    def list_comparative_evidence_matrices(self, comparison_id: str) -> List[Dict[str, Any]]:
+        comparison = self.get_comparison_set(comparison_id)
+        with self._lock:
+            rows = self._connection.execute("SELECT matrix_json FROM comparative_evidence_matrices WHERE comparison_id=? ORDER BY generated_at, matrix_id", (comparison["comparison_id"],)).fetchall()
+        values = [_json_load(row["matrix_json"]) for row in rows]
+        for value in values: _schema_error("comparative evidence matrix", value, COMPARATIVE_EVIDENCE_MATRIX_SCHEMA_PATH)
+        return values
+
+    def create_scenario(self, comparison_id: str, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        comparison = self.get_comparison_set(comparison_id)
+        scenario = normalize_scenario(payload, comparison_id=comparison["comparison_id"], case_id=comparison["case_id"])
+        with self._transaction() as connection:
+            try:
+                connection.execute(
+                    "INSERT INTO scenarios(scenario_id, comparison_id, case_id, scenario_json, status, created_at, updated_at) VALUES(?,?,?,?,?,?,?)",
+                    (scenario["scenario_id"], scenario["comparison_id"], scenario["case_id"], _json_dump(scenario), scenario["status"], scenario["created_at"], scenario["updated_at"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"scenario already exists: {scenario['scenario_id']}") from exc
+            self._activity(connection, scenario["case_id"], "scenario_created", entity_id=scenario["scenario_id"], payload={"name": scenario["name"], "scenario_type": scenario["scenario_type"]}, created_at=scenario["created_at"])
+        return scenario
+
+    def get_scenario(self, scenario_id: str) -> Dict[str, Any]:
+        normalized = comparison_urn(scenario_id, "scenario_id")
+        with self._lock:
+            row = self._connection.execute("SELECT scenario_json FROM scenarios WHERE scenario_id=?", (normalized,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError(f"scenario not found: {normalized}")
+        value = _json_load(row["scenario_json"]); _schema_error("scenario", value, SCENARIO_SCHEMA_PATH); return value
+
+    def list_scenarios(self, *, comparison_id: str | None = None, case_id: str | None = None, status: str | None = None) -> List[Dict[str, Any]]:
+        clauses=[]; params=[]
+        if comparison_id: clauses.append("comparison_id=?"); params.append(comparison_urn(comparison_id, "comparison_id"))
+        if case_id: clauses.append("case_id=?"); params.append(_urn_uuid(case_id, "case_id"))
+        if status: clauses.append("status=?"); params.append(status)
+        sql="SELECT scenario_json FROM scenarios"+(" WHERE "+" AND ".join(clauses) if clauses else "")+" ORDER BY created_at, scenario_id"
+        with self._lock: rows=self._connection.execute(sql,params).fetchall()
+        values=[_json_load(r["scenario_json"]) for r in rows]
+        for value in values: _schema_error("scenario",value,SCENARIO_SCHEMA_PATH)
+        return values
+
+    def evaluate_scenario(self, scenario_id: str, *, generated_at: str | None = None) -> Dict[str, Any]:
+        scenario = self.get_scenario(scenario_id)
+        comparison = self.get_comparison_set(scenario["comparison_id"])
+        records = self._records_for_comparison(comparison)
+        result = evaluate_scenario(scenario, comparison, records, generated_at=generated_at)
+        evaluated = dict(scenario); evaluated["status"]="evaluated"; evaluated["updated_at"]=result["generated_at"]
+        with self._transaction() as connection:
+            connection.execute(
+                "INSERT OR REPLACE INTO scenario_results(result_id, scenario_id, comparison_id, case_id, result_json, result_sha256, generated_at) VALUES(?,?,?,?,?,?,?)",
+                (result["result_id"], result["scenario_id"], result["comparison_id"], result["case_id"], _json_dump(result), result["result_sha256"], result["generated_at"]),
+            )
+            connection.execute("UPDATE scenarios SET scenario_json=?, status='evaluated', updated_at=? WHERE scenario_id=?", (_json_dump(evaluated), result["generated_at"], scenario["scenario_id"]))
+            self._activity(connection, result["case_id"], "scenario_evaluated", entity_id=result["result_id"], payload={"scenario_id": result["scenario_id"], "risk_score_delta": result["deltas"]["risk_score"]}, created_at=result["generated_at"])
+        return result
+
+    def list_scenario_results(self, *, comparison_id: str | None = None, case_id: str | None = None) -> List[Dict[str, Any]]:
+        clauses=[]; params=[]
+        if comparison_id: clauses.append("comparison_id=?"); params.append(comparison_urn(comparison_id,"comparison_id"))
+        if case_id: clauses.append("case_id=?"); params.append(_urn_uuid(case_id,"case_id"))
+        sql="SELECT result_json FROM scenario_results"+(" WHERE "+" AND ".join(clauses) if clauses else "")+" ORDER BY generated_at, result_id"
+        with self._lock: rows=self._connection.execute(sql,params).fetchall()
+        values=[_json_load(r["result_json"]) for r in rows]
+        for value in values: _schema_error("scenario result",value,SCENARIO_RESULT_SCHEMA_PATH)
+        return values
+
+    def run_comparative_sensitivity(self, comparison_id: str, *, dimensions: Sequence[str] | None = None, generated_at: str | None = None) -> Dict[str, Any]:
+        comparison=self.get_comparison_set(comparison_id); records=self._records_for_comparison(comparison)
+        analysis=run_sensitivity_analysis(comparison,records,dimensions=dimensions,generated_at=generated_at)
+        with self._transaction() as connection:
+            connection.execute("INSERT OR REPLACE INTO sensitivity_analyses(analysis_id,comparison_id,case_id,analysis_json,analysis_sha256,generated_at) VALUES(?,?,?,?,?,?)",(analysis["analysis_id"],analysis["comparison_id"],analysis["case_id"],_json_dump(analysis),analysis["analysis_sha256"],analysis["generated_at"]))
+            self._activity(connection,analysis["case_id"],"sensitivity_analysis_run",entity_id=analysis["analysis_id"],payload={"dimensions":analysis["dimensions"],"top_driver":analysis["drivers"][0]["dimension"] if analysis["drivers"] else None},created_at=analysis["generated_at"])
+        return analysis
+
+    def list_sensitivity_analyses(self, comparison_id: str) -> List[Dict[str, Any]]:
+        comparison=self.get_comparison_set(comparison_id)
+        with self._lock: rows=self._connection.execute("SELECT analysis_json FROM sensitivity_analyses WHERE comparison_id=? ORDER BY generated_at,analysis_id",(comparison["comparison_id"],)).fetchall()
+        values=[_json_load(r["analysis_json"]) for r in rows]
+        for value in values: _schema_error("sensitivity analysis",value,SENSITIVITY_ANALYSIS_SCHEMA_PATH)
+        return values
+
+    def get_comparative_portfolio(self, case_id: str, *, generated_at: str | None = None) -> Dict[str, Any]:
+        case=self.get_case(case_id); comparisons=self.list_comparison_sets(case_id=case["case_id"])
+        records={}
+        for comparison in comparisons: records.update(self._records_for_comparison(comparison))
+        scenarios=self.list_scenarios(case_id=case["case_id"]); results=self.list_scenario_results(case_id=case["case_id"])
+        analyses=[]
+        for comparison in comparisons: analyses.extend(self.list_sensitivity_analyses(comparison["comparison_id"]))
+        governance=self.get_case_governance_workflow(case["case_id"])
+        return build_comparative_portfolio(case_id=case["case_id"],comparisons=comparisons,records_by_id=records,scenarios=scenarios,scenario_results=results,sensitivity_analyses=analyses,governance=governance,generated_at=generated_at)
+
+    def create_decision_studio_handoff(self, comparison_id: str, *, selected_scenario_ids: Sequence[str] | None = None, generated_at: str | None = None) -> Dict[str, Any]:
+        comparison=self.get_comparison_set(comparison_id)
+        matrices=self.list_comparative_evidence_matrices(comparison["comparison_id"])
+        results=self.list_scenario_results(comparison_id=comparison["comparison_id"])
+        analyses=self.list_sensitivity_analyses(comparison["comparison_id"])
+        portfolio=self.get_comparative_portfolio(comparison["case_id"],generated_at=generated_at)
+        governance=self.get_case_governance_workflow(comparison["case_id"],include_details=True)
+        handoff=build_decision_studio_handoff(comparison=comparison,evidence_matrix=matrices[-1] if matrices else None,scenario_results=results,sensitivity_analysis=analyses[-1] if analyses else None,portfolio=portfolio,governance=governance,selected_scenario_ids=selected_scenario_ids,generated_at=generated_at)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO decision_studio_handoffs(handoff_id,comparison_id,case_id,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?)",(handoff["handoff_id"],handoff["comparison_id"],handoff["case_id"],_json_dump(handoff),handoff["handoff_sha256"],handoff["generated_at"]))
+            self._activity(connection,handoff["case_id"],"decision_studio_handoff_created",entity_id=handoff["handoff_id"],payload={"comparison_id":handoff["comparison_id"],"scenario_count":len(handoff["scenario_results"])},created_at=handoff["generated_at"])
+        return handoff
+
+    def list_decision_studio_handoffs(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized=_urn_uuid(case_id,"case_id")
+        with self._lock: rows=self._connection.execute("SELECT handoff_json FROM decision_studio_handoffs WHERE case_id=? ORDER BY generated_at,handoff_id",(normalized,)).fetchall()
+        values=[_json_load(r["handoff_json"]) for r in rows]
+        for value in values: _schema_error("Decision Studio handoff",value,DECISION_STUDIO_HANDOFF_SCHEMA_PATH)
+        return values
+
+
+    # ------------------------------------------------------------------
+    # v1.8.0 narrative change, freshness, and monitoring
 
     def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         snapshot = _json_load(row["snapshot_json"])
@@ -1609,7 +1889,7 @@ class SQLiteCaseRepository:
         return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
 
     # ------------------------------------------------------------------
-    # v1.7.0 governed review workflow
+    # v1.8.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {

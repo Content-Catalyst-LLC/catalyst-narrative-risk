@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-evidence-matrix/1.8.0",
+  "title": "Catalyst Narrative Risk Comparative Evidence Matrix 1.8.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "matrix_id",
+    "comparison_id",
+    "case_id",
+    "generated_at",
+    "claims",
+    "summary",
+    "matrix_sha256"
+  ],
+  "properties": {
+    "matrix_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "comparison_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claim_key",
+          "text",
+          "member_cells",
+          "divergent"
+        ],
+        "properties": {
+          "claim_key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000
+          },
+          "member_cells": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "member_id",
+                "claim_ids",
+                "coverage_status",
+                "relationship_counts",
+                "source_count",
+                "independent_source_count",
+                "contradiction_count"
+              ],
+              "properties": {
+                "member_id": {
+                  "type": "string",
+                  "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+                },
+                "claim_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "uniqueItems": true
+                },
+                "coverage_status": {
+                  "enum": [
+                    "none",
+                    "partial",
+                    "adequate",
+                    "strong",
+                    "contested"
+                  ]
+                },
+                "relationship_counts": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "support",
+                    "qualify",
+                    "contradict",
+                    "contextualize",
+                    "unresolved"
+                  ],
+                  "properties": {
+                    "support": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "qualify": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "contradict": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "contextualize": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "unresolved": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  }
+                },
+                "source_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "independent_source_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "contradiction_count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "minItems": 2
+          },
+          "divergent": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_count",
+        "member_count",
+        "divergence_count",
+        "coverage_by_member"
+      ],
+      "properties": {
+        "claim_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "member_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "divergence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverage_by_member": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "covered_claims",
+              "contested_claims",
+              "source_count"
+            ],
+            "properties": {
+              "covered_claims": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "contested_claims": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "source_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "matrix_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

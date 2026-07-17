@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -449,6 +449,60 @@ def create_app(config: dict | None = None):
     def import_catalyst_canvas(case_id: str):
         try: value = repository.import_catalyst_canvas_stakeholders(case_id, _json_object())
         except NarrativeRiskValidationError as exc: return _bad_request("invalid_catalyst_canvas_handoff", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/cases/<case_id>/comparisons")
+    def create_comparison_set(case_id: str):
+        try: value = repository.create_comparison_set(case_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_comparison_set", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/comparisons")
+    def list_comparison_sets(case_id: str):
+        try: values = repository.list_comparison_sets(case_id=case_id, status=request.args.get("status"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_comparison_query", exc)
+        return jsonify({"comparison_sets": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/comparisons/<comparison_id>/evidence-matrix")
+    def generate_comparative_evidence_matrix(comparison_id: str):
+        try: value = repository.generate_comparative_evidence_matrix(comparison_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_comparative_evidence_matrix", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/comparisons/<comparison_id>/scenarios")
+    def create_scenario(comparison_id: str):
+        try: value = repository.create_scenario(comparison_id, _json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_scenario", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/comparisons/<comparison_id>/scenarios")
+    def list_scenarios(comparison_id: str):
+        try: values = repository.list_scenarios(comparison_id=comparison_id, status=request.args.get("status"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_scenario_query", exc)
+        return jsonify({"scenarios": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/scenarios/<scenario_id>/evaluate")
+    def evaluate_scenario_api(scenario_id: str):
+        try: value = repository.evaluate_scenario(scenario_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_scenario_evaluation", exc)
+        return jsonify(value), 201
+
+    @app.post("/api/narrative-risk/comparisons/<comparison_id>/sensitivity")
+    def run_comparative_sensitivity(comparison_id: str):
+        try: value = repository.run_comparative_sensitivity(comparison_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_sensitivity_analysis", exc)
+        return jsonify(value), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/comparative-portfolio")
+    def comparative_portfolio(case_id: str):
+        try: value = repository.get_comparative_portfolio(case_id, generated_at=request.args.get("generated_at"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_comparative_portfolio", exc)
+        return jsonify(value), 200
+
+    @app.post("/api/narrative-risk/comparisons/<comparison_id>/decision-studio-handoff")
+    def decision_studio_handoff(comparison_id: str):
+        try: value = repository.create_decision_studio_handoff(comparison_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_decision_studio_handoff", exc)
         return jsonify(value), 201
 
     @app.post("/api/narrative-risk/cases/<case_id>/monitoring/snapshots")

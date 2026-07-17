@@ -1,4 +1,4 @@
-"""Stakeholder, incentive, pressure, and consequence intelligence for v1.7.0.
+"""Stakeholder, incentive, pressure, and consequence intelligence for v1.8.0.
 
 This layer records observable actors and evidence-linked relationships. It does
 not infer hidden motives or silently change the canonical analytical score.
@@ -17,7 +17,7 @@ from .contracts import (
 )
 from .errors import NarrativeRiskValidationError
 
-VERSION = "1.7.0"
+VERSION = "1.8.0"
 ACTOR_TYPES = {"individual","community","organization","company","government","regulator","funder","media","research_institution","advocacy_group","public","other"}
 INFLUENCE_LEVELS = {"low","medium","high","critical"}
 STANCES = {"supportive","neutral","opposed","mixed","unknown"}

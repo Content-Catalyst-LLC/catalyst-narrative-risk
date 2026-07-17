@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/watchlist/1.7.0",
-  "title": "Catalyst Narrative Risk Watchlist 1.7.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/watchlist/1.8.0",
+  "title": "Catalyst Narrative Risk Watchlist 1.8.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -26,7 +26,7 @@
       "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
     },
     "watch_version": {
-      "const": "1.7.0"
+      "const": "1.8.0"
     },
     "case_id": {
       "type": "string",

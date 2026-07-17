@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHON="${PYTHON:-python3}"
 NODE="${NODE:-node}"
 PHP="${PHP:-php}"
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v170.XXXXXX")"
+TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/cnrisk-v180.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 export CNRISK_DATABASE_PATH="$TMP_DIR/api-tests.sqlite3"
 
@@ -52,14 +52,21 @@ grep -q 'relationship_id,claim_id,claim_text' "$TMP_DIR/ledger.csv"
 grep -q 'flowchart TD' "$TMP_DIR/map.mmd"
 grep -q 'Narrative Map' "$TMP_DIR/map.md"
 
-printf '\n==> Persistent workspace, governance, monitoring, stakeholder CLI, and portable bundle round trip\n'
+printf '\n==> Persistent workspace, governance, monitoring, stakeholder, comparative CLI, and portable bundle round trip\n'
 SOURCE_DB="$TMP_DIR/source.sqlite3"; TARGET_DB="$TMP_DIR/target.sqlite3"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" init > "$TMP_DIR/workspace-health.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create \
-  --title "Release narrative-map case" --summary "Persistent v1.7.0 release verification." \
+  --title "Release narrative-map case" --summary "Persistent v1.8.0 release verification." \
   --status in_review --priority high --tag release --tag narrative-map \
   --input data/sample_narrative_risk_input.json --created-by release-suite > "$TMP_DIR/case.json"
 CASE_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["case_id"])' "$TMP_DIR/case.json")"
+"$PYTHON" - data/sample_narrative_risk_input.json "$TMP_DIR/alternative-input.json" <<'PYDATA'
+import json,sys
+source,target=sys.argv[1:]
+payload=json.load(open(source)); payload["claim"]="The pilot may have reduced energy use, but attribution remains uncertain."; payload["claims"][0]["text"]=payload["claim"]; payload["narrative_nodes"][0]["text"]=payload["claim"]; payload["uncertainty"]="high"; payload["narrative_volatility"]="high"
+json.dump(payload,open(target,"w"),indent=2); open(target,"a").write("\n")
+PYDATA
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-revision "$CASE_ID"   --input "$TMP_DIR/alternative-input.json" --created-by release-suite --change-note "Qualified comparative frame." > "$TMP_DIR/revision-2.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" show "$CASE_ID" --details > "$TMP_DIR/case-details.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" add-review "$CASE_ID" \
   --event-type comment --author-id release-suite --body "Narrative-map release review event." > "$TMP_DIR/review.json"
@@ -151,6 +158,26 @@ assert value["counts"] == {"actors":3,"relationships":2,"incentives":1,"pressure
 assert value["suggested_stakeholder_pressure"] == "high"
 assert value["intelligence_sha256"]
 PYDATA
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" show "$CASE_ID" --details > "$TMP_DIR/comparison-case.json"
+"$PYTHON" - "$TMP_DIR/comparison-case.json" "$TMP_DIR/comparison-input.json" <<'PYDATA'
+import json,sys
+source,target=sys.argv[1:]; case=json.load(open(source)); revisions=case["revisions"]
+payload={"title":"Measured result versus qualified attribution","description":"Release comparison fixture.","status":"active","comparison_mode":"revision","members":[{"label":"Measured result","revision_id":revisions[0]["revision_id"],"record_id":revisions[0]["record_id"],"frame":"Measured performance","assumptions":["Normalization is valid"]},{"label":"Qualified attribution","revision_id":revisions[1]["revision_id"],"record_id":revisions[1]["record_id"],"frame":"Attribution uncertainty","assumptions":["Other factors may contribute"]}]}
+json.dump(payload,open(target,"w"),indent=2); open(target,"a").write("\n")
+PYDATA
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create-comparison "$CASE_ID" --input "$TMP_DIR/comparison-input.json" > "$TMP_DIR/comparison.json"
+COMPARISON_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["comparison_id"])' "$TMP_DIR/comparison.json")"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" evidence-matrix "$COMPARISON_ID" --generated-at 2026-07-17T20:10:00+00:00 > "$TMP_DIR/evidence-matrix.json"
+"$PYTHON" - "$TMP_DIR/scenario.json" <<'PYDATA'
+import json,sys
+json.dump({"name":"Adversarial evidence challenge","scenario_type":"adversarial","description":"Release scenario fixture.","assumptions":["Evidence access declines"],"parameter_overrides":{"evidence_strength":"weak","uncertainty":"high","consequences":"critical","stakeholder_pressure":"high"},"status":"active"},open(sys.argv[1],"w"),indent=2); open(sys.argv[1],"a").write("\n")
+PYDATA
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" create-scenario "$COMPARISON_ID" --input "$TMP_DIR/scenario.json" > "$TMP_DIR/scenario-created.json"
+SCENARIO_ID="$("$PYTHON" -c 'import json,sys; print(json.load(open(sys.argv[1]))["scenario_id"])' "$TMP_DIR/scenario-created.json")"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" evaluate-scenario "$SCENARIO_ID" --generated-at 2026-07-17T20:15:00+00:00 > "$TMP_DIR/scenario-result.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" sensitivity "$COMPARISON_ID" --dimension uncertainty --dimension consequences --generated-at 2026-07-17T20:20:00+00:00 > "$TMP_DIR/sensitivity.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" comparative-portfolio "$CASE_ID" --generated-at 2026-07-17T20:25:00+00:00 > "$TMP_DIR/comparative-portfolio.json"
+"$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" decision-studio-handoff "$COMPARISON_ID" --scenario-id "$SCENARIO_ID" --generated-at 2026-07-17T20:30:00+00:00 > "$TMP_DIR/decision-studio-handoff.json"
 "$PYTHON" python/narrative_risk_workspace.py --database "$SOURCE_DB" export "$CASE_ID" \
   --output "$TMP_DIR/case-bundle.json" --exported-at 2026-07-17T17:00:00+00:00
 "$PYTHON" python/narrative_risk_workspace.py verify-bundle --input "$TMP_DIR/case-bundle.json" > "$TMP_DIR/bundle-verification.json"
@@ -160,14 +187,24 @@ PYDATA
 cmp "$TMP_DIR/case-bundle.json" "$TMP_DIR/reexported.json"
 
 printf '\n==> Legacy migrations and post-migration reproduction\n'
-for legacy in 1.0.1 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0 1.6.0; do
-  "$PYTHON" python/migrate_narrative_risk_record.py \
-    --input "tests/fixtures/legacy-v${legacy}-record.json" \
-    --output "$TMP_DIR/migrated-${legacy}.json" --migrated-at 2026-07-17T18:00:00+00:00
-  "$PYTHON" python/verify_narrative_risk_record.py --input "$TMP_DIR/migrated-${legacy}.json"
-done
+"$PYTHON" - <<'PYDATA'
+import json
+from pathlib import Path
+from narrative_risk.migrations import migrate_record
+from narrative_risk.service import verify_record_reproducibility
+for index, version in enumerate(("1.0.1","1.1.0","1.2.0","1.3.0","1.4.0","1.5.0","1.6.0","1.7.0"), start=1):
+    source=json.loads(Path(f"tests/fixtures/legacy-v{version}-record.json").read_text())
+    migrated=migrate_record(source,migrated_at=f"2026-07-17T{10+index:02d}:00:00+00:00")
+    report=verify_record_reproducibility(migrated)
+    assert report["exact_match"], (version,report)
+print("Eight legacy migrations reproduced exactly.")
+PYDATA
+"$PYTHON" python/migrate_narrative_risk_record.py \
+  --input tests/fixtures/legacy-v1.7.0-record.json \
+  --output "$TMP_DIR/migrated-1.7.0.json" --migrated-at 2026-07-17T18:00:00+00:00
+"$PYTHON" python/verify_narrative_risk_record.py --input "$TMP_DIR/migrated-1.7.0.json"
 
 printf '\n==> WordPress PHP syntax\n'
 "$PHP" -l wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php
 
-printf '\nCatalyst Narrative Risk v1.7.0 release suite passed.\n'
+printf '\nCatalyst Narrative Risk v1.8.0 release suite passed.\n'
