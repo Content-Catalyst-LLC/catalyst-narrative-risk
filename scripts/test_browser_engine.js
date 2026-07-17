@@ -34,6 +34,8 @@ assert.strictEqual(analysis.evidence_ledger.coverage.per_claim[0].coverage_statu
 assert.strictEqual(analysis.evidence_ledger.derived_scoring_inputs.source_count, 2);
 assert.strictEqual(analysis.normalized_input.evidence_strength, 'strong');
 assert.strictEqual(analysis.evidence_ledger.source_list.length, 2);
+assert.strictEqual(analysis.narrative_map.analysis.summary.node_count, 3);
+assert.strictEqual(analysis.narrative_map.wording_comparisons[0].risk_direction, 'higher');
 
 const record = engine.buildNarrativeRiskRecord(sample, {
   generated_at: '2026-07-17T12:00:00+00:00',
@@ -45,11 +47,13 @@ assert.deepStrictEqual(engine.verifyRecordReproducibility(record), {
   method_snapshot_hash_match: true,
   canonical_input_hash_match: true,
   evidence_ledger_hash_match: true,
+  narrative_map_hash_match: true,
   record_payload_hash_match: true,
   record_id: 'urn:uuid:00000000-0000-4000-8000-000000000001',
   method_id: engine.METHOD_ID,
-  method_version: '1.3.0',
+  method_version: '1.4.0',
   schema_id: engine.SCHEMA_ID,
-  ledger_schema_id: engine.LEDGER_SCHEMA_ID
+  ledger_schema_id: engine.LEDGER_SCHEMA_ID,
+  narrative_map_schema_id: engine.NARRATIVE_MAP_SCHEMA_ID
 });
 console.log(`Browser engine contract passed: ${fixture.valid.length} valid and ${fixture.invalid.length} invalid fixtures.`);

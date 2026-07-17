@@ -3,12 +3,14 @@
 from .errors import NarrativeRiskValidationError
 from .integrations import import_catalyst_data_source, import_knowledge_library_source
 from .ledger import harvard_citation, stable_ledger_id
-from .migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record
+from .narrative_map import build_narrative_map, stable_map_id
+from .migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record
 from .workspaces import SQLiteCaseRepository
 from .service import (
     CONTRACT_ID,
     INPUT_SCHEMA_ID,
     LEDGER_SCHEMA_ID,
+    NARRATIVE_MAP_SCHEMA_ID,
     METHOD,
     METHOD_ID,
     METHOD_VERSION,
@@ -28,12 +30,12 @@ from .service import (
 
 __all__ = [
     "VERSION", "METHOD_VERSION", "SCHEMA_VERSION", "RECORD_TYPE", "CONTRACT_ID",
-    "METHOD_ID", "SCHEMA_ID", "INPUT_SCHEMA_ID", "LEDGER_SCHEMA_ID", "METHOD",
+    "METHOD_ID", "SCHEMA_ID", "INPUT_SCHEMA_ID", "LEDGER_SCHEMA_ID", "NARRATIVE_MAP_SCHEMA_ID", "METHOD",
     "NarrativeRiskValidationError", "normalize_narrative_risk_input", "normalize_human_decision",
     "score_narrative_risk", "build_narrative_risk_record", "validate_method_snapshot",
     "validate_narrative_risk_record", "reproduce_narrative_risk_record",
     "verify_record_reproducibility", "migrate_record", "migrate_v1_0_1_record",
-    "migrate_v1_1_0_record", "migrate_v1_2_0_record", "SQLiteCaseRepository",
-    "stable_ledger_id", "harvard_citation",
+    "migrate_v1_1_0_record", "migrate_v1_2_0_record", "migrate_v1_3_0_record", "SQLiteCaseRepository",
+    "stable_ledger_id", "harvard_citation", "stable_map_id", "build_narrative_map",
     "import_knowledge_library_source", "import_catalyst_data_source",
 ]

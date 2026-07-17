@@ -92,7 +92,9 @@
   function readForm(form) {
     const payload = Object.fromEntries(new FormData(form).entries());
     const ledgerText = String(payload.evidence_ledger_json || '').trim();
+    const mapText = String(payload.narrative_map_json || '').trim();
     delete payload.evidence_ledger_json;
+    delete payload.narrative_map_json;
     if (ledgerText) {
       let ledger;
       try {
@@ -109,6 +111,17 @@
       delete payload.source_type;
       delete payload.evidence_strength;
       delete payload.source_count;
+    }
+    if (mapText) {
+      let narrativeMap;
+      try { narrativeMap = JSON.parse(mapText); }
+      catch (error) { throw new Error('Narrative map JSON is invalid: ' + error.message); }
+      if (!narrativeMap || Array.isArray(narrativeMap) || typeof narrativeMap !== 'object') {
+        throw new Error('Narrative map JSON must be an object containing narrative_nodes, narrative_links, wording_variants, and selected_variant_id.');
+      }
+      ['narrative_nodes', 'narrative_links', 'wording_variants', 'selected_variant_id'].forEach(function (field) {
+        if (narrativeMap[field] !== undefined) payload[field] = narrativeMap[field];
+      });
     }
     return payload;
   }
@@ -127,6 +140,7 @@
     const calculations = record.calculations;
     const interpretation = record.interpretation;
     const ledger = record.evidence_ledger;
+    const narrativeMap = record.narrative_map;
     const coverage = ledger.coverage.overall;
     root._cnriskRecord = record;
     root.querySelector('[data-cnrisk-error]').hidden = true;
@@ -146,6 +160,13 @@
       ledger.derived_scoring_inputs.evidence_strength + ' evidence · ' +
       ledger.derived_scoring_inputs.source_count + ' linked source(s)';
     list(root.querySelector('[data-cnrisk-sources]'), ledger.source_list.map(function (source) { return source.citation; }), 'No item-level sources recorded.');
+    root.querySelector('[data-cnrisk-map-summary]').textContent =
+      narrativeMap.analysis.summary.map_status.replaceAll('_', ' ') + ' · ' + narrativeMap.analysis.summary.node_count +
+      ' node(s) · ' + narrativeMap.analysis.summary.link_count + ' link(s) · ' +
+      narrativeMap.analysis.summary.issue_count + ' diagnostic issue(s)';
+    list(root.querySelector('[data-cnrisk-map-issues]'), narrativeMap.analysis.issues.map(function (issue) {
+      return issue.severity.toUpperCase() + ' · ' + issue.message;
+    }), 'No narrative-map diagnostics generated.');
     list(root.querySelector('[data-cnrisk-flags]'), interpretation.flags, 'No flags generated.');
     list(root.querySelector('[data-cnrisk-actions]'), interpretation.review_actions, 'No actions generated.');
     root.querySelector('[data-cnrisk-json]').textContent = JSON.stringify(record, null, 2);
@@ -208,6 +229,7 @@
       form.consequences.value = 'high';
       form.method_notes.value = 'Use only within the measured pilot boundary and retain the weather-normalization assumptions.';
       form.evidence_ledger_json.value = JSON.stringify(ledger, null, 2);
+      form.narrative_map_json.value = '';
       generate(root, form);
     });
     root.querySelector('[data-cnrisk-download]').addEventListener('click', function () {
@@ -217,7 +239,7 @@
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'catalyst-narrative-risk-record-v1.3.0.json';
+      anchor.download = 'catalyst-narrative-risk-record-v1.4.0.json';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();

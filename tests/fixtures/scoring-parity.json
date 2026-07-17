@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.3.0",
+  "contract_version": "1.4.0",
   "valid": [
     {
       "name": "zero_weight_low",
@@ -31,7 +31,7 @@
           "method_notes": "Reviewed against the primary record."
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
           "claims": [
             {
@@ -85,6 +85,72 @@
             "evidence_strength": "strong",
             "source_count": 5,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:952e20fec6477dab1f44a71bf5ec7e15bfc7faf4df13d5970f6654f01d1452bf",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:39b6024a699e88087df27a47b1e7ff5b50a3a83bb65f0ee2e30baf984b290006",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:952e20fec6477dab1f44a71bf5ec7e15bfc7faf4df13d5970f6654f01d1452bf",
+              "text": "A narrowly scoped claim is supported by current primary evidence.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:39b6024a699e88087df27a47b1e7ff5b50a3a83bb65f0ee2e30baf984b290006",
+              "label": "Current wording",
+              "text": "A narrowly scoped claim is supported by current primary evidence.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:952e20fec6477dab1f44a71bf5ec7e15bfc7faf4df13d5970f6654f01d1452bf",
+                "word_count": 10,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -188,7 +254,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
           "claims": [
             {
@@ -242,6 +308,72 @@
             "evidence_strength": "moderate",
             "source_count": 2,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:7e6a757ec2e34dfac82a2ac2cf4526bc96a477c32b1f8c61499ec25cba32bdd1",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:3b8406f7397d589b06ae5d186268f486b654710eca69da3153cd15e6da2a4ad0",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:7e6a757ec2e34dfac82a2ac2cf4526bc96a477c32b1f8c61499ec25cba32bdd1",
+              "text": "A default-input claim requires ordinary review.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:3b8406f7397d589b06ae5d186268f486b654710eca69da3153cd15e6da2a4ad0",
+              "label": "Current wording",
+              "text": "A default-input claim requires ordinary review.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:7e6a757ec2e34dfac82a2ac2cf4526bc96a477c32b1f8c61499ec25cba32bdd1",
+                "word_count": 6,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -355,7 +487,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
           "claims": [
             {
@@ -409,6 +541,72 @@
             "evidence_strength": "weak",
             "source_count": 0,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:a2c0a1b30f84ed86826b386bbc52ebe6e64fd23bfe3d63485bc1027f6fbc66fb",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:b832496fd99de6eecbc132ab2f5f82f4279eeab6113c0b908d54d12e82872d8c",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:a2c0a1b30f84ed86826b386bbc52ebe6e64fd23bfe3d63485bc1027f6fbc66fb",
+              "text": "A consequential unsupported claim is ready for immediate public use.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:b832496fd99de6eecbc132ab2f5f82f4279eeab6113c0b908d54d12e82872d8c",
+              "label": "Current wording",
+              "text": "A consequential unsupported claim is ready for immediate public use.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:a2c0a1b30f84ed86826b386bbc52ebe6e64fd23bfe3d63485bc1027f6fbc66fb",
+                "word_count": 10,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -535,7 +733,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
           "claims": [
             {
@@ -589,6 +787,72 @@
             "evidence_strength": "strong",
             "source_count": 0,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:c6b008a4c5ec297ae5604e2589be419aa63182e9ad47ceee28960ce8ff8bf5af",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:12cf7b7c198b2102ea3c8d4edce3a1c1e705fe2af566797373fe65fb9b0a81f0",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:c6b008a4c5ec297ae5604e2589be419aa63182e9ad47ceee28960ce8ff8bf5af",
+              "text": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:12cf7b7c198b2102ea3c8d4edce3a1c1e705fe2af566797373fe65fb9b0a81f0",
+              "label": "Current wording",
+              "text": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:c6b008a4c5ec297ae5604e2589be419aa63182e9ad47ceee28960ce8ff8bf5af",
+                "word_count": 11,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -704,7 +968,7 @@
           "method_notes": "Boundary fixture."
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
           "claims": [
             {
@@ -758,6 +1022,72 @@
             "evidence_strength": "strong",
             "source_count": 0,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:656f6609d95cd276bb9a611bf3cf864fd8daee84e08874cce33681d0fa940910",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:f1054b026e2052e477c375c89f1964aa33fdfce69369564daee14de56609798d",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:656f6609d95cd276bb9a611bf3cf864fd8daee84e08874cce33681d0fa940910",
+              "text": "A time-sensitive under-sourced claim reaches the medium threshold.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:f1054b026e2052e477c375c89f1964aa33fdfce69369564daee14de56609798d",
+              "label": "Current wording",
+              "text": "A time-sensitive under-sourced claim reaches the medium threshold.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:656f6609d95cd276bb9a611bf3cf864fd8daee84e08874cce33681d0fa940910",
+                "word_count": 8,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -872,7 +1202,7 @@
           "method_notes": "normalized notes"
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
           "claims": [
             {
@@ -926,6 +1256,72 @@
             "evidence_strength": "moderate",
             "source_count": 2,
             "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:f4d4d4199fda59b7ce0efadd4acbf5a5360ec6bb41ef75535d90e94cc6809fa7",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:79d3c87de8c56c0c8b1f857b6c711779f527c8c4b227fca2ea7e775d0ad0e6bc",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:f4d4d4199fda59b7ce0efadd4acbf5a5360ec6bb41ef75535d90e94cc6809fa7",
+              "text": "Normalized claim text.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:79d3c87de8c56c0c8b1f857b6c711779f527c8c4b227fca2ea7e775d0ad0e6bc",
+              "label": "Current wording",
+              "text": "Normalized claim text.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:f4d4d4199fda59b7ce0efadd4acbf5a5360ec6bb41ef75535d90e94cc6809fa7",
+                "word_count": 3,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
           }
         },
         "calculations": {
@@ -1158,7 +1554,7 @@
           "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "claims": [
             {
@@ -1350,7 +1746,134 @@
             "source_type": "official_or_primary",
             "evidence_strength": "strong",
             "source_count": 2,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:afec70718406e41c697620c3694a3e6795610cc908d34ea81cc21f4313f5d84f",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:5a1196a9f495e908022f2ed683466a6261b73890bc039bdef2430f0c95a4f81b",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:afec70718406e41c697620c3694a3e6795610cc908d34ea81cc21f4313f5d84f",
+              "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "parent_node_id": null,
+              "confidence_language": "tentative",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            },
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:83a528a53654803c7d75fbcf82a0e0e78579435fefa68f797615777be9053ae0",
+              "text": "The observed reduction is likely to persist under comparable operating conditions.",
+              "node_type": "predictive_claim",
+              "role": "supporting",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "parent_node_id": null,
+              "confidence_language": "confident",
+              "modality": "predicts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:5a1196a9f495e908022f2ed683466a6261b73890bc039bdef2430f0c95a4f81b",
+              "label": "Current wording",
+              "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:afec70718406e41c697620c3694a3e6795610cc908d34ea81cc21f4313f5d84f",
+                "word_count": 12,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              },
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:83a528a53654803c7d75fbcf82a0e0e78579435fefa68f797615777be9053ae0",
+                "word_count": 11,
+                "ambiguous_terms": [
+                  "likely"
+                ],
+                "causal_markers": [],
+                "predictive_markers": [
+                  "likely to"
+                ],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [
+              {
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:00d8160f9ade74d785726d04b2d0ee3df0870bb86ce0a1fb1704edd83f3b40cf",
+                "code": "ambiguous_language",
+                "severity": "medium",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:83a528a53654803c7d75fbcf82a0e0e78579435fefa68f797615777be9053ae0"
+                ],
+                "message": "Ambiguous terms require operational definitions: likely.",
+                "remediation": "Replace or define vague terms using measurable criteria, scope, and timeframe."
+              },
+              {
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:4079623b91d1b96e6835a9b2a1dcaf15670ac23beb55d07d331a1c05c281fade",
+                "code": "unbounded_prediction",
+                "severity": "high",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:83a528a53654803c7d75fbcf82a0e0e78579435fefa68f797615777be9053ae0"
+                ],
+                "message": "Predictive language lacks an explicit dependency, sequence, or time horizon.",
+                "remediation": "Add the forecast horizon, assumptions, and the node or condition on which the prediction depends."
+              },
+              {
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:9ca5779574cce224c0abdd4718d998a12699e3782dc4e1bb85192f8e52164374",
+                "code": "orphan_node",
+                "severity": "low",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:83a528a53654803c7d75fbcf82a0e0e78579435fefa68f797615777be9053ae0"
+                ],
+                "message": "This narrative node is not connected to the rest of the map.",
+                "remediation": "Connect the node or remove it from the active narrative."
+              }
+            ],
+            "cycles": [],
+            "summary": {
+              "node_count": 2,
+              "link_count": 0,
+              "mapped_claim_count": 2,
+              "unmapped_claim_count": 0,
+              "issue_count": 3,
+              "severity_counts": {
+                "low": 1,
+                "medium": 1,
+                "high": 1,
+                "critical": 0
+              },
+              "map_status": "needs_review",
+              "review_ready": false
+            }
           }
         },
         "calculations": {
@@ -1423,12 +1946,16 @@
         "interpretation": {
           "risk_level": "Medium",
           "flags": [
-            "High-consequence claim needs stricter review"
+            "High-consequence claim needs stricter review",
+            "Predictive language lacks an explicit dependency, sequence, or time horizon."
           ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
             "Escalate to domain, legal, compliance, or editorial review as appropriate.",
-            "Record a reviewer, date, and decision before treating the claim as approved."
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Replace or define vague terms using measurable criteria, scope, and timeframe.",
+            "Add the forecast horizon, assumptions, and the node or condition on which the prediction depends.",
+            "Connect the node or remove it from the active narrative."
           ],
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
         }
@@ -1512,7 +2039,7 @@
           "method_notes": ""
         },
         "evidence_ledger": {
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
           "claims": [
             {
@@ -1634,7 +2161,96 @@
             "source_type": "internal_unreviewed",
             "evidence_strength": "limited",
             "source_count": 1,
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy."
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:ac1923f044a4abb0658d54dd35e7f94db833781f079cce18b638e80864f31ae4",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0",
+              "text": "The indicator proves the program caused the outcome.",
+              "node_type": "causal_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+              "parent_node_id": null,
+              "confidence_language": "absolute",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:ac1923f044a4abb0658d54dd35e7f94db833781f079cce18b638e80864f31ae4",
+              "label": "Current wording",
+              "text": "The indicator proves the program caused the outcome.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0",
+                "word_count": 8,
+                "ambiguous_terms": [],
+                "causal_markers": [
+                  "caused"
+                ],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": true
+              }
+            ],
+            "issues": [
+              {
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:f8ed6b36b3a08482f4adccef0c0838fee172c10124ee02a9a5da4a909dad6e0a",
+                "code": "unsupported_causal_structure",
+                "severity": "high",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0"
+                ],
+                "message": "Causal language is present without an explicit causal relationship in the map.",
+                "remediation": "Identify the proposed cause and effect as separate nodes and connect them with a causes link."
+              },
+              {
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:b2e6f30495a166f0c4eea24a63479815247386229712e7fbefb10043eb26237e",
+                "code": "confidence_evidence_mismatch",
+                "severity": "high",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:8dda28596357a8b595d8459239830cb13ffff1d24e6791dc2c51fa8152ed86d0"
+                ],
+                "message": "The wording is more confident than the recorded uncertainty or evidence strength supports.",
+                "remediation": "Use qualified language or improve the evidence before publication."
+              }
+            ],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 2,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 2,
+                "critical": 0
+              },
+              "map_status": "needs_review",
+              "review_ready": false
+            }
           }
         },
         "calculations": {
@@ -1716,7 +2332,9 @@
             "Claim has not completed review",
             "The evidence ledger contains contradictory evidence for the primary claim",
             "One or more linked sources are marked stale",
-            "The primary claim is supported only by indirect or unknown-directness sources"
+            "The primary claim is supported only by indirect or unknown-directness sources",
+            "Causal language is present without an explicit causal relationship in the map.",
+            "The wording is more confident than the recorded uncertainty or evidence strength supports."
           ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
@@ -1728,9 +2346,566 @@
             "Record a reviewer, date, and decision before treating the claim as approved.",
             "Document how contradictory evidence changes wording, confidence, or intended use.",
             "Refresh stale sources before publication or decision use.",
-            "Add direct evidence or explain why indirect evidence is sufficient."
+            "Add direct evidence or explain why indirect evidence is sufficient.",
+            "Identify the proposed cause and effect as separate nodes and connect them with a causes link.",
+            "Use qualified language or improve the evidence before publication."
           ],
           "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language."
+        }
+      }
+    },
+    {
+      "name": "wording_variant_comparison",
+      "payload": {
+        "claim": "The pilot may reduce energy use.",
+        "wording_variants": [
+          {
+            "variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "label": "Qualified",
+            "text": "The pilot may reduce energy use.",
+            "status": "current"
+          },
+          {
+            "variant_id": "urn:catalyst:narrative-risk:variant:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+            "label": "Absolute",
+            "text": "The pilot will definitely reduce energy use.",
+            "status": "draft"
+          }
+        ],
+        "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888"
+      },
+      "expected": {
+        "normalized_input": {
+          "claim": "The pilot may reduce energy use.",
+          "source_type": "reputable_secondary",
+          "evidence_strength": "moderate",
+          "uncertainty": "medium",
+          "narrative_volatility": "medium",
+          "stakeholder_pressure": "medium",
+          "time_sensitivity": "medium",
+          "consequences": "moderate",
+          "review_status": "partly_reviewed",
+          "source_count": 2,
+          "method_notes": ""
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.4.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:596c452826f9c81ad4c9e4c70c22e3b15af799f725296bd00aec0900d4196216",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:596c452826f9c81ad4c9e4c70c22e3b15af799f725296bd00aec0900d4196216",
+              "text": "The pilot may reduce energy use.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:596c452826f9c81ad4c9e4c70c22e3b15af799f725296bd00aec0900d4196216",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "reputable_secondary",
+            "evidence_strength": "moderate",
+            "source_count": 2,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:c7b47a44d64001a9d7afabd122d2e409e52866fadce4c1b006cee2f18350a50f",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:c7b47a44d64001a9d7afabd122d2e409e52866fadce4c1b006cee2f18350a50f",
+              "text": "The pilot may reduce energy use.",
+              "node_type": "factual_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:596c452826f9c81ad4c9e4c70c22e3b15af799f725296bd00aec0900d4196216",
+              "parent_node_id": null,
+              "confidence_language": "tentative",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "label": "Qualified",
+              "text": "The pilot may reduce energy use.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            },
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+              "label": "Absolute",
+              "text": "The pilot will definitely reduce energy use.",
+              "audience": "",
+              "status": "draft",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [
+            {
+              "from_variant_id": "urn:catalyst:narrative-risk:variant:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "to_variant_id": "urn:catalyst:narrative-risk:variant:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+              "similarity": 0.625,
+              "added_terms": [
+                "definitely",
+                "will"
+              ],
+              "removed_terms": [
+                "may"
+              ],
+              "absolute_language_delta": 1,
+              "uncertainty_language_delta": -1,
+              "causal_language_delta": 0,
+              "risk_direction": "higher"
+            }
+          ],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:c7b47a44d64001a9d7afabd122d2e409e52866fadce4c1b006cee2f18350a50f",
+                "word_count": 6,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 1,
+              "link_count": 0,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
+          }
+        },
+        "calculations": {
+          "components": {
+            "source_type": {
+              "input_value": "reputable_secondary",
+              "weight": 8,
+              "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+              "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+            },
+            "evidence_strength": {
+              "input_value": "moderate",
+              "weight": 10,
+              "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+              "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+            },
+            "uncertainty": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+              "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+            },
+            "narrative_volatility": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+              "remediation": "Timestamp the assessment and re-check material changes before reuse."
+            },
+            "stakeholder_pressure": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+              "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+            },
+            "time_sensitivity": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+              "remediation": "Confirm source freshness and assign a reassessment date."
+            },
+            "consequences": {
+              "input_value": "moderate",
+              "weight": 10,
+              "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+              "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+            },
+            "review_status": {
+              "input_value": "partly_reviewed",
+              "weight": 8,
+              "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+              "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+            },
+            "source_count": {
+              "input_value": 2,
+              "weight": 8,
+              "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+              "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+            }
+          },
+          "raw_total": 84,
+          "multiplier": 0.68,
+          "scaled_score": 57.12,
+          "risk_score": 57,
+          "threshold": {
+            "level": "Medium",
+            "minimum": 40,
+            "maximum": 69
+          }
+        },
+        "interpretation": {
+          "risk_level": "Medium",
+          "flags": [
+            "No evidence relationship has been recorded for the primary claim"
+          ],
+          "review_actions": [
+            "Add at least one independent source or primary reference.",
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
+          ],
+          "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
+        }
+      }
+    },
+    {
+      "name": "explicit_causal_map",
+      "payload": {
+        "claim": "The intervention caused the measured reduction.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "text": "The intervention caused the measured reduction.",
+            "claim_type": "causal",
+            "role": "primary"
+          }
+        ],
+        "narrative_nodes": [
+          {
+            "node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "text": "The intervention caused the measured reduction.",
+            "node_type": "causal_claim",
+            "role": "primary",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "confidence_language": "qualified"
+          },
+          {
+            "node_id": "urn:catalyst:narrative-risk:node:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+            "text": "The measured reduction followed the intervention.",
+            "node_type": "factual_claim",
+            "role": "supporting"
+          }
+        ],
+        "narrative_links": [
+          {
+            "from_node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "to_node_id": "urn:catalyst:narrative-risk:node:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+            "relation_type": "causes",
+            "strength": "moderate"
+          }
+        ]
+      },
+      "expected": {
+        "normalized_input": {
+          "claim": "The intervention caused the measured reduction.",
+          "source_type": "reputable_secondary",
+          "evidence_strength": "moderate",
+          "uncertainty": "medium",
+          "narrative_volatility": "medium",
+          "stakeholder_pressure": "medium",
+          "time_sensitivity": "medium",
+          "consequences": "moderate",
+          "review_status": "partly_reviewed",
+          "source_count": 2,
+          "method_notes": ""
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.4.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "text": "The intervention caused the measured reduction.",
+              "claim_type": "causal",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "reputable_secondary",
+            "evidence_strength": "moderate",
+            "source_count": 2,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
+        },
+        "narrative_map": {
+          "map_version": "1.4.0",
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:2ccf308bd83ac18bccde4fe46e6dafc762ba9c5df5eec846da3a5f51ef6270e5",
+          "nodes": [
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "text": "The intervention caused the measured reduction.",
+              "node_type": "causal_claim",
+              "role": "primary",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "parent_node_id": null,
+              "confidence_language": "qualified",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            },
+            {
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+              "text": "The measured reduction followed the intervention.",
+              "node_type": "factual_claim",
+              "role": "supporting",
+              "claim_id": null,
+              "parent_node_id": null,
+              "confidence_language": "unknown",
+              "modality": "asserts",
+              "entities": [],
+              "geography": [],
+              "time_scope": null,
+              "quantities": [],
+              "baseline": null,
+              "notes": ""
+            }
+          ],
+          "links": [
+            {
+              "link_id": "urn:catalyst:narrative-risk:link:sha256:11a6d412b65a0fbcded7994dc91c7fa6692a81c672a11d35ee28fdf368c95a3f",
+              "from_node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "to_node_id": "urn:catalyst:narrative-risk:node:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+              "relation_type": "causes",
+              "strength": "moderate",
+              "notes": ""
+            }
+          ],
+          "wording_variants": [
+            {
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:2ccf308bd83ac18bccde4fe46e6dafc762ba9c5df5eec846da3a5f51ef6270e5",
+              "label": "Current wording",
+              "text": "The intervention caused the measured reduction.",
+              "audience": "",
+              "status": "current",
+              "notes": ""
+            }
+          ],
+          "wording_comparisons": [],
+          "analysis": {
+            "per_node": [
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+                "word_count": 6,
+                "ambiguous_terms": [],
+                "causal_markers": [
+                  "caused"
+                ],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              },
+              {
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+                "word_count": 6,
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "predictive_markers": [],
+                "normative_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false
+              }
+            ],
+            "issues": [],
+            "cycles": [],
+            "summary": {
+              "node_count": 2,
+              "link_count": 1,
+              "mapped_claim_count": 1,
+              "unmapped_claim_count": 0,
+              "issue_count": 0,
+              "severity_counts": {
+                "low": 0,
+                "medium": 0,
+                "high": 0,
+                "critical": 0
+              },
+              "map_status": "complete",
+              "review_ready": true
+            }
+          }
+        },
+        "calculations": {
+          "components": {
+            "source_type": {
+              "input_value": "reputable_secondary",
+              "weight": 8,
+              "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+              "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+            },
+            "evidence_strength": {
+              "input_value": "moderate",
+              "weight": 10,
+              "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+              "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+            },
+            "uncertainty": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+              "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+            },
+            "narrative_volatility": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+              "remediation": "Timestamp the assessment and re-check material changes before reuse."
+            },
+            "stakeholder_pressure": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+              "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+            },
+            "time_sensitivity": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+              "remediation": "Confirm source freshness and assign a reassessment date."
+            },
+            "consequences": {
+              "input_value": "moderate",
+              "weight": 10,
+              "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+              "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+            },
+            "review_status": {
+              "input_value": "partly_reviewed",
+              "weight": 8,
+              "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+              "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+            },
+            "source_count": {
+              "input_value": 2,
+              "weight": 8,
+              "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+              "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+            }
+          },
+          "raw_total": 84,
+          "multiplier": 0.68,
+          "scaled_score": 57.12,
+          "risk_score": 57,
+          "threshold": {
+            "level": "Medium",
+            "minimum": 40,
+            "maximum": 69
+          }
+        },
+        "interpretation": {
+          "risk_level": "Medium",
+          "flags": [
+            "No evidence relationship has been recorded for the primary claim"
+          ],
+          "review_actions": [
+            "Add at least one independent source or primary reference.",
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
+          ],
+          "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
         }
       }
     }
@@ -2346,6 +3521,143 @@
         ]
       },
       "message": "duplicate relationship_id: urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    {
+      "name": "narrative_nodes_not_array",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": {}
+      },
+      "message": "narrative_nodes must be an array"
+    },
+    {
+      "name": "invalid_narrative_node_type",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": [
+          {
+            "text": "x",
+            "role": "primary",
+            "node_type": "magic"
+          }
+        ]
+      },
+      "message": "narrative_nodes[0].node_type must be one of: factual_claim, causal_claim, predictive_claim, normative_claim, recommendation, assumption, context, unknown"
+    },
+    {
+      "name": "multiple_primary_narrative_nodes",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": [
+          {
+            "text": "x",
+            "role": "primary"
+          },
+          {
+            "text": "y",
+            "role": "primary"
+          }
+        ]
+      },
+      "message": "narrative_nodes must contain exactly one primary node"
+    },
+    {
+      "name": "invalid_narrative_claim_reference",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": [
+          {
+            "text": "x",
+            "role": "primary",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+          }
+        ]
+      },
+      "message": "narrative_nodes[0].claim_id does not reference a normalized claim"
+    },
+    {
+      "name": "invalid_narrative_link_reference",
+      "payload": {
+        "claim": "x",
+        "narrative_links": [
+          {
+            "from_node_id": "urn:catalyst:narrative-risk:node:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "to_node_id": "urn:catalyst:narrative-risk:node:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "relation_type": "supports"
+          }
+        ]
+      },
+      "message": "narrative_links[0].from_node_id does not reference a normalized node"
+    },
+    {
+      "name": "self_narrative_link",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": [
+          {
+            "node_id": "urn:catalyst:narrative-risk:node:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "text": "x",
+            "role": "primary"
+          }
+        ],
+        "narrative_links": [
+          {
+            "from_node_id": "urn:catalyst:narrative-risk:node:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "to_node_id": "urn:catalyst:narrative-risk:node:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "relation_type": "supports"
+          }
+        ]
+      },
+      "message": "narrative_links[0] cannot link a node to itself"
+    },
+    {
+      "name": "invalid_selected_variant",
+      "payload": {
+        "claim": "x",
+        "wording_variants": [
+          {
+            "text": "x",
+            "status": "current"
+          }
+        ],
+        "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "message": "selected_variant_id does not reference a normalized wording variant"
+    },
+    {
+      "name": "multiple_current_variants",
+      "payload": {
+        "claim": "x",
+        "wording_variants": [
+          {
+            "text": "x",
+            "status": "current"
+          },
+          {
+            "text": "y",
+            "status": "current"
+          }
+        ]
+      },
+      "message": "wording_variants may contain at most one current variant"
+    },
+    {
+      "name": "invalid_quantity_value",
+      "payload": {
+        "claim": "x",
+        "narrative_nodes": [
+          {
+            "text": "x",
+            "role": "primary",
+            "quantities": [
+              {
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "message": "narrative_nodes[0].quantities[0].value must be a number or string"
     }
   ]
 }

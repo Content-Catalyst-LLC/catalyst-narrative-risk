@@ -2,24 +2,29 @@
   'use strict';
   const method = typeof module === 'object' && module.exports
     ? require('./narrative-risk-method.js')
-    : root.CatalystNarrativeRiskMethodV120;
-  const engine = factory(method);
+    : root.CatalystNarrativeRiskMethodV140;
+  const narrativeMap = typeof module === 'object' && module.exports
+    ? require('./narrative-risk-map.js')
+    : root.CatalystNarrativeRiskMap;
+  const engine = factory(method, narrativeMap);
   if (typeof module === 'object' && module.exports) module.exports = engine;
   if (root) root.CatalystNarrativeRiskEngine = engine;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (DEFAULT_METHOD) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (DEFAULT_METHOD, NARRATIVE_MAP) {
   'use strict';
 
-  const VERSION = '1.3.0';
+  const VERSION = '1.4.0';
   const RECORD_TYPE = 'catalyst_narrative_risk_record';
   const CONTRACT_ID = 'urn:catalyst:narrative-risk:contract:canonical';
   const METHOD_ID = 'urn:catalyst:narrative-risk:method:transparent-heuristic';
-  const SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0';
-  const INPUT_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/input/1.3.0';
-  const LEDGER_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0';
+  const SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0';
+  const INPUT_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0';
+  const LEDGER_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0';
+  const NARRATIVE_MAP_SCHEMA_ID = 'https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0';
   const INPUT_FIELDS = new Set([
     'claim', 'source_type', 'evidence_strength', 'uncertainty', 'narrative_volatility',
     'stakeholder_pressure', 'time_sensitivity', 'consequences', 'review_status', 'source_count',
-    'method_notes', 'claims', 'sources', 'evidence_items', 'relationships'
+    'method_notes', 'claims', 'sources', 'evidence_items', 'relationships',
+    'narrative_nodes', 'narrative_links', 'wording_variants', 'selected_variant_id'
   ]);
   const HUMAN_DECISION_FIELDS = new Set(['status', 'disposition', 'reviewer_id', 'reviewer_name', 'reviewed_at', 'notes']);
   const HUMAN_STATUS = ['draft', 'pending_review', 'reviewed'];
@@ -106,7 +111,7 @@
   function validateMethod(method) {
     if (!method || typeof method !== 'object' || Array.isArray(method)) throw new NarrativeRiskValidationError('method_snapshot must be a JSON object');
     if (method.method_id !== METHOD_ID || method.method_version !== VERSION) throw new NarrativeRiskValidationError('method_snapshot identifier or version is not supported by this release');
-    if (!method.algorithm || method.algorithm.type !== 'weighted_additive_v1' || method.algorithm.rounding !== 'half_up' || !method.ledger_policy) {
+    if (!method.algorithm || method.algorithm.type !== 'weighted_additive_v1' || method.algorithm.rounding !== 'half_up' || !method.ledger_policy || !method.narrative_map_policy) {
       throw new NarrativeRiskValidationError('method_snapshot algorithm is not supported by this release');
     }
     return method;
@@ -385,7 +390,7 @@
     const policy = method.ledger_policy;
     if (positive.length && groups.size < policy.minimum_independent_groups_for_no_downgrade) strength = downgrade(strength, policy.single_group_downgrade_steps, order);
     if (primary.some(function (item) { return item.relation_type === 'contradict'; })) strength = downgrade(strength, policy.contradiction_downgrade_steps, order);
-    return { ledger_applied:true, source_type:sourceType, evidence_strength:strength, source_count:sourceIds.size, basis:'Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy.' };
+    return { ledger_applied:true, source_type:sourceType, evidence_strength:strength, source_count:sourceIds.size, basis:'Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy.' };
   }
   function buildEvidenceLedger(payload, narrativeClaim, method, fallback) {
     const claims = normalizeClaims(payload.claims, narrativeClaim);
@@ -505,7 +510,10 @@
   function scoreNarrativeRisk(payload, methodSnapshot) {
     const method = validateMethod(clone(methodSnapshot || DEFAULT_METHOD));
     const result = normalizePayload(payload, method);
-    const normalized = result.normalized, ledger = result.ledger, components = {};
+    const normalized = result.normalized, ledger = result.ledger;
+    if (!NARRATIVE_MAP || typeof NARRATIVE_MAP.buildNarrativeMap !== 'function') throw new NarrativeRiskValidationError('narrative map engine is unavailable');
+    const narrativeMap = NARRATIVE_MAP.buildNarrativeMap(payload, { narrative_claim:normalized.claim, evidence_ledger:ledger, uncertainty:normalized.uncertainty, evidence_strength:normalized.evidence_strength });
+    const components = {};
     method.algorithm.component_order.forEach(function (key) {
       const metadata = method.components[key], inputValue = normalized[metadata.input_field];
       const weight = metadata.weight_table === 'source_count_penalties' ? sourceCountWeight(inputValue, method.weights.source_count_penalties) : method.weights[metadata.weight_table][inputValue];
@@ -519,10 +527,13 @@
     const flags = applyRules(method.interpretation.flag_rules, normalized, riskScore);
     const actions = applyRules(method.interpretation.action_rules, normalized, riskScore);
     const ledgerNotes = ledgerInterpretation(ledger, method);
+    const mapNotes = NARRATIVE_MAP.narrativeMapInterpretation(narrativeMap);
     appendUnique(flags, ledgerNotes.flags); appendUnique(actions, ledgerNotes.actions);
+    appendUnique(flags, mapNotes.flags); appendUnique(actions, mapNotes.actions);
     return {
       normalized_input:normalized,
       evidence_ledger:ledger,
+      narrative_map:narrativeMap,
       calculations:{ components:components, raw_total:rawTotal, multiplier:method.algorithm.multiplier, scaled_score:scaledScore, risk_score:riskScore, threshold:threshold },
       interpretation:{ risk_level:threshold.level, flags:flags, review_actions:actions, decision_note:method.interpretation.decision_notes[threshold.level] }
     };
@@ -559,10 +570,11 @@
     const record = {
       record_type:RECORD_TYPE,
       contract:{ contract_id:CONTRACT_ID, contract_version:VERSION },
-      identifiers:{ record_id:urnUuid(opts.record_id, 'record_id'), case_id:urnUuid(opts.case_id, 'case_id'), method_id:METHOD_ID, schema_id:SCHEMA_ID, input_schema_id:INPUT_SCHEMA_ID, ledger_schema_id:LEDGER_SCHEMA_ID },
+      identifiers:{ record_id:urnUuid(opts.record_id, 'record_id'), case_id:urnUuid(opts.case_id, 'case_id'), method_id:METHOD_ID, schema_id:SCHEMA_ID, input_schema_id:INPUT_SCHEMA_ID, ledger_schema_id:LEDGER_SCHEMA_ID, narrative_map_schema_id:NARRATIVE_MAP_SCHEMA_ID },
       generated_at:generatedAt,
       normalized_input:analysis.normalized_input,
       evidence_ledger:analysis.evidence_ledger,
+      narrative_map:analysis.narrative_map,
       method_snapshot:method,
       method_snapshot_sha256:digest(method),
       calculations:analysis.calculations,
@@ -570,7 +582,7 @@
       human_decision:normalizeHumanDecision(opts.human_decision)
     };
     if (opts.migration !== undefined && opts.migration !== null) record.migration = clone(opts.migration);
-    record.reproducibility = { canonical_input_sha256:digest(record.normalized_input), evidence_ledger_sha256:digest(record.evidence_ledger), record_payload_sha256:digest(record) };
+    record.reproducibility = { canonical_input_sha256:digest(record.normalized_input), evidence_ledger_sha256:digest(record.evidence_ledger), narrative_map_sha256:digest(record.narrative_map), record_payload_sha256:digest(record) };
     return record;
   }
   function ledgerInputFromRecord(record) {
@@ -581,7 +593,7 @@
   function reproduceNarrativeRiskRecord(record) {
     if (!record || typeof record !== 'object' || Array.isArray(record)) throw new NarrativeRiskValidationError('record must be a JSON object');
     if (digest(record.method_snapshot) !== record.method_snapshot_sha256) throw new NarrativeRiskValidationError('method_snapshot_sha256 does not match the embedded method snapshot');
-    const payload = Object.assign({}, clone(record.normalized_input), ledgerInputFromRecord(record));
+    const payload = Object.assign({}, clone(record.normalized_input), ledgerInputFromRecord(record), NARRATIVE_MAP.narrativeMapInputFromRecord(record));
     return buildNarrativeRiskRecord(payload, { generated_at:record.generated_at, record_id:record.identifiers.record_id, case_id:record.identifiers.case_id, human_decision:record.human_decision, method_snapshot:record.method_snapshot, migration:record.migration });
   }
   function verifyRecordReproducibility(record) {
@@ -592,15 +604,16 @@
       method_snapshot_hash_match:digest(record.method_snapshot) === record.method_snapshot_sha256,
       canonical_input_hash_match:digest(record.normalized_input) === reproducibility.canonical_input_sha256,
       evidence_ledger_hash_match:digest(record.evidence_ledger) === reproducibility.evidence_ledger_sha256,
+      narrative_map_hash_match:digest(record.narrative_map) === reproducibility.narrative_map_sha256,
       record_payload_hash_match:digest(payload) === reproducibility.record_payload_sha256,
       record_id:record.identifiers.record_id, method_id:record.identifiers.method_id, method_version:record.method_snapshot.method_version,
-      schema_id:record.identifiers.schema_id, ledger_schema_id:record.identifiers.ledger_schema_id
+      schema_id:record.identifiers.schema_id, ledger_schema_id:record.identifiers.ledger_schema_id, narrative_map_schema_id:record.identifiers.narrative_map_schema_id
     };
   }
 
   return {
     VERSION:VERSION, RECORD_TYPE:RECORD_TYPE, CONTRACT_ID:CONTRACT_ID, METHOD_ID:METHOD_ID, SCHEMA_ID:SCHEMA_ID,
-    INPUT_SCHEMA_ID:INPUT_SCHEMA_ID, LEDGER_SCHEMA_ID:LEDGER_SCHEMA_ID, METHOD_SNAPSHOT:clone(DEFAULT_METHOD),
+    INPUT_SCHEMA_ID:INPUT_SCHEMA_ID, LEDGER_SCHEMA_ID:LEDGER_SCHEMA_ID, NARRATIVE_MAP_SCHEMA_ID:NARRATIVE_MAP_SCHEMA_ID, METHOD_SNAPSHOT:clone(DEFAULT_METHOD),
     NarrativeRiskValidationError:NarrativeRiskValidationError, canonicalJson:canonicalJson, sha256:sha256, digest:digest,
     stableLedgerId:stableLedgerId, harvardCitation:harvardCitation, normalizeInput:normalizeInput,
     buildEvidenceLedger:buildEvidenceLedger, normalizeHumanDecision:normalizeHumanDecision,

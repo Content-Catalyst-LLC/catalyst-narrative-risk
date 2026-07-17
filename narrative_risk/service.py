@@ -1,4 +1,4 @@
-"""Canonical v1.3.0 narrative-risk method and evidence-ledger engine.
+"""Canonical v1.4.0 narrative-risk method, evidence-ledger, and narrative-map engine.
 
 The engine separates normalized scalar inputs, a traceable claims/sources/evidence
 ledger, deterministic calculations, machine interpretation, and human decisions.
@@ -26,16 +26,18 @@ from .contracts import (
 )
 from .errors import NarrativeRiskValidationError
 from .ledger import build_evidence_ledger, ledger_input_from_record, ledger_interpretation
+from .narrative_map import build_narrative_map, narrative_map_input_from_record, narrative_map_interpretation
 
-VERSION = "1.3.0"
-METHOD_VERSION = "1.3.0"
-SCHEMA_VERSION = "1.3.0"
+VERSION = "1.4.0"
+METHOD_VERSION = "1.4.0"
+SCHEMA_VERSION = "1.4.0"
 RECORD_TYPE = "catalyst_narrative_risk_record"
 CONTRACT_ID = "urn:catalyst:narrative-risk:contract:canonical"
 METHOD_ID = "urn:catalyst:narrative-risk:method:transparent-heuristic"
-SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0"
-INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.3.0"
-LEDGER_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0"
+SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0"
+INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0"
+LEDGER_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0"
+NARRATIVE_MAP_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0"
 METHOD = "transparent heuristic scoring with traceable evidence relationships; not truth verification"
 
 SCALAR_INPUT_FIELDS = {
@@ -44,7 +46,8 @@ SCALAR_INPUT_FIELDS = {
     "method_notes",
 }
 LEDGER_INPUT_FIELDS = {"claims", "sources", "evidence_items", "relationships"}
-INPUT_FIELDS = SCALAR_INPUT_FIELDS | LEDGER_INPUT_FIELDS
+NARRATIVE_MAP_INPUT_FIELDS = {"narrative_nodes", "narrative_links", "wording_variants", "selected_variant_id"}
+INPUT_FIELDS = SCALAR_INPUT_FIELDS | LEDGER_INPUT_FIELDS | NARRATIVE_MAP_INPUT_FIELDS
 HUMAN_DECISION_FIELDS = {"status", "disposition", "reviewer_id", "reviewer_name", "reviewed_at", "notes"}
 HUMAN_DECISION_STATUS = {"draft", "pending_review", "reviewed"}
 HUMAN_DISPOSITIONS = {"undecided", "approved", "approved_with_conditions", "revise", "rejected"}
@@ -267,6 +270,10 @@ def score_narrative_risk(
     validate_method_snapshot(method)
     inp, ledger = _normalize_payload(source, method_snapshot=method)
     normalized = asdict(inp)
+    narrative_map = build_narrative_map(
+        source, narrative_claim=normalized["claim"], evidence_ledger=ledger,
+        uncertainty=normalized["uncertainty"], evidence_strength=normalized["evidence_strength"],
+    )
 
     component_results: Dict[str, Dict[str, Any]] = {}
     for component_key in method["algorithm"]["component_order"]:
@@ -298,8 +305,11 @@ def score_narrative_risk(
     flags = _apply_rules(interpretation_spec["flag_rules"], normalized, risk_score)
     actions = _apply_rules(interpretation_spec["action_rules"], normalized, risk_score)
     ledger_notes = ledger_interpretation(ledger, method)
+    map_notes = narrative_map_interpretation(narrative_map)
     _append_unique(flags, ledger_notes["flags"])
     _append_unique(actions, ledger_notes["actions"])
+    _append_unique(flags, map_notes["flags"])
+    _append_unique(actions, map_notes["actions"])
     interpretation = {
         "risk_level": risk_level,
         "flags": flags,
@@ -309,6 +319,7 @@ def score_narrative_risk(
     return {
         "normalized_input": normalized,
         "evidence_ledger": ledger,
+        "narrative_map": narrative_map,
         "calculations": {
             "components": component_results,
             "raw_total": raw_total,
@@ -388,7 +399,7 @@ def build_narrative_risk_record(
     method_snapshot: Mapping[str, Any] | None = None,
     migration: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    """Build a complete v1.3.0 record with an embedded evidence ledger and method."""
+    """Build a complete v1.4.0 record with an evidence ledger, narrative map, and method."""
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
     method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
@@ -409,10 +420,12 @@ def build_narrative_risk_record(
             "schema_id": contract["record_schema_id"],
             "input_schema_id": contract["input_schema_id"],
             "ledger_schema_id": contract["ledger_schema_id"],
+            "narrative_map_schema_id": contract["narrative_map_schema_id"],
         },
         "generated_at": generated,
         "normalized_input": analysis["normalized_input"],
         "evidence_ledger": analysis["evidence_ledger"],
+        "narrative_map": analysis["narrative_map"],
         "method_snapshot": method,
         "method_snapshot_sha256": sha256_digest(method),
         "calculations": analysis["calculations"],
@@ -424,6 +437,7 @@ def build_narrative_risk_record(
     record["reproducibility"] = {
         "canonical_input_sha256": sha256_digest(record["normalized_input"]),
         "evidence_ledger_sha256": sha256_digest(record["evidence_ledger"]),
+        "narrative_map_sha256": sha256_digest(record["narrative_map"]),
         "record_payload_sha256": sha256_digest(record),
     }
     validate_narrative_risk_record(record)
@@ -442,13 +456,14 @@ def validate_narrative_risk_record(record: Mapping[str, Any]) -> None:
 
 
 def reproduce_narrative_risk_record(record: Mapping[str, Any]) -> Dict[str, Any]:
-    """Rebuild a record from its normalized input, ledger, and method snapshot."""
+    """Rebuild a record from its normalized input, ledger, narrative map, and method snapshot."""
     validate_narrative_risk_record(record)
     method = record["method_snapshot"]
     if sha256_digest(method) != record["method_snapshot_sha256"]:
         raise NarrativeRiskValidationError("method_snapshot_sha256 does not match the embedded method snapshot")
     payload = dict(record["normalized_input"])
     payload.update(ledger_input_from_record(record))
+    payload.update(narrative_map_input_from_record(record))
     return build_narrative_risk_record(
         payload,
         generated_at=record["generated_at"],
@@ -461,7 +476,7 @@ def reproduce_narrative_risk_record(record: Mapping[str, Any]) -> Dict[str, Any]
 
 
 def verify_record_reproducibility(record: Mapping[str, Any]) -> Dict[str, Any]:
-    """Return deterministic verification for method, input, ledger, and record payload."""
+    """Return deterministic verification for method, input, ledger, narrative map, and record payload."""
     validate_narrative_risk_record(record)
     expected_method_hash = sha256_digest(record["method_snapshot"])
     payload = dict(record)
@@ -474,10 +489,12 @@ def verify_record_reproducibility(record: Mapping[str, Any]) -> Dict[str, Any]:
         "method_snapshot_hash_match": expected_method_hash == record["method_snapshot_sha256"],
         "canonical_input_hash_match": sha256_digest(record["normalized_input"]) == reproducibility["canonical_input_sha256"],
         "evidence_ledger_hash_match": sha256_digest(record["evidence_ledger"]) == reproducibility["evidence_ledger_sha256"],
+        "narrative_map_hash_match": sha256_digest(record["narrative_map"]) == reproducibility["narrative_map_sha256"],
         "record_payload_hash_match": expected_payload_hash == reproducibility["record_payload_sha256"],
         "record_id": record["identifiers"]["record_id"],
         "method_id": record["identifiers"]["method_id"],
         "method_version": record["method_snapshot"]["method_version"],
         "schema_id": record["identifiers"]["schema_id"],
         "ledger_schema_id": record["identifiers"]["ledger_schema_id"],
+        "narrative_map_schema_id": record["identifiers"]["narrative_map_schema_id"],
     }

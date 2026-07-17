@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Catalyst Narrative Risk
- * Description: Narrative-risk scoring, evidence ledger, and persistent review workspace interfaces for Sustainable Catalyst.
- * Version: 1.3.0
+ * Description: Narrative-risk scoring, evidence ledger, claim decomposition, narrative mapping, and persistent review workspace interfaces for Sustainable Catalyst.
+ * Version: 1.4.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,12 +13,13 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.3.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.3.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.3.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.3.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.3.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.3.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.4.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.4.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.4.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.4.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.4.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.4.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.4.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -32,7 +33,7 @@ function cnrisk_demo_shortcode() {
       <div class="cnrisk-demo__head">
         <p class="cnrisk-demo__eyebrow">Interactive demo</p>
         <h3>Catalyst Narrative Risk</h3>
-        <p>Build a traceable review record linking claims to sources, evidence excerpts, provenance, uncertainty, and human judgment.</p>
+        <p>Build a traceable review record linking claims to sources, evidence excerpts, narrative structure, assumptions, wording variants, uncertainty, and human judgment.</p>
       </div>
 
       <div class="cnrisk-demo__grid">
@@ -141,6 +142,12 @@ function cnrisk_demo_shortcode() {
             <small>When provided, source type, evidence strength, and source count are derived from linked evidence. Use “Load traceable sample” to see the contract.</small>
           </label>
 
+          <label>
+            <span>Narrative map JSON (optional)</span>
+            <textarea name="narrative_map_json" rows="8" placeholder='{"narrative_nodes": [...], "narrative_links": [...], "wording_variants": [...], "selected_variant_id": "..."}'></textarea>
+            <small>Use this contract to decompose compound claims, connect assumptions and causal or predictive dependencies, and compare alternate wording.</small>
+          </label>
+
           <div class="cnrisk-demo__actions">
             <button type="submit">Generate record</button>
             <button type="button" data-cnrisk-sample>Load traceable sample</button>
@@ -173,6 +180,12 @@ function cnrisk_demo_shortcode() {
           <div class="cnrisk-demo__block">
             <h4>Source list</h4>
             <ul data-cnrisk-sources><li>No item-level sources recorded.</li></ul>
+          </div>
+
+          <div class="cnrisk-demo__block">
+            <h4>Narrative map</h4>
+            <p data-cnrisk-map-summary>No narrative map analyzed yet.</p>
+            <ul data-cnrisk-map-issues><li>No narrative-map diagnostics generated.</li></ul>
           </div>
 
           <div class="cnrisk-demo__block">
@@ -260,7 +273,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.3.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.4.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>

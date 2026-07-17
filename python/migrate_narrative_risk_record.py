@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Migrate a Catalyst Narrative Risk v1.0.1 or v1.1.0 record to v1.3.0."""
+"""Migrate a Catalyst Narrative Risk v1.0.1 or v1.1.0 record to v1.4.0."""
 
 from __future__ import annotations
 

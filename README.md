@@ -1,144 +1,102 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.3.0 — Persistent Cases and Review Workspaces**
+**Current release: v1.4.0 — Claim Decomposition and Narrative Mapping**
 
-Catalyst Narrative Risk is the Sustainable Catalyst platform layer for traceable claims, evidence, uncertainty, narrative interpretation, and accountable human review. v1.3.0 adds durable case management around the canonical analytical record.
+Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, interpretation, and accountable human review. It does not certify truth or infer intent. It makes the reasoning and review path inspectable.
 
-The module does not certify whether a claim is true. It preserves what was claimed, which evidence was linked, how the transparent method calculated risk, what a reviewer decided, and how the case changed over time.
+## What v1.4.0 adds
 
-## v1.3.0 architecture
+- Atomic narrative nodes for factual, causal, predictive, normative, recommendation, assumption, context, and unknown statements
+- Typed relationships such as decomposition, dependency, causation, prediction, support, qualification, contradiction, and context
+- Explicit entities, geography, time scope, quantities, and baselines
+- Wording variants with deterministic comparison metrics
+- Advisory checks for ambiguity, overbreadth, unsupported causality, unbounded predictions, missing baselines, confidence mismatch, orphan nodes, unmapped claims, and dependency cycles
+- A sixth canonical record layer: `narrative_map`
+- Narrative-map SHA-256 integrity and exact Python–JavaScript reproduction
+- JSON, Markdown, and Mermaid narrative-map exports
+- v1.3.0 migration that preserves the analytical result and evidence ledger while creating deterministic map nodes from existing claims
+- Updated REST and WordPress interfaces
 
-The release separates mutable workspace state from immutable analytical artifacts:
+The v1.3.0 persistent case, immutable revision, review history, saved-view, archive, and portable-bundle capabilities remain intact.
 
-- **Cases** hold title, summary, organization and project references, status, priority, tags, archive state, and current revision pointers.
-- **Revisions** hold complete canonical narrative-risk records and SHA-256 hashes. Revisions are never edited in place.
-- **Review events** append comments, review requests, completed reviews, decision updates, status changes, and assignment changes.
-- **Activity** is append-only and protected from update or deletion by SQLite triggers.
-- **Saved views** preserve validated search and filtering criteria.
-- **Portable bundles** contain a case, all revisions, review events, activity, and a complete bundle checksum.
-
-The existing five canonical analytical layers remain unchanged:
+## Canonical six-layer record
 
 1. `normalized_input`
 2. `evidence_ledger`
-3. `calculations`
-4. `interpretation`
-5. `human_decision`
+3. `narrative_map`
+4. `calculations`
+5. `interpretation`
+6. `human_decision`
 
-## Canonical assets
+The scoring algorithm is unchanged from v1.3.0. Narrative diagnostics are advisory and do not silently change the risk score.
+
+## Repository layout
 
 ```text
-contracts/narrative-risk-contract.v1.3.0.json
-contracts/controlled-vocabularies.v1.3.0.json
-methods/transparent-heuristic.v1.3.0.json
-schemas/narrative_risk_input.schema.json
-schemas/narrative_risk_evidence_ledger.schema.json
-schemas/narrative_risk_method_snapshot.schema.json
-schemas/narrative_risk_record.schema.json
-schemas/narrative_risk_case.schema.json
-schemas/narrative_risk_revision.schema.json
-schemas/narrative_risk_review_event.schema.json
-schemas/narrative_risk_saved_view.schema.json
-schemas/narrative_risk_workspace_bundle.schema.json
-schemas/archive/
+contracts/                  Versioned contract and controlled vocabularies
+methods/                    Versioned method snapshots
+schemas/                    Active and archived JSON Schemas
+narrative_risk/             Python engine, ledger, map, migrations, persistence
+python/                     CLI tools
+app/                        Flask REST API
+wordpress/                  Browser-native demo and local workspace
+outputs/                    Canonical sample artifacts
+scripts/                    Release, parity, and asset-generation gates
+tests/                      Python and cross-runtime fixtures
 ```
 
-## Python analytical usage
+## Validate the release
 
 ```bash
-python -m pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt -r requirements-dev.txt
+PYTHON=.venv/bin/python bash scripts/release_check.sh
+```
 
+The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all four legacy migrations, JavaScript syntax, and WordPress PHP syntax.
+
+## Generate a canonical record
+
+```bash
 python python/narrative_risk_brief.py \
   --input data/sample_narrative_risk_input.json \
-  --json-out outputs/sample_narrative_risk_output.json \
-  --markdown-out outputs/sample_narrative_risk_output.md \
-  --bibliography-out outputs/sample_source_list.md
+  --json-out record.json \
+  --markdown-out brief.md \
+  --bibliography-out sources.md
 ```
 
-Verify a record:
+## Export the narrative map
 
 ```bash
-python python/verify_narrative_risk_record.py \
-  --input outputs/sample_narrative_risk_output.json
+python python/export_narrative_map.py --input record.json --output map.json --format json
+python python/export_narrative_map.py --input record.json --output map.md --format markdown
+python python/export_narrative_map.py --input record.json --output map.mmd --format mermaid
 ```
 
-## Persistent workspace CLI
-
-Initialize and create a persistent case:
+## Verify exact reproduction
 
 ```bash
-python python/narrative_risk_workspace.py \
-  --database data/catalyst-narrative-risk.sqlite3 init
-
-python python/narrative_risk_workspace.py \
-  --database data/catalyst-narrative-risk.sqlite3 create \
-  --title "Pilot energy narrative" \
-  --tag energy \
-  --input data/sample_narrative_risk_input.json
+python python/verify_narrative_risk_record.py --input record.json
 ```
 
-The CLI also supports `list`, `show`, `add-revision`, `add-review`, `archive`, `restore`, `export`, `import`, `verify-bundle`, and `save-view`.
+## Persistent workspace
 
-## REST API
+```bash
+python python/narrative_risk_workspace.py --database instance/catalyst-narrative-risk.sqlite3 init
+python python/narrative_risk_workspace.py --database instance/catalyst-narrative-risk.sqlite3 create \
+  --title "Narrative review" --input data/sample_narrative_risk_input.json
+```
 
-Analytical endpoints:
-
-- `POST /api/narrative-risk`
-- `POST /api/narrative-risk/ledger/analyze`
-- `POST /api/narrative-risk/verify`
-- `POST /api/narrative-risk/migrate`
-- `POST /api/narrative-risk/migrate/v1.0.1`
-- `POST /api/narrative-risk/migrate/v1.1.0`
-- `POST /api/narrative-risk/migrate/v1.2.0`
-- `GET /api/narrative-risk/contract`
-- `GET /api/narrative-risk/vocabularies`
-- `GET /api/narrative-risk/methods/current`
-
-Workspace endpoints:
-
-- `GET /api/narrative-risk/workspaces/health`
-- `POST|GET /api/narrative-risk/cases`
-- `GET|PATCH /api/narrative-risk/cases/{case_id}`
-- `POST /api/narrative-risk/cases/{case_id}/revisions`
-- `POST /api/narrative-risk/cases/{case_id}/reviews`
-- `POST /api/narrative-risk/cases/{case_id}/archive`
-- `POST /api/narrative-risk/cases/{case_id}/restore`
-- `GET /api/narrative-risk/cases/{case_id}/export`
-- `POST /api/narrative-risk/cases/import`
-- `POST|GET /api/narrative-risk/saved-views`
-
-Set `CNRISK_DATABASE_PATH` to the persistent SQLite file. Flask otherwise uses `instance/catalyst-narrative-risk.sqlite3`.
-
-## WordPress
-
-Install `wordpress/catalyst-narrative-risk-demo/` and use:
+## WordPress shortcodes
 
 ```text
 [catalyst_narrative_risk_demo]
 [catalyst_narrative_risk_workspace]
 ```
 
-The workspace shortcode provides browser-local case persistence and portable bundle import/export. The production persistence contract is the SQLite-backed REST API.
+Browser workspace storage is a local demonstration. Shared institutional persistence should use the SQLite-backed REST workspace API.
 
-## Migration
+## Boundary
 
-The migration tool auto-detects v1.0.1, v1.1.0, and v1.2.0 records:
-
-```bash
-python python/migrate_narrative_risk_record.py \
-  --input tests/fixtures/legacy-v1.2.0-record.json \
-  --output migrated-v1.3.0-record.json
-```
-
-## Release validation
-
-```bash
-python -m pip install -r requirements-dev.txt
-bash scripts/release_check.sh
-```
-
-The release gate covers Python tests, SQLite persistence, immutable revision hashes, append-only activity, bundle round trips, schemas, migrations, API and CLI behavior, browser parity, WordPress syntax, and packaged artifacts.
-
-## Methodological boundary
-
-Catalyst Narrative Risk structures evidence and review. It is not a fact-checking oracle, legal opinion, scientific certification, communications approval system, or automatic truth engine. Human judgment and domain expertise remain responsible for final decisions.
+Catalyst Narrative Risk structures claims, evidence, assumptions, wording, and review decisions. It does not automatically determine truth, intent, legal sufficiency, scientific validity, or publication approval.

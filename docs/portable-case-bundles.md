@@ -1,6 +1,6 @@
 # Portable Case Bundles
 
-A v1.3.0 case bundle is a self-contained JSON artifact with:
+A v1.4.0 case bundle is a self-contained JSON artifact with:
 
 - Case metadata
 - All immutable revisions and their canonical records
@@ -9,7 +9,7 @@ A v1.3.0 case bundle is a self-contained JSON artifact with:
 - Export timestamp
 - SHA-256 checksum of the complete unsigned bundle payload
 
-The bundle type is `catalyst_narrative_risk_case_bundle` and the bundle version is `1.3.0`.
+The bundle type is `catalyst_narrative_risk_case_bundle` and the bundle version is `1.4.0`.
 
 ## Verification sequence
 

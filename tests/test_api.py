@@ -11,9 +11,9 @@ def test_api_returns_canonical_record():
     response = client.post("/api/narrative-risk", json={"claim": "API claim"})
     assert response.status_code == 200
     record = response.get_json()
-    assert record["contract"]["contract_version"] == "1.3.0"
-    assert record["method_snapshot"]["method_version"] == "1.3.0"
-    assert record["identifiers"]["ledger_schema_id"].endswith("/1.3.0")
+    assert record["contract"]["contract_version"] == "1.4.0"
+    assert record["method_snapshot"]["method_version"] == "1.4.0"
+    assert record["identifiers"]["ledger_schema_id"].endswith("/1.4.0")
     assert record["evidence_ledger"]["coverage"]["overall"]["coverage_status"] == "none"
     assert record["human_decision"]["disposition"] == "undecided"
 
@@ -23,12 +23,12 @@ def test_api_exposes_contract_vocabularies_and_method_snapshot():
     contract = client.get("/api/narrative-risk/contract").get_json()
     vocabularies = client.get("/api/narrative-risk/vocabularies").get_json()
     method = client.get("/api/narrative-risk/methods/current").get_json()
-    assert contract["contract_version"] == "1.3.0"
-    assert contract["ledger_schema_id"].endswith("/1.3.0")
-    assert vocabularies["vocabulary_version"] == "1.3.0"
+    assert contract["contract_version"] == "1.4.0"
+    assert contract["ledger_schema_id"].endswith("/1.4.0")
+    assert vocabularies["vocabulary_version"] == "1.4.0"
     assert "evidence_relation_type" in vocabularies["vocabularies"]
-    assert method["method_snapshot"]["method_version"] == "1.3.0"
-    assert method["method_snapshot"]["ledger_policy"]["policy_version"] == "1.3.0"
+    assert method["method_snapshot"]["method_version"] == "1.4.0"
+    assert method["method_snapshot"]["ledger_policy"]["policy_version"] == "1.4.0"
     assert len(method["method_snapshot_sha256"]) == 64
 
 
@@ -43,7 +43,7 @@ def test_api_analyzes_evidence_ledger():
         "source_type": "official_or_primary",
         "evidence_strength": "strong",
         "source_count": 2,
-        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy.",
+        "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy.",
     }
 
 
@@ -75,7 +75,7 @@ def test_api_migrates_v1_1_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.1.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.3.0"
+    assert migrated["contract"]["contract_version"] == "1.4.0"
     assert migrated["migration"]["from_schema_version"] == "1.1.0"
     assert migrated["evidence_ledger"]["coverage"]["overall"]["source_count"] == 0
 
@@ -137,7 +137,7 @@ def test_api_saved_views_archive_restore_and_workspace_health(tmp_path):
     assert client.post(f"/api/narrative-risk/cases/{case['case_id']}/archive", json={}).get_json()["archived"] is True
     assert client.post(f"/api/narrative-risk/cases/{case['case_id']}/restore", json={}).get_json()["archived"] is False
     health = client.get("/api/narrative-risk/workspaces/health").get_json()
-    assert health["workspace_version"] == "1.3.0"
+    assert health["workspace_version"] == "1.4.0"
     assert health["counts"]["cases"] == 1
 
 
@@ -147,5 +147,24 @@ def test_api_migrates_v1_2_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.2.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.3.0"
+    assert migrated["contract"]["contract_version"] == "1.4.0"
     assert migrated["migration"]["from_schema_version"] == "1.2.0"
+
+
+def test_api_analyzes_narrative_map():
+    client = create_app({"NARRATIVE_RISK_DATABASE": ":memory:"}).test_client()
+    response = client.post("/api/narrative-risk/map/analyze", json={"claim": "The policy caused the result.", "uncertainty": "high"})
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["narrative_map"]["map_version"] == "1.4.0"
+    assert any(item["code"] == "unsupported_causal_structure" for item in payload["narrative_map"]["analysis"]["issues"])
+
+
+def test_api_migrates_v1_3_0_record():
+    client = create_app({"NARRATIVE_RISK_DATABASE": ":memory:"}).test_client()
+    legacy = json.loads((Path(__file__).parent / "fixtures" / "legacy-v1.3.0-record.json").read_text())
+    response = client.post("/api/narrative-risk/migrate/v1.3.0", json=legacy)
+    assert response.status_code == 200
+    migrated = response.get_json()
+    assert migrated["contract"]["contract_version"] == "1.4.0"
+    assert migrated["migration"]["from_schema_version"] == "1.3.0"

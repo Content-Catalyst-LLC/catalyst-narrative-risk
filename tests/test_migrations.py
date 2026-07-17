@@ -1,13 +1,14 @@
 import json
 from pathlib import Path
 
-from narrative_risk.migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record
+from narrative_risk.migrations import migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record
 from narrative_risk.service import verify_record_reproducibility
 
 FIXTURES = Path(__file__).parent / "fixtures"
 LEGACY_V101 = json.loads((FIXTURES / "legacy-v1.0.1-record.json").read_text())
 LEGACY_V110 = json.loads((FIXTURES / "legacy-v1.1.0-record.json").read_text())
 LEGACY_V120 = json.loads((FIXTURES / "legacy-v1.2.0-record.json").read_text())
+LEGACY_V130 = json.loads((FIXTURES / "legacy-v1.3.0-record.json").read_text())
 
 
 def test_v1_0_1_migration_preserves_score_and_level():
@@ -54,3 +55,14 @@ def test_auto_migration_detects_all_supported_versions():
     assert migrate_record(LEGACY_V101)["migration"]["from_schema_version"] == "1.0.1"
     assert migrate_record(LEGACY_V110)["migration"]["from_schema_version"] == "1.1.0"
     assert migrate_record(LEGACY_V120)["migration"]["from_schema_version"] == "1.2.0"
+    assert migrate_record(LEGACY_V130)["migration"]["from_schema_version"] == "1.3.0"
+
+
+def test_v1_3_0_migration_preserves_workspace_record_and_creates_map():
+    migrated = migrate_v1_3_0_record(LEGACY_V130, migrated_at="2026-07-17T17:00:00+00:00")
+    assert migrated["calculations"]["risk_score"] == LEGACY_V130["calculations"]["risk_score"]
+    assert migrated["interpretation"]["risk_level"] == LEGACY_V130["interpretation"]["risk_level"]
+    assert migrated["evidence_ledger"]["relationships"] == LEGACY_V130["evidence_ledger"]["relationships"]
+    assert migrated["narrative_map"]["analysis"]["summary"]["mapped_claim_count"] == len(LEGACY_V130["evidence_ledger"]["claims"])
+    assert migrated["migration"]["from_schema_version"] == "1.3.0"
+    assert verify_record_reproducibility(migrated)["exact_match"] is True

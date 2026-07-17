@@ -1,17 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/workspace-bundle/1.3.0",
-  "title": "Catalyst Narrative Risk Portable Case Bundle 1.3.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/workspace-bundle/1.4.0",
+  "title": "Catalyst Narrative Risk Portable Case Bundle 1.4.0",
   "type": "object",
   "additionalProperties": false,
   "required": ["bundle_type", "bundle_version", "exported_at", "case", "revisions", "review_events", "activity", "bundle_sha256"],
   "properties": {
     "bundle_type": {"const": "catalyst_narrative_risk_case_bundle"},
-    "bundle_version": {"const": "1.3.0"},
+    "bundle_version": {"const": "1.4.0"},
     "exported_at": {"type": "string", "format": "date-time"},
-    "case": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.3.0"},
-    "revisions": {"type": "array", "items": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.3.0"}},
-    "review_events": {"type": "array", "items": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.3.0"}},
+    "case": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/case/1.4.0"},
+    "revisions": {"type": "array", "items": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/revision/1.4.0"}},
+    "review_events": {"type": "array", "items": {"$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/review-event/1.4.0"}},
     "activity": {
       "type": "array",
       "items": {

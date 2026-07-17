@@ -1,13 +1,14 @@
-# WordPress demo
+# WordPress Interfaces
 
-Install `wordpress/catalyst-narrative-risk-demo/` and add:
+Catalyst Narrative Risk v1.4.0 provides:
 
 ```text
 [catalyst_narrative_risk_demo]
+[catalyst_narrative_risk_workspace]
 ```
 
-The demo runs entirely in the browser. Scalar fields can be used alone, or an optional JSON object can supply `claims`, `sources`, `evidence_items`, and `relationships`.
+The analytical interface accepts the normal heuristic fields, evidence-ledger JSON, narrative-node JSON, narrative-link JSON, wording variants, and a selected wording variant. It displays risk, evidence coverage, narrative-map status, structural issues, and citations.
 
-When ledger JSON is supplied, the interface removes manual source type, evidence strength, and source count values before invoking the engine. The engine derives those values from linked evidence and rejects invalid cross-references or controlled vocabularies.
+The browser engine uses the generated canonical method asset plus the standalone narrative-map engine. Python and JavaScript canonical records and digests must match exactly.
 
-The result panel displays score, component weights, evidence coverage, derived source inputs, source citations, flags, review actions, human-decision state, and complete JSON export.
+The workspace shortcode demonstrates local cases, immutable revisions, comments, search, archive, and bundle transfer with browser storage. Shared persistence belongs in the SQLite-backed REST API.

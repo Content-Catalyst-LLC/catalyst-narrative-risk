@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Require exact v1.3.0 record, evidence-ledger, and digest parity across runtimes."""
+"""Require exact v1.4.0 record, evidence-ledger, and digest parity across runtimes."""
 
 from __future__ import annotations
 
@@ -39,10 +39,10 @@ def main() -> int:
                 raise AssertionError(f"cross-runtime record mismatch in {key}")
         raise AssertionError("cross-runtime canonical record mismatch")
     report = verify_record_reproducibility(python)
-    checks = ["exact_match", "method_snapshot_hash_match", "canonical_input_hash_match", "evidence_ledger_hash_match", "record_payload_hash_match"]
+    checks = ["exact_match", "method_snapshot_hash_match", "canonical_input_hash_match", "evidence_ledger_hash_match", "narrative_map_hash_match", "record_payload_hash_match"]
     if not all(report[key] for key in checks):
         raise AssertionError(f"Python record is not reproducible: {report}")
-    print("Cross-runtime canonical record, evidence ledger, and digest parity passed.")
+    print("Cross-runtime canonical record, evidence ledger, narrative map, and digest parity passed.")
     return 0
 
 

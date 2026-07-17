@@ -1,19 +1,20 @@
 {
   "bundle_type": "catalyst_narrative_risk_case_bundle",
-  "bundle_version": "1.3.0",
+  "bundle_version": "1.4.0",
   "exported_at": "2026-07-17T12:30:00+00:00",
   "case": {
     "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
     "organization_id": "org:sustainable-catalyst",
     "project_id": "project:pilot-energy",
     "title": "Pilot energy narrative review",
-    "summary": "Persistent review workspace sample.",
+    "summary": "Persistent review workspace sample with claim decomposition and narrative mapping.",
     "status": "in_review",
     "priority": "high",
     "tags": [
       "energy",
       "pilot",
-      "public"
+      "public",
+      "narrative-map"
     ],
     "archived": false,
     "archived_at": null,
@@ -30,10 +31,10 @@
       "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
       "revision_number": 1,
       "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-      "record_sha256": "d9b0412177eed7c58c2742a16743d2d9a502f6e464778a975ea933ab11680cce",
+      "record_sha256": "0b96c1da5721f0ff04a339a6d09c7590b8512e942dc83d7ae03cec6f34b9f2af",
       "created_at": "2026-07-17T12:10:00+00:00",
       "created_by": "reviewer:sample",
-      "change_note": "Initial evidence-ledger review.",
+      "change_note": "Initial evidence-ledger and narrative-map review.",
       "record": {
         "calculations": {
           "components": {
@@ -104,7 +105,7 @@
         },
         "contract": {
           "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-          "contract_version": "1.3.0"
+          "contract_version": "1.4.0"
         },
         "evidence_ledger": {
           "claims": [
@@ -173,7 +174,7 @@
             ]
           },
           "derived_scoring_inputs": {
-            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.3.0 ledger policy.",
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.4.0 ledger policy.",
             "evidence_strength": "strong",
             "ledger_applied": true,
             "source_count": 2,
@@ -201,7 +202,7 @@
               "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
             }
           ],
-          "ledger_version": "1.3.0",
+          "ledger_version": "1.4.0",
           "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
           "relationships": [
             {
@@ -313,11 +314,12 @@
         },
         "identifiers": {
           "case_id": "urn:uuid:60000000-0000-4000-8000-000000000001",
-          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.3.0",
-          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0",
+          "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.4.0",
+          "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0",
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
+          "narrative_map_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0",
           "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0"
+          "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0"
         },
         "interpretation": {
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes.",
@@ -327,7 +329,8 @@
           "review_actions": [
             "Add at least one independent source or primary reference.",
             "Escalate to domain, legal, compliance, or editorial review as appropriate.",
-            "Record a reviewer, date, and decision before treating the claim as approved."
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Replace or define vague terms using measurable criteria, scope, and timeframe."
           ],
           "risk_level": "Medium"
         },
@@ -433,7 +436,7 @@
             }
           },
           "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-          "controlled_vocabulary_version": "1.3.0",
+          "controlled_vocabulary_version": "1.4.0",
           "defaults": {
             "consequences": "moderate",
             "evidence_strength": "moderate",
@@ -446,7 +449,7 @@
             "time_sensitivity": "medium",
             "uncertainty": "medium"
           },
-          "description": "A weighted, inspectable review heuristic with a traceable claims, sources, and evidence ledger. It structures risk without verifying truth or replacing human judgment. v1.3.0 stores outputs as immutable revisions within persistent review cases without changing the scoring algorithm.",
+          "description": "A weighted, inspectable review heuristic with a traceable claims, sources, evidence ledger, and advisory narrative map. It structures risk and narrative-review needs without verifying truth, inferring intent, changing scores from diagnostics, or replacing human judgment.",
           "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
           "interpretation": {
             "action_rules": [
@@ -625,7 +628,7 @@
             ],
             "evidence_strength_derivation": "Start with the strongest positive evidence relationship, downgrade one level when fewer than two independent source groups support the primary claim, and downgrade one additional level when contradictory evidence is present.",
             "minimum_independent_groups_for_no_downgrade": 2,
-            "policy_version": "1.3.0",
+            "policy_version": "1.4.0",
             "positive_relation_types": [
               "support",
               "qualify"
@@ -645,8 +648,51 @@
             "substantial_minimum_strength": "moderate"
           },
           "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-          "method_version": "1.3.0",
+          "method_version": "1.4.0",
           "name": "Transparent Heuristic Narrative Risk Method",
+          "narrative_map_interpretation": {
+            "boundary": "Narrative diagnostics identify structural review needs; they do not determine truth, intent, or approval.",
+            "high_severity_action": "Resolve high-severity map issues before confident public use."
+          },
+          "narrative_map_policy": {
+            "compound_word_limit": 45,
+            "confidence_language": [
+              "absolute",
+              "confident",
+              "qualified",
+              "tentative",
+              "unknown"
+            ],
+            "issue_severities": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "link_types": [
+              "decomposes_to",
+              "depends_on",
+              "causes",
+              "predicts",
+              "supports",
+              "qualifies",
+              "contradicts",
+              "contextualizes",
+              "recommends",
+              "sequence"
+            ],
+            "node_types": [
+              "factual_claim",
+              "causal_claim",
+              "predictive_claim",
+              "normative_claim",
+              "recommendation",
+              "assumption",
+              "context",
+              "unknown"
+            ],
+            "policy_version": "1.4.0"
+          },
           "weights": {
             "consequences": {
               "critical": 24,
@@ -709,7 +755,201 @@
             }
           }
         },
-        "method_snapshot_sha256": "d4bf6deef10badba926f2d6fa78cb726d5936db20e54b8dce08361936a332942",
+        "method_snapshot_sha256": "c8d7326700e31c193a6a1cff9215a59876dc92b83cd0dfbd13d737a531dc6b6d",
+        "narrative_map": {
+          "analysis": {
+            "cycles": [],
+            "issues": [
+              {
+                "code": "ambiguous_language",
+                "issue_id": "urn:catalyst:narrative-risk:issue:sha256:223e16789d1f688088ab363cdcb5c0be5df80edb6a24d29faf5247635c6f8f1f",
+                "message": "Ambiguous terms require operational definitions: likely.",
+                "node_ids": [
+                  "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+                ],
+                "remediation": "Replace or define vague terms using measurable criteria, scope, and timeframe.",
+                "severity": "medium"
+              }
+            ],
+            "per_node": [
+              {
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false,
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+                "normative_markers": [],
+                "predictive_markers": [],
+                "word_count": 12
+              },
+              {
+                "ambiguous_terms": [
+                  "likely"
+                ],
+                "causal_markers": [],
+                "compound_indicator_count": 0,
+                "confidence_mismatch": false,
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+                "normative_markers": [],
+                "predictive_markers": [
+                  "likely to"
+                ],
+                "word_count": 11
+              },
+              {
+                "ambiguous_terms": [],
+                "causal_markers": [],
+                "compound_indicator_count": 1,
+                "confidence_mismatch": false,
+                "node_id": "urn:catalyst:narrative-risk:node:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+                "normative_markers": [],
+                "predictive_markers": [],
+                "word_count": 12
+              }
+            ],
+            "summary": {
+              "issue_count": 1,
+              "link_count": 2,
+              "map_status": "partial",
+              "mapped_claim_count": 2,
+              "node_count": 3,
+              "review_ready": false,
+              "severity_counts": {
+                "critical": 0,
+                "high": 0,
+                "low": 0,
+                "medium": 1
+              },
+              "unmapped_claim_count": 0
+            }
+          },
+          "links": [
+            {
+              "from_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "link_id": "urn:catalyst:narrative-risk:link:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "notes": "Persistence depends on comparable conditions.",
+              "relation_type": "depends_on",
+              "strength": "strong",
+              "to_node_id": "urn:catalyst:narrative-risk:node:sha256:3333333333333333333333333333333333333333333333333333333333333333"
+            },
+            {
+              "from_node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "link_id": "urn:catalyst:narrative-risk:link:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+              "notes": "The observed result informs, but does not prove, persistence.",
+              "relation_type": "supports",
+              "strength": "limited",
+              "to_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222"
+            }
+          ],
+          "map_version": "1.4.0",
+          "nodes": [
+            {
+              "baseline": "weather-normalized pre-pilot consumption",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "confidence_language": "qualified",
+              "entities": [
+                "pilot sites"
+              ],
+              "geography": [],
+              "modality": "asserts",
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "node_type": "factual_claim",
+              "notes": "Primary measured outcome.",
+              "parent_node_id": null,
+              "quantities": [
+                {
+                  "context": "weather-normalized energy-use reduction",
+                  "unit": "percent",
+                  "value": 12
+                }
+              ],
+              "role": "primary",
+              "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+              "time_scope": "measured pilot period"
+            },
+            {
+              "baseline": null,
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "confidence_language": "tentative",
+              "entities": [
+                "pilot sites"
+              ],
+              "geography": [],
+              "modality": "predicts",
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "node_type": "predictive_claim",
+              "notes": "Forecast remains conditional.",
+              "parent_node_id": null,
+              "quantities": [],
+              "role": "supporting",
+              "text": "The observed reduction is likely to persist under comparable operating conditions.",
+              "time_scope": "next comparable operating period"
+            },
+            {
+              "baseline": null,
+              "claim_id": null,
+              "confidence_language": "qualified",
+              "entities": [
+                "pilot sites"
+              ],
+              "geography": [],
+              "modality": "asserts",
+              "node_id": "urn:catalyst:narrative-risk:node:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+              "node_type": "assumption",
+              "notes": "Key condition for the persistence claim.",
+              "parent_node_id": null,
+              "quantities": [],
+              "role": "context",
+              "text": "Operating schedules, occupancy, and weather remain comparable to the measured pilot period.",
+              "time_scope": "next comparable operating period"
+            }
+          ],
+          "primary_node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "wording_comparisons": [
+            {
+              "absolute_language_delta": 2,
+              "added_terms": [
+                "always",
+                "fall",
+                "proves",
+                "that",
+                "will"
+              ],
+              "causal_language_delta": 0,
+              "from_variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+              "removed_terms": [
+                "approximately",
+                "independent",
+                "indicate",
+                "measurements",
+                "reduced"
+              ],
+              "risk_direction": "higher",
+              "similarity": 0.411765,
+              "to_variant_id": "urn:catalyst:narrative-risk:variant:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+              "uncertainty_language_delta": -1
+            }
+          ],
+          "wording_variants": [
+            {
+              "audience": "public briefing",
+              "label": "Current qualified wording",
+              "notes": "Retains approximate language and pilot boundary.",
+              "status": "current",
+              "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666"
+            },
+            {
+              "audience": "public briefing",
+              "label": "Overstated alternative",
+              "notes": "Included to demonstrate wording-risk comparison.",
+              "status": "rejected",
+              "text": "The pilot proves that energy use will always fall by 12 percent.",
+              "variant_id": "urn:catalyst:narrative-risk:variant:sha256:7777777777777777777777777777777777777777777777777777777777777777"
+            }
+          ]
+        },
         "normalized_input": {
           "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
           "consequences": "high",
@@ -726,8 +966,9 @@
         "record_type": "catalyst_narrative_risk_record",
         "reproducibility": {
           "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
-          "evidence_ledger_sha256": "7747b497b89f4fe513baa1f651e96ee71d8b9541b09bf8aaf3070b50b8732179",
-          "record_payload_sha256": "2ad4e511005345bfe9b55224d030e5221f7e8bb5652e676edc091f89ae2e8398"
+          "evidence_ledger_sha256": "58191a2f10426b9d2e86ec969e33a91dc4c16cb6ecde51c2c920428a1d6838da",
+          "narrative_map_sha256": "26e46184c00b1d9fdb55a2a8bd8845db0cf5e820ffcf29e2807833be54001233",
+          "record_payload_sha256": "98af8b0fec7459653b9da379a328c7bba40d358e405421c2a6716dba5915607f"
         }
       }
     }
@@ -740,9 +981,11 @@
       "event_type": "comment",
       "author_id": "reviewer:sample",
       "author_name": "Sample Reviewer",
-      "body": "Retain the measured pilot boundary and weather-normalization caveat.",
+      "body": "Confirm the prediction boundary and replace ambiguous wording before public use.",
       "created_at": "2026-07-17T12:20:00+00:00",
-      "metadata": {}
+      "metadata": {
+        "map_status": "partial"
+      }
     }
   ],
   "activity": [
@@ -763,7 +1006,7 @@
       "entity_id": "urn:uuid:60000000-0000-4000-8000-000000000003",
       "payload": {
         "record_id": "urn:uuid:60000000-0000-4000-8000-000000000002",
-        "record_sha256": "d9b0412177eed7c58c2742a16743d2d9a502f6e464778a975ea933ab11680cce",
+        "record_sha256": "0b96c1da5721f0ff04a339a6d09c7590b8512e942dc83d7ae03cec6f34b9f2af",
         "revision_number": 1
       },
       "created_at": "2026-07-17T12:10:00+00:00"
@@ -780,5 +1023,5 @@
       "created_at": "2026-07-17T12:20:00+00:00"
     }
   ],
-  "bundle_sha256": "1c287ed20687c488f233511c584da671e229e350069695eac46d7be512299a0e"
+  "bundle_sha256": "7c82aa8963903d92ae52533a8eada35cbde08d24427d8c2c9ed3ce2141caa31f"
 }

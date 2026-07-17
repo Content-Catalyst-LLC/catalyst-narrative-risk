@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -76,6 +76,7 @@ def create_app(config: dict | None = None):
             "contract_version": VERSION,
             "evidence_ledger": True,
             "persistent_cases": True,
+            "narrative_mapping": True,
             "workspace": repository.health(),
         }, 200
 
@@ -107,6 +108,14 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_evidence_ledger_input", exc)
         return jsonify(analysis), 200
+
+    @app.post("/api/narrative-risk/map/analyze")
+    def narrative_risk_map_analyze():
+        try:
+            analysis = score_narrative_risk(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_narrative_map_input", exc)
+        return jsonify({"narrative_map": analysis["narrative_map"], "interpretation": analysis["interpretation"]}), 200
 
     @app.post("/api/narrative-risk/verify")
     def narrative_risk_verify():
@@ -146,6 +155,14 @@ def create_app(config: dict | None = None):
     def narrative_risk_migrate_v120():
         try:
             migrated = migrate_v1_2_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+    @app.post("/api/narrative-risk/migrate/v1.3.0")
+    def narrative_risk_migrate_v130():
+        try:
+            migrated = migrate_v1_3_0_record(_json_object())
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200

@@ -1,24 +1,14 @@
-# Canonical contract
+# Canonical Contract
 
-Catalyst Narrative Risk v1.3.0 uses a five-layer record:
+Catalyst Narrative Risk v1.4.0 uses a six-layer canonical record:
 
-1. `normalized_input`
-2. `evidence_ledger`
-3. `calculations`
-4. `interpretation`
-5. `human_decision`
+1. `normalized_input` — validated inputs and explicit map source material
+2. `evidence_ledger` — claims, sources, excerpts, relationships, provenance, citations, and coverage
+3. `narrative_map` — typed nodes, structural links, wording variants, comparisons, and advisory diagnostics
+4. `calculations` — inspectable weighted heuristic components and score
+5. `interpretation` — risk level, flags, decision note, and review actions
+6. `human_decision` — reviewer-authored status and disposition, never inferred from the score
 
-The record identifies the contract, method, record schema, input schema, and evidence-ledger schema. The complete method snapshot is embedded and hashed.
+The record also embeds the complete method snapshot and stores SHA-256 digests for the method, normalized input, evidence ledger, narrative map, and full record payload.
 
-## Reproducibility digests
-
-- `method_snapshot_sha256`
-- `reproducibility.canonical_input_sha256`
-- `reproducibility.evidence_ledger_sha256`
-- `reproducibility.record_payload_sha256`
-
-The record-payload digest covers the entire record before the reproducibility object is attached. Exact reproduction rebuilds claims, sources, evidence, relationships, calculations, interpretation, and governance fields from the normalized input, ledger input representation, stored method, IDs, timestamp, and human decision.
-
-## Compatibility
-
-The release supports deterministic migration from schema-valid v1.0.1 and v1.1.0 records. Archived schemas remain in `schemas/archive/` and are part of the release contract.
+The scoring algorithm and ledger derivation policy remain unchanged from v1.3.0. Narrative-map diagnostics are advisory and cannot silently change the risk score.

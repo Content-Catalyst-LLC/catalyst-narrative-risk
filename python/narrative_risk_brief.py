@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate validated Catalyst Narrative Risk v1.3.0 JSON, Markdown, and bibliography exports."""
+"""Generate validated Catalyst Narrative Risk v1.4.0 JSON, Markdown, and bibliography exports."""
 
 from __future__ import annotations
 
@@ -32,6 +32,8 @@ def markdown_brief(record: dict) -> str:
     interpretation = record["interpretation"]
     ledger = record["evidence_ledger"]
     coverage = ledger["coverage"]["overall"]
+    narrative_map = record["narrative_map"]
+    map_summary = narrative_map["analysis"]["summary"]
     lines = [
         "# Catalyst Narrative Risk Brief",
         "",
@@ -42,11 +44,13 @@ def markdown_brief(record: dict) -> str:
         f"**Coverage:** {coverage['coverage_status']}",
         f"**Sources / evidence / relationships:** {coverage['source_count']} / {coverage['evidence_count']} / {coverage['relationship_count']}",
         f"**Independent source groups:** {coverage['independent_source_count']}",
+        f"**Narrative map:** {map_summary['map_status']} · {map_summary['node_count']} nodes · {map_summary['link_count']} links · {map_summary['issue_count']} issues",
         f"**Record ID:** {record['identifiers']['record_id']}",
         f"**Case ID:** {record['identifiers']['case_id']}",
         f"**Method:** {record['identifiers']['method_id']} @ {record['method_snapshot']['method_version']}",
         f"**Schema:** {record['identifiers']['schema_id']}",
         f"**Evidence ledger schema:** {record['identifiers']['ledger_schema_id']}",
+        f"**Narrative map schema:** {record['identifiers']['narrative_map_schema_id']}",
         f"**Method snapshot SHA-256:** `{record['method_snapshot_sha256']}`",
         "",
         "## Decision note",
@@ -73,6 +77,25 @@ def markdown_brief(record: dict) -> str:
                 f"- **{relationship['relation_type']} · {relationship['strength']}:** "
                 f"“{evidence['excerpt']}” — {source['title']} → {claim['text']}"
             )
+    lines += ["", "## Narrative map", ""]
+    for node in narrative_map["nodes"]:
+        lines.append(f"- **{node['role']} · {node['node_type']} · {node['confidence_language']}:** {node['text']}")
+    lines += ["", "### Narrative relationships", ""]
+    node_by_id = {item["node_id"]: item for item in narrative_map["nodes"]}
+    if not narrative_map["links"]:
+        lines.append("- No narrative relationships recorded.")
+    else:
+        for link in narrative_map["links"]:
+            lines.append(
+                f"- **{link['relation_type']} · {link['strength']}:** "
+                f"{node_by_id[link['from_node_id']]['text']} → {node_by_id[link['to_node_id']]['text']}"
+            )
+    lines += ["", "### Narrative diagnostics", ""]
+    if not narrative_map["analysis"]["issues"]:
+        lines.append("- No structural narrative issues detected by the advisory rules.")
+    else:
+        for issue in narrative_map["analysis"]["issues"]:
+            lines.append(f"- **{issue['severity']} · {issue['code']}:** {issue['message']} {issue['remediation']}")
     lines += ["", "## Flags", ""]
     lines.extend(f"- {flag}" for flag in interpretation["flags"])
     lines += ["", "## Review actions", ""]

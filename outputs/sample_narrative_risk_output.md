@@ -7,12 +7,14 @@
 **Coverage:** partial
 **Sources / evidence / relationships:** 2 / 2 / 3
 **Independent source groups:** 2
+**Narrative map:** partial · 3 nodes · 2 links · 1 issues
 **Record ID:** urn:uuid:30000000-0000-4000-8000-000000000001
 **Case ID:** urn:uuid:30000000-0000-4000-8000-000000000002
-**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.3.0
-**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.3.0
-**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.3.0
-**Method snapshot SHA-256:** `d4bf6deef10badba926f2d6fa78cb726d5936db20e54b8dce08361936a332942`
+**Method:** urn:catalyst:narrative-risk:method:transparent-heuristic @ 1.4.0
+**Schema:** https://sustainablecatalyst.com/schemas/narrative-risk/record/1.4.0
+**Evidence ledger schema:** https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.4.0
+**Narrative map schema:** https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.4.0
+**Method snapshot SHA-256:** `c8d7326700e31c193a6a1cff9215a59876dc92b83cd0dfbd13d737a531dc6b6d`
 
 ## Decision note
 
@@ -29,6 +31,21 @@ Use cautiously with visible uncertainty, source links, and review notes.
 - **support · strong:** “The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.” — Utility interval dataset → Independent measurements indicate the pilot reduced energy use by approximately 12 percent.
 - **qualify · limited:** “Weather-normalized consumption declined 11.8 percent across the pilot sites.” — Pilot meter audit → The observed reduction is likely to persist under comparable operating conditions.
 
+## Narrative map
+
+- **primary · factual_claim · qualified:** Independent measurements indicate the pilot reduced energy use by approximately 12 percent.
+- **supporting · predictive_claim · tentative:** The observed reduction is likely to persist under comparable operating conditions.
+- **context · assumption · qualified:** Operating schedules, occupancy, and weather remain comparable to the measured pilot period.
+
+### Narrative relationships
+
+- **depends_on · strong:** The observed reduction is likely to persist under comparable operating conditions. → Operating schedules, occupancy, and weather remain comparable to the measured pilot period.
+- **supports · limited:** Independent measurements indicate the pilot reduced energy use by approximately 12 percent. → The observed reduction is likely to persist under comparable operating conditions.
+
+### Narrative diagnostics
+
+- **medium · ambiguous_language:** Ambiguous terms require operational definitions: likely. Replace or define vague terms using measurable criteria, scope, and timeframe.
+
 ## Flags
 
 - High-consequence claim needs stricter review
@@ -38,6 +55,7 @@ Use cautiously with visible uncertainty, source links, and review notes.
 - Add at least one independent source or primary reference.
 - Escalate to domain, legal, compliance, or editorial review as appropriate.
 - Record a reviewer, date, and decision before treating the claim as approved.
+- Replace or define vague terms using measurable criteria, scope, and timeframe.
 
 ## Component calculations
 

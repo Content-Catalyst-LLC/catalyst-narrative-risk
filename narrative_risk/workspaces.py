@@ -31,7 +31,7 @@ from .contracts import (
 from .errors import NarrativeRiskValidationError
 from .service import build_narrative_risk_record, validate_narrative_risk_record
 
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}

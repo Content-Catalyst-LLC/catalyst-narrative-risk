@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.4.0 — Claim Decomposition and Narrative Mapping
+
+- Added a canonical narrative-map layer with deterministic node, link, variant, and issue identifiers.
+- Added typed factual, causal, predictive, normative, recommendation, assumption, context, and unknown nodes.
+- Added decomposition, dependency, causality, prediction, support, qualification, contradiction, context, recommendation, and sequence links.
+- Added wording variants and cross-runtime comparison metrics.
+- Added advisory ambiguity, compound-claim, causality, prediction-boundary, baseline, confidence, orphan, mapping, and cycle diagnostics.
+- Added narrative-map schema, method policy, controlled vocabularies, integrity digest, exact reproduction, API endpoint, browser engine, WordPress interface, and JSON/Markdown/Mermaid exports.
+- Added deterministic migration from v1.3.0 while preserving scores, risk levels, evidence ledgers, and human decisions.
+- Preserved the v1.3.0 scoring algorithm unchanged.
+
 ## 1.3.0 - 2026-07-17
 
 ### Added

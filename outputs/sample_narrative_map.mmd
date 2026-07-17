@@ -1,0 +1,6 @@
+flowchart TD
+    N1_111111111111["factual_claim: Independent measurements indicate the pilot reduced energy use by approximately 12 percent."]
+    N2_222222222222["predictive_claim: The observed reduction is likely to persist under comparable operating conditions."]
+    N3_333333333333["assumption: Operating schedules, occupancy, and weather remain comparable to the measured pilot period."]
+    N2_222222222222 -->|depends on| N3_333333333333
+    N1_111111111111 -->|supports| N2_222222222222

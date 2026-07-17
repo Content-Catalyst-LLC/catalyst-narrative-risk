@@ -28,12 +28,19 @@
       "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "title": "Pilot meter audit",
       "source_type": "peer_reviewed_or_audited",
-      "creators": ["Energy Audit Team"],
+      "creators": [
+        "Energy Audit Team"
+      ],
       "publisher": "Independent Audit Group",
       "published_year": 2026,
       "url": "https://example.org/pilot-audit",
       "accessed_at": "2026-07-17T12:00:00+00:00",
-      "identifiers": [{"scheme": "doi", "value": "10.0000/example.audit"}],
+      "identifiers": [
+        {
+          "scheme": "doi",
+          "value": "10.0000/example.audit"
+        }
+      ],
       "independence_group": "independent-audit-group",
       "duplicate_of_source_id": null,
       "directness": "direct",
@@ -50,12 +57,19 @@
       "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "title": "Utility interval dataset",
       "source_type": "official_or_primary",
-      "creators": ["City Utility"],
+      "creators": [
+        "City Utility"
+      ],
       "publisher": "City Utility",
       "published_year": 2026,
       "url": "https://example.org/utility-data",
       "accessed_at": "2026-07-17T12:00:00+00:00",
-      "identifiers": [{"scheme": "catalog", "value": "dataset:utility-interval-2026"}],
+      "identifiers": [
+        {
+          "scheme": "catalog",
+          "value": "dataset:utility-interval-2026"
+        }
+      ],
       "independence_group": "city-utility",
       "duplicate_of_source_id": null,
       "directness": "direct",
@@ -114,5 +128,101 @@
       "strength": "limited",
       "notes": "The audit supports persistence only under comparable conditions."
     }
-  ]
+  ],
+  "narrative_nodes": [
+    {
+      "node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+      "node_type": "factual_claim",
+      "role": "primary",
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "confidence_language": "qualified",
+      "modality": "asserts",
+      "entities": [
+        "pilot sites"
+      ],
+      "geography": [],
+      "time_scope": "measured pilot period",
+      "quantities": [
+        {
+          "value": 12,
+          "unit": "percent",
+          "context": "weather-normalized energy-use reduction"
+        }
+      ],
+      "baseline": "weather-normalized pre-pilot consumption",
+      "notes": "Primary measured outcome."
+    },
+    {
+      "node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "text": "The observed reduction is likely to persist under comparable operating conditions.",
+      "node_type": "predictive_claim",
+      "role": "supporting",
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "confidence_language": "tentative",
+      "modality": "predicts",
+      "entities": [
+        "pilot sites"
+      ],
+      "geography": [],
+      "time_scope": "next comparable operating period",
+      "quantities": [],
+      "baseline": null,
+      "notes": "Forecast remains conditional."
+    },
+    {
+      "node_id": "urn:catalyst:narrative-risk:node:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "text": "Operating schedules, occupancy, and weather remain comparable to the measured pilot period.",
+      "node_type": "assumption",
+      "role": "context",
+      "claim_id": null,
+      "confidence_language": "qualified",
+      "modality": "asserts",
+      "entities": [
+        "pilot sites"
+      ],
+      "geography": [],
+      "time_scope": "next comparable operating period",
+      "quantities": [],
+      "baseline": null,
+      "notes": "Key condition for the persistence claim."
+    }
+  ],
+  "narrative_links": [
+    {
+      "link_id": "urn:catalyst:narrative-risk:link:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "from_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "to_node_id": "urn:catalyst:narrative-risk:node:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "relation_type": "depends_on",
+      "strength": "strong",
+      "notes": "Persistence depends on comparable conditions."
+    },
+    {
+      "link_id": "urn:catalyst:narrative-risk:link:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "from_node_id": "urn:catalyst:narrative-risk:node:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "to_node_id": "urn:catalyst:narrative-risk:node:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "relation_type": "supports",
+      "strength": "limited",
+      "notes": "The observed result informs, but does not prove, persistence."
+    }
+  ],
+  "wording_variants": [
+    {
+      "variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "label": "Current qualified wording",
+      "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+      "audience": "public briefing",
+      "status": "current",
+      "notes": "Retains approximate language and pilot boundary."
+    },
+    {
+      "variant_id": "urn:catalyst:narrative-risk:variant:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "label": "Overstated alternative",
+      "text": "The pilot proves that energy use will always fall by 12 percent.",
+      "audience": "public briefing",
+      "status": "rejected",
+      "notes": "Included to demonstrate wording-risk comparison."
+    }
+  ],
+  "selected_variant_id": "urn:catalyst:narrative-risk:variant:sha256:6666666666666666666666666666666666666666666666666666666666666666"
 }

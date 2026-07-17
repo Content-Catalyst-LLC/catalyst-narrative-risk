@@ -1,14 +1,12 @@
-# Catalyst Narrative Risk WordPress Package v1.3.0
+# Catalyst Narrative Risk WordPress Package v1.4.0
 
-The plugin provides two shortcodes:
+Shortcodes:
 
 ```text
 [catalyst_narrative_risk_demo]
 [catalyst_narrative_risk_workspace]
 ```
 
-The demo builds a canonical analytical record with claims, sources, evidence relationships, scoring, interpretation, and a separate human decision.
+The analytical interface supports evidence-ledger inputs, claim decomposition, typed narrative links, wording variants, and advisory map diagnostics. `narrative-risk-method.js` is generated from the canonical v1.4.0 method JSON. `narrative-risk-map.js` implements the browser map contract. The browser and Python engines produce identical canonical records and SHA-256 digests.
 
-The workspace stores cases, immutable revisions, review comments, search state, and archive state in the visitor's browser. It exports and imports v1.3.0 checksummed case bundles. Institutional deployment should connect the interface to the SQLite-backed REST API rather than treating browser storage as shared persistence.
-
-`narrative-risk-method.js` is generated from the canonical v1.3.0 method JSON. The browser engine produces the same evidence ledger, score, canonical record, and SHA-256 digests as Python.
+The workspace stores cases, immutable revisions, review comments, search state, and archive state in the visitor's browser and transfers v1.4.0 checksummed case bundles. Institutional deployment should use the SQLite-backed REST workspace API for shared persistence.

@@ -33,7 +33,7 @@
   }
   function bundle(caseItem) {
     const base = {
-      bundle_type: 'catalyst_narrative_risk_case_bundle', bundle_version: '1.3.0', exported_at: now(),
+      bundle_type: 'catalyst_narrative_risk_case_bundle', bundle_version: '1.4.0', exported_at: now(),
       case: caseItem.case, revisions: caseItem.revisions, review_events: caseItem.review_events, activity: caseItem.activity
     };
     base.bundle_sha256 = engine.digest(base);
@@ -58,7 +58,7 @@
     claim.textContent = caseItem.revisions.length ? caseItem.revisions[caseItem.revisions.length - 1].record.normalized_input.claim : 'No analytical revision yet.';
     const actions = document.createElement('div'); actions.className = 'cnrisk-workspace__actions';
     const open = document.createElement('button'); open.type = 'button'; open.textContent = 'Open'; open.addEventListener('click', function () { openCase(root, caseItem.case.case_id); });
-    const exportButton = document.createElement('button'); exportButton.type = 'button'; exportButton.textContent = 'Export'; exportButton.addEventListener('click', function () { download('narrative-risk-case-v1.3.0.json', bundle(caseItem)); });
+    const exportButton = document.createElement('button'); exportButton.type = 'button'; exportButton.textContent = 'Export'; exportButton.addEventListener('click', function () { download('narrative-risk-case-v1.4.0.json', bundle(caseItem)); });
     actions.append(open, exportButton); card.append(heading, meta, claim, actions); return card;
   }
   function renderList(root) {
@@ -128,7 +128,7 @@
   function importBundle(root, file) {
     const reader = new FileReader(); reader.onload = function () {
       try {
-        const data = JSON.parse(reader.result); if (data.bundle_type !== 'catalyst_narrative_risk_case_bundle' || data.bundle_version !== '1.3.0') throw new Error('Not a v1.3.0 narrative-risk case bundle.');
+        const data = JSON.parse(reader.result); if (data.bundle_type !== 'catalyst_narrative_risk_case_bundle' || data.bundle_version !== '1.4.0') throw new Error('Not a v1.4.0 narrative-risk case bundle.');
         const expected = data.bundle_sha256; const unsigned = Object.assign({}, data); delete unsigned.bundle_sha256; if (engine.digest(unsigned) !== expected) throw new Error('Bundle checksum does not match.');
         const state = load(); const caseId = data.case.case_id; if (state.cases[caseId]) throw new Error('A case with this identifier already exists.');
         state.cases[caseId] = { case: data.case, revisions: data.revisions, review_events: data.review_events, activity: data.activity }; save(state); renderList(root); openCase(root, caseId);
