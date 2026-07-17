@@ -1,14 +1,17 @@
 # Repository architecture
 
-The v1.0.1 repository separates runtime responsibilities:
+The v1.2.0 repository separates contract data, analytical logic, integrations, interfaces, and release validation.
 
-- `narrative_risk/service.py` is the canonical Python scoring and validation engine.
-- `narrative_risk/legacy.py` isolates the deprecated portfolio compatibility shim.
-- `assets/narrative-risk-engine.js` is the reusable browser scoring engine.
-- `assets/catalyst-narrative-risk-demo.js` handles only browser form and rendering behavior.
-- `tests/fixtures/scoring-parity.json` is the shared analytical contract.
-- `scripts/cross_runtime_parity.py` compares Python and JavaScript outputs directly.
-- `schemas/narrative_risk_record.schema.json` defines the export contract.
+- `contracts/` contains the contract registry and controlled vocabularies.
+- `methods/` contains the complete versioned method and ledger policy.
+- `schemas/` contains current input, ledger, method, record, and handoff schemas plus archived migration schemas.
+- `narrative_risk/service.py` normalizes inputs, derives ledger-backed scalar values, scores, records, reproduces, and verifies.
+- `narrative_risk/ledger.py` owns claims, sources, evidence, relationships, citations, coverage, and ledger interpretation.
+- `narrative_risk/integrations.py` maps first-party source handoffs.
+- `narrative_risk/migrations.py` performs validated deterministic legacy migration.
+- `python/` provides brief, bibliography, ledger export, migration, and verification CLIs.
+- `wordpress/` contains a browser-only demonstration that consumes a generated canonical method asset.
+- `tests/fixtures/scoring-parity.json` is the shared cross-runtime analytical contract.
 - `scripts/release_check.sh` is the canonical release gate.
 
-No interface runtime may silently redefine weights, thresholds, normalization, flags, actions, or decision notes.
+No runtime may silently redefine vocabularies, weights, thresholds, ledger derivation, coverage rules, citations, flags, actions, or digest canonicalization.

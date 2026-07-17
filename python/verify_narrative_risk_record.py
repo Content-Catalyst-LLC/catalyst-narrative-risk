@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a Catalyst Narrative Risk v1.1.0 record and reproduce it exactly."""
+"""Verify and exactly reproduce a Catalyst Narrative Risk v1.2.0 record."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ if str(ROOT) not in sys.path:
 
 from narrative_risk.service import NarrativeRiskValidationError, verify_record_reproducibility
 
+CHECKS = ["exact_match", "method_snapshot_hash_match", "canonical_input_hash_match", "evidence_ledger_hash_match", "record_payload_hash_match"]
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -26,7 +28,7 @@ def main() -> int:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
     print(json.dumps(report, indent=2))
-    return 0 if all(report[key] for key in ["exact_match", "method_snapshot_hash_match", "canonical_input_hash_match", "record_payload_hash_match"]) else 1
+    return 0 if all(report[key] for key in CHECKS) else 1
 
 
 if __name__ == "__main__":

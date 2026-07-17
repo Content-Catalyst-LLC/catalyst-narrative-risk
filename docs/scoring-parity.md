@@ -1,27 +1,14 @@
-# Scoring parity contract
+# Scoring and ledger parity
 
-Catalyst Narrative Risk v1.0.1 uses the same normalized input contract and scoring behavior in Python and browser JavaScript.
+The shared fixture matrix contains valid scalar and evidence-ledger cases plus invalid normalization, vocabulary, cross-reference, relationship, and conflict cases.
 
-The canonical fixture matrix is stored at:
+The release gate runs each fixture through Python and browser JavaScript and compares:
 
-```text
-tests/fixtures/scoring-parity.json
-```
+- Success or exact validation message
+- Normalized scalar inputs
+- Claims, sources, evidence, relationships, coverage, citations, and derived scoring inputs
+- Component calculations, risk score, flags, actions, and decision note
+- Complete fixed-ID canonical records
+- Method, input, evidence-ledger, and record-payload SHA-256 digests
 
-It covers:
-
-- valid zero-weight selections;
-- default inputs;
-- high-risk inputs;
-- the Low/Medium score boundary at 39 and 40;
-- fallback normalization;
-- missing and malformed inputs.
-
-Run the browser contract and direct runtime comparison with:
-
-```bash
-node scripts/test_browser_engine.js
-python scripts/cross_runtime_parity.py
-```
-
-Generated timestamps are excluded from scoring comparisons. All analytical fields, normalized inputs, components, flags, actions, and decision notes must be identical.
+The browser method asset is generated from `methods/transparent-heuristic.v1.2.0.json` and checked for drift.

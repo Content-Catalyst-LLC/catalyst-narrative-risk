@@ -64,3 +64,6 @@
   border: 1px solid currentColor;
   font-weight: 700;
 }
+.cnrisk-demo small { display: block; color: var(--cnr-muted); font-weight: 500; line-height: 1.5; }
+.cnrisk-demo__block p { margin: 0 0 8px; }
+.cnrisk-demo__block p:last-child { margin-bottom: 0; }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.1.0",
-  "title": "Catalyst Narrative Risk Method Snapshot 1.1.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.2.0",
+  "title": "Catalyst Narrative Risk Method Snapshot 1.2.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,14 +16,16 @@
     "weights",
     "components",
     "interpretation",
-    "human_decision_boundary"
+    "human_decision_boundary",
+    "ledger_policy",
+    "ledger_interpretation"
   ],
   "properties": {
     "method_id": {
       "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
     },
     "method_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "name": {
       "type": "string",
@@ -116,7 +118,7 @@
       "const": "urn:catalyst:narrative-risk:vocabularies:canonical"
     },
     "controlled_vocabulary_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "defaults": {
       "type": "object",
@@ -513,6 +515,204 @@
     "human_decision_boundary": {
       "type": "string",
       "minLength": 1
+    },
+    "ledger_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "primary_claim_role",
+        "positive_relation_types",
+        "counted_relation_types",
+        "strength_order",
+        "source_type_derivation",
+        "source_count_derivation",
+        "evidence_strength_derivation",
+        "minimum_independent_groups_for_no_downgrade",
+        "single_group_downgrade_steps",
+        "contradiction_downgrade_steps",
+        "coverage_statuses",
+        "substantial_minimum_independent_groups",
+        "substantial_minimum_strength"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "1.2.0"
+        },
+        "primary_claim_role": {
+          "const": "primary"
+        },
+        "positive_relation_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "support",
+              "qualify",
+              "contradict",
+              "contextualize",
+              "unresolved"
+            ]
+          }
+        },
+        "counted_relation_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "support",
+              "qualify",
+              "contradict",
+              "contextualize",
+              "unresolved"
+            ]
+          }
+        },
+        "strength_order": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "strong",
+              "moderate",
+              "limited",
+              "weak",
+              "unclear"
+            ]
+          }
+        },
+        "source_type_derivation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_count_derivation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_strength_derivation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minimum_independent_groups_for_no_downgrade": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "single_group_downgrade_steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contradiction_downgrade_steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverage_statuses": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "none",
+              "partial",
+              "substantial",
+              "contested"
+            ]
+          }
+        },
+        "substantial_minimum_independent_groups": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "substantial_minimum_strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "limited",
+            "weak",
+            "unclear"
+          ]
+        }
+      }
+    },
+    "ledger_interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flags",
+        "actions"
+      ],
+      "properties": {
+        "flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "no_relationships",
+            "contested",
+            "dependent_sources",
+            "stale_sources",
+            "indirect_only"
+          ],
+          "properties": {
+            "no_relationships": {
+              "type": "string",
+              "minLength": 1
+            },
+            "contested": {
+              "type": "string",
+              "minLength": 1
+            },
+            "dependent_sources": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stale_sources": {
+              "type": "string",
+              "minLength": 1
+            },
+            "indirect_only": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "actions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "record_relationships",
+            "resolve_contestation",
+            "add_independent_sources",
+            "refresh_stale_sources",
+            "add_direct_evidence"
+          ],
+          "properties": {
+            "record_relationships": {
+              "type": "string",
+              "minLength": 1
+            },
+            "resolve_contestation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "add_independent_sources": {
+              "type": "string",
+              "minLength": 1
+            },
+            "refresh_stale_sources": {
+              "type": "string",
+              "minLength": 1
+            },
+            "add_direct_evidence": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {

@@ -1,11 +1,22 @@
 # Release process
 
-Install the declared development dependencies and run:
+Run the canonical gate from the repository root:
 
 ```bash
+python -m pip install -r requirements-dev.txt
 bash scripts/release_check.sh
 ```
 
-The release suite validates Python tests, Python syntax, required files, version consistency, JSON syntax, JSON Schema output, JavaScript syntax, browser fixtures, direct cross-runtime parity, CLI export, and WordPress PHP syntax.
+The gate performs:
 
-A release must not be packaged if any check fails.
+- Python tests and compile checks
+- Required-file, version, identifier, schema, method, migration, fixture, output, and WordPress contracts
+- Generated browser-method drift detection
+- JavaScript syntax and browser-engine fixture tests
+- Direct Python–JavaScript analysis and full-record parity
+- CLI JSON, Markdown, bibliography, and evidence-ledger CSV generation
+- Exact record verification
+- v1.0.1 and v1.1.0 migration and post-migration verification
+- PHP syntax validation
+
+A release package must exclude virtual environments, caches, generated temporary state, and secrets. Published ZIP files receive SHA-256 checksums and are independently unpacked and retested before delivery.

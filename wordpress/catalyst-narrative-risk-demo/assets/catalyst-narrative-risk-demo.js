@@ -3,13 +3,120 @@
   const engine = window.CatalystNarrativeRiskEngine;
   if (!engine) return;
 
-  function readForm(form) {
-    return Object.fromEntries(new FormData(form).entries());
+  const sampleLedger = {
+    claims: [
+      {
+        text: 'Independent measurements indicate the pilot reduced energy use by approximately 12 percent.',
+        claim_type: 'factual',
+        role: 'primary',
+        notes: 'Limited to the pilot sites and measured period.'
+      }
+    ],
+    sources: [
+      {
+        title: 'Pilot meter audit',
+        source_type: 'peer_reviewed_or_audited',
+        creators: ['Energy Audit Team'],
+        publisher: 'Independent Audit Group',
+        published_year: 2026,
+        url: 'https://example.org/pilot-audit',
+        accessed_at: '2026-07-17T12:00:00+00:00',
+        identifiers: [{ scheme: 'doi', value: '10.0000/example.audit' }],
+        independence_group: 'independent-audit-group',
+        directness: 'direct',
+        freshness: 'current',
+        provenance: { acquisition_method: 'document_import', imported_from: 'knowledge-library:pilot-meter-audit', imported_at: '2026-07-17T12:00:00+00:00', content_sha256: null },
+        notes: 'Independent audit of weather-normalized meter data.'
+      },
+      {
+        title: 'Utility interval dataset',
+        source_type: 'official_or_primary',
+        creators: ['City Utility'],
+        publisher: 'City Utility',
+        published_year: 2026,
+        url: 'https://example.org/utility-data',
+        accessed_at: '2026-07-17T12:00:00+00:00',
+        identifiers: [{ scheme: 'catalog', value: 'dataset:utility-interval-2026' }],
+        independence_group: 'city-utility',
+        directness: 'direct',
+        freshness: 'current',
+        provenance: { acquisition_method: 'catalyst_data', imported_from: 'catalyst-data:utility-interval-2026', imported_at: '2026-07-17T12:00:00+00:00', content_sha256: null },
+        notes: 'Primary interval readings used by the audit.'
+      }
+    ]
+  };
+
+  function hydrateSampleLedger() {
+    const claims = JSON.parse(JSON.stringify(sampleLedger.claims));
+    const sources = JSON.parse(JSON.stringify(sampleLedger.sources));
+    const normalized = engine.scoreNarrativeRisk({
+      claim: claims[0].text,
+      claims: claims,
+      sources: sources,
+      evidence_items: [],
+      relationships: []
+    }).evidence_ledger;
+    const claimId = normalized.claims[0].claim_id;
+    const sourceIds = normalized.sources.map(function (source) { return source.source_id; });
+    const evidenceItems = [
+      {
+        source_id: sourceIds[0], evidence_type: 'finding',
+        excerpt: 'Weather-normalized consumption declined 11.8 percent across the pilot sites.',
+        locator: 'p. 14', captured_at: '2026-07-17T12:05:00+00:00', notes: 'Audited finding.'
+      },
+      {
+        source_id: sourceIds[1], evidence_type: 'data',
+        excerpt: 'The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.',
+        locator: 'dataset row 18', captured_at: '2026-07-17T12:06:00+00:00', notes: 'Primary data corroboration.'
+      }
+    ];
+    const normalizedWithEvidence = engine.scoreNarrativeRisk({
+      claim: claims[0].text, claims: claims, sources: sources, evidence_items: evidenceItems, relationships: []
+    }).evidence_ledger;
+    return {
+      claims: claims,
+      sources: sources,
+      evidence_items: evidenceItems,
+      relationships: normalizedWithEvidence.evidence_items.map(function (evidence, index) {
+        return {
+          claim_id: claimId,
+          evidence_id: evidence.evidence_id,
+          relation_type: 'support',
+          strength: 'strong',
+          notes: index === 0 ? 'Direct audited finding.' : 'Independent primary-data corroboration.'
+        };
+      })
+    };
   }
 
-  function list(element, items) {
+  function readForm(form) {
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const ledgerText = String(payload.evidence_ledger_json || '').trim();
+    delete payload.evidence_ledger_json;
+    if (ledgerText) {
+      let ledger;
+      try {
+        ledger = JSON.parse(ledgerText);
+      } catch (error) {
+        throw new Error('Evidence ledger JSON is invalid: ' + error.message);
+      }
+      if (!ledger || Array.isArray(ledger) || typeof ledger !== 'object') {
+        throw new Error('Evidence ledger JSON must be an object containing claims, sources, evidence_items, and relationships.');
+      }
+      ['claims', 'sources', 'evidence_items', 'relationships'].forEach(function (field) {
+        if (ledger[field] !== undefined) payload[field] = ledger[field];
+      });
+      delete payload.source_type;
+      delete payload.evidence_strength;
+      delete payload.source_count;
+    }
+    return payload;
+  }
+
+  function list(element, items, emptyText) {
     element.innerHTML = '';
-    items.forEach(function (text) {
+    const values = items.length ? items : [emptyText || 'None recorded.'];
+    values.forEach(function (text) {
       const item = document.createElement('li');
       item.textContent = text;
       element.appendChild(item);
@@ -19,6 +126,8 @@
   function render(root, record) {
     const calculations = record.calculations;
     const interpretation = record.interpretation;
+    const ledger = record.evidence_ledger;
+    const coverage = ledger.coverage.overall;
     root._cnriskRecord = record;
     root.querySelector('[data-cnrisk-error]').hidden = true;
     root.querySelector('[data-cnrisk-score]').textContent = calculations.risk_score + ' / 100';
@@ -29,8 +138,16 @@
       record.identifiers.record_id + ' · method ' + record.method_snapshot.method_version + ' · schema ' + record.contract.contract_version;
     root.querySelector('[data-cnrisk-human]').textContent =
       record.human_decision.status.replaceAll('_', ' ') + ' · ' + record.human_decision.disposition.replaceAll('_', ' ');
-    list(root.querySelector('[data-cnrisk-flags]'), interpretation.flags);
-    list(root.querySelector('[data-cnrisk-actions]'), interpretation.review_actions);
+    root.querySelector('[data-cnrisk-coverage]').textContent =
+      coverage.coverage_status + ' · ' + coverage.claim_count + ' claim(s) · ' + coverage.source_count +
+      ' source(s) · ' + coverage.evidence_count + ' evidence item(s) · ' + coverage.independent_source_count + ' independent source group(s)';
+    root.querySelector('[data-cnrisk-derived]').textContent =
+      ledger.derived_scoring_inputs.source_type.replaceAll('_', ' ') + ' · ' +
+      ledger.derived_scoring_inputs.evidence_strength + ' evidence · ' +
+      ledger.derived_scoring_inputs.source_count + ' linked source(s)';
+    list(root.querySelector('[data-cnrisk-sources]'), ledger.source_list.map(function (source) { return source.citation; }), 'No item-level sources recorded.');
+    list(root.querySelector('[data-cnrisk-flags]'), interpretation.flags, 'No flags generated.');
+    list(root.querySelector('[data-cnrisk-actions]'), interpretation.review_actions, 'No actions generated.');
     root.querySelector('[data-cnrisk-json]').textContent = JSON.stringify(record, null, 2);
 
     const bars = root.querySelector('[data-cnrisk-bars]');
@@ -81,17 +198,16 @@
       generate(root, form);
     });
     root.querySelector('[data-cnrisk-sample]').addEventListener('click', function () {
-      form.claim.value = 'A new sustainability initiative will materially improve public trust within one year.';
-      form.source_type.value = 'reputable_secondary';
-      form.evidence_strength.value = 'limited';
-      form.source_count.value = 2;
-      form.uncertainty.value = 'high';
+      const ledger = hydrateSampleLedger();
+      form.claim.value = ledger.claims[0].text;
+      form.uncertainty.value = 'medium';
       form.review_status.value = 'partly_reviewed';
-      form.narrative_volatility.value = 'medium';
-      form.stakeholder_pressure.value = 'high';
+      form.narrative_volatility.value = 'low';
+      form.stakeholder_pressure.value = 'medium';
       form.time_sensitivity.value = 'medium';
       form.consequences.value = 'high';
-      form.method_notes.value = 'Claim needs narrower language, stronger baseline evidence, and a review date before publication.';
+      form.method_notes.value = 'Use only within the measured pilot boundary and retain the weather-normalization assumptions.';
+      form.evidence_ledger_json.value = JSON.stringify(ledger, null, 2);
       generate(root, form);
     });
     root.querySelector('[data-cnrisk-download]').addEventListener('click', function () {
@@ -101,7 +217,7 @@
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'catalyst-narrative-risk-record-v1.1.0.json';
+      anchor.download = 'catalyst-narrative-risk-record-v1.2.0.json';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();

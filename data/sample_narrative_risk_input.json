@@ -1,13 +1,118 @@
 {
-  "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
-  "source_type": "reputable_secondary",
-  "evidence_strength": "limited",
-  "uncertainty": "high",
-  "narrative_volatility": "medium",
-  "stakeholder_pressure": "high",
+  "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+  "uncertainty": "medium",
+  "narrative_volatility": "low",
+  "stakeholder_pressure": "medium",
   "time_sensitivity": "medium",
   "consequences": "high",
   "review_status": "partly_reviewed",
-  "source_count": 2,
-  "method_notes": "Claim needs a narrower scope, stronger baseline evidence, and a review date before publication."
+  "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions.",
+  "claims": [
+    {
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+      "claim_type": "factual",
+      "role": "primary",
+      "notes": "The claim is limited to the pilot sites and measured period."
+    },
+    {
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "text": "The observed reduction is likely to persist under comparable operating conditions.",
+      "claim_type": "predictive",
+      "role": "supporting",
+      "notes": "This supporting claim has less direct evidence than the primary claim."
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "title": "Pilot meter audit",
+      "source_type": "peer_reviewed_or_audited",
+      "creators": ["Energy Audit Team"],
+      "publisher": "Independent Audit Group",
+      "published_year": 2026,
+      "url": "https://example.org/pilot-audit",
+      "accessed_at": "2026-07-17T12:00:00+00:00",
+      "identifiers": [{"scheme": "doi", "value": "10.0000/example.audit"}],
+      "independence_group": "independent-audit-group",
+      "duplicate_of_source_id": null,
+      "directness": "direct",
+      "freshness": "current",
+      "provenance": {
+        "acquisition_method": "document_import",
+        "imported_from": "knowledge-library:pilot-meter-audit",
+        "imported_at": "2026-07-17T12:00:00+00:00",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "notes": "Independent audit of weather-normalized meter data."
+    },
+    {
+      "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "title": "Utility interval dataset",
+      "source_type": "official_or_primary",
+      "creators": ["City Utility"],
+      "publisher": "City Utility",
+      "published_year": 2026,
+      "url": "https://example.org/utility-data",
+      "accessed_at": "2026-07-17T12:00:00+00:00",
+      "identifiers": [{"scheme": "catalog", "value": "dataset:utility-interval-2026"}],
+      "independence_group": "city-utility",
+      "duplicate_of_source_id": null,
+      "directness": "direct",
+      "freshness": "current",
+      "provenance": {
+        "acquisition_method": "catalyst_data",
+        "imported_from": "catalyst-data:utility-interval-2026",
+        "imported_at": "2026-07-17T12:00:00+00:00",
+        "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "notes": "Primary interval readings used by the audit."
+    }
+  ],
+  "evidence_items": [
+    {
+      "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidence_type": "finding",
+      "excerpt": "Weather-normalized consumption declined 11.8 percent across the pilot sites.",
+      "locator": "p. 14",
+      "captured_at": "2026-07-17T12:05:00+00:00",
+      "notes": "Audit finding rounded to approximately 12 percent in the claim."
+    },
+    {
+      "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evidence_type": "data",
+      "excerpt": "The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.",
+      "locator": "dataset row 18",
+      "captured_at": "2026-07-17T12:06:00+00:00",
+      "notes": "Primary data independently checked against the audit calculation."
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "relation_type": "support",
+      "strength": "strong",
+      "notes": "Direct audited finding."
+    },
+    {
+      "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "relation_type": "support",
+      "strength": "strong",
+      "notes": "Primary data corroboration from a separate source group."
+    },
+    {
+      "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "relation_type": "qualify",
+      "strength": "limited",
+      "notes": "The audit supports persistence only under comparable conditions."
+    }
+  ]
 }

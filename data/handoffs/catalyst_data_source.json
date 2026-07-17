@@ -1,0 +1,12 @@
+{
+  "dataset_id": "utility-interval-2026",
+  "title": "Utility interval dataset",
+  "creators": ["City Utility"],
+  "publisher": "City Utility",
+  "published_year": 2026,
+  "landing_page": "https://example.org/utility-data",
+  "accessed_at": "2026-07-17T12:00:00+00:00",
+  "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "source_type": "official_or_primary",
+  "notes": "Catalyst Data handoff example."
+}

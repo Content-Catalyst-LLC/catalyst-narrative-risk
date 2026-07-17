@@ -1,0 +1,12 @@
+{
+  "document_id": "foundation-energy-audit-2026",
+  "title": "Pilot meter audit",
+  "authors": ["Energy Audit Team"],
+  "publisher": "Independent Audit Group",
+  "published_year": 2026,
+  "canonical_url": "https://example.org/pilot-audit",
+  "accessed_at": "2026-07-17T12:00:00+00:00",
+  "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "source_type": "peer_reviewed_or_audited",
+  "notes": "Knowledge Library handoff example."
+}

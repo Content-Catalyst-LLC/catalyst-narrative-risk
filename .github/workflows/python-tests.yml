@@ -1,4 +1,4 @@
-name: Canonical release integrity
+name: Canonical claims and evidence release integrity
 
 on:
   push:

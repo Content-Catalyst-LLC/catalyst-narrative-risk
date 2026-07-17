@@ -29,14 +29,14 @@ def main() -> int:
 
     browser_valid = {item["name"]: item["result"] for item in browser["valid"]}
     for case in fixture["valid"]:
-        python_result = score_narrative_risk(**case["payload"])
+        python_result = score_narrative_risk(case["payload"])
         if python_result != browser_valid[case["name"]]:
             raise AssertionError(f"runtime mismatch: {case['name']}")
 
     browser_invalid = {item["name"]: item["message"] for item in browser["invalid"]}
     for case in fixture["invalid"]:
         try:
-            score_narrative_risk(**case["payload"])
+            score_narrative_risk(case["payload"])
         except NarrativeRiskValidationError as exc:
             python_message = str(exc)
         else:

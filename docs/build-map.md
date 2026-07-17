@@ -6,19 +6,20 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current baseline — v1.0.0
+## Current implementation — v1.2.0
 
-The repository already provides a strong inspectable foundation:
+The repository now provides a validated canonical method and traceable evidence foundation:
 
-- Deterministic Python heuristic scoring.
-- Claim, source type, evidence strength, uncertainty, volatility, pressure, time sensitivity, consequence, review status, and source-count inputs.
-- Risk score, risk level, component weights, flags, actions, and decision note.
-- JSON and Markdown generation.
-- JSON Schema, sample fixtures, methodology documentation, and review checklist.
-- Client-side WordPress shortcode demo.
-- GitHub Actions and five passing tests.
+- Cross-runtime scoring and SHA-256 parity.
+- Versioned contract, method, controlled vocabularies, and schemas.
+- Five-layer records separating normalized inputs, evidence ledger, calculations, interpretation, and human decisions.
+- Structured claims, sources, evidence excerpts, provenance, citations, and relationships.
+- Evidence coverage and ledger-derived source inputs.
+- v1.0.1 and v1.1.0 migration.
+- Knowledge Library and Catalyst Data source handoffs.
+- JSON, Markdown, bibliography, CSV, API, and WordPress demonstration surfaces.
 
-The current implementation is still a single-record demonstration. It does not yet provide a canonical versioned scoring contract, structured source and evidence records, persistent cases, claim relationships, review assignments, revision history, monitoring, organizational governance, or platform integrations.
+The next architectural gap is persistence: records are still generated as files or API responses rather than managed as durable cases and workspaces.
 
 ## Release roadmap
 
@@ -221,6 +222,6 @@ Deliver the complete institutional claims-governance system.
 
 ## Immediate next build
 
-**Build v1.0.1 — Scoring Parity and Release Integrity.**
+**Build v1.3.0 — Persistent Cases and Review Workspaces.**
 
-This release should be completed before persistence, APIs, or new analytical features because the current WordPress JavaScript can produce different scores from the canonical Python engine. The v1.0.1 release should establish shared fixtures and release contracts that every later build inherits.
+The scoring, canonical contract, and evidence-ledger foundations are now complete. Persistence should be added next so claims, sources, evidence, reviews, revisions, and provenance can survive collaborative workflows, migration, and re-import without losing identity.

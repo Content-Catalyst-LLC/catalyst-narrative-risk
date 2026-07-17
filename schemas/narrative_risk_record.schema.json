@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0",
-  "title": "Catalyst Narrative Risk Record 1.1.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0",
+  "title": "Catalyst Narrative Risk Record 1.2.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,6 +10,7 @@
     "identifiers",
     "generated_at",
     "normalized_input",
+    "evidence_ledger",
     "method_snapshot",
     "method_snapshot_sha256",
     "calculations",
@@ -33,7 +34,7 @@
           "const": "urn:catalyst:narrative-risk:contract:canonical"
         },
         "contract_version": {
-          "const": "1.1.0"
+          "const": "1.2.0"
         }
       }
     },
@@ -45,7 +46,8 @@
         "case_id",
         "method_id",
         "schema_id",
-        "input_schema_id"
+        "input_schema_id",
+        "ledger_schema_id"
       ],
       "properties": {
         "record_id": {
@@ -60,10 +62,13 @@
           "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
         },
         "schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0"
         },
         "input_schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.2.0"
+        },
+        "ledger_schema_id": {
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0"
         }
       }
     },
@@ -72,10 +77,105 @@
       "format": "date-time"
     },
     "normalized_input": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim",
+        "source_type",
+        "evidence_strength",
+        "uncertainty",
+        "narrative_volatility",
+        "stakeholder_pressure",
+        "time_sensitivity",
+        "consequences",
+        "review_status",
+        "source_count",
+        "method_notes"
+      ],
+      "properties": {
+        "claim": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "source_type": {
+          "enum": [
+            "official_or_primary",
+            "peer_reviewed_or_audited",
+            "reputable_secondary",
+            "internal_unreviewed",
+            "single_report_or_media",
+            "social_or_anecdotal",
+            "unknown"
+          ]
+        },
+        "evidence_strength": {
+          "enum": [
+            "strong",
+            "moderate",
+            "limited",
+            "weak",
+            "unclear"
+          ]
+        },
+        "uncertainty": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "narrative_volatility": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "stakeholder_pressure": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "time_sensitivity": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "consequences": {
+          "enum": [
+            "low",
+            "moderate",
+            "high",
+            "critical"
+          ]
+        },
+        "review_status": {
+          "enum": [
+            "reviewed",
+            "partly_reviewed",
+            "not_reviewed"
+          ]
+        },
+        "source_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "method_notes": {
+          "type": "string"
+        }
+      }
+    },
+    "evidence_ledger": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0"
     },
     "method_snapshot": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.1.0"
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.2.0"
     },
     "method_snapshot_sha256": {
       "type": "string",
@@ -109,31 +209,229 @@
           ],
           "properties": {
             "source_type": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "evidence_strength": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "uncertainty": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "narrative_volatility": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "stakeholder_pressure": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "time_sensitivity": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "consequences": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "review_status": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             },
             "source_count": {
-              "$ref": "#/$defs/component"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_value",
+                "weight",
+                "rationale",
+                "remediation"
+              ],
+              "properties": {
+                "input_value": {},
+                "weight": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rationale": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "remediation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             }
           }
         },
@@ -219,82 +517,6 @@
       }
     },
     "human_decision": {
-      "$ref": "#/$defs/human_decision"
-    },
-    "reproducibility": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "canonical_input_sha256",
-        "record_payload_sha256"
-      ],
-      "properties": {
-        "canonical_input_sha256": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
-        },
-        "record_payload_sha256": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{64}$"
-        }
-      }
-    },
-    "migration": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "from_schema_version",
-        "from_method_version",
-        "migrated_at",
-        "warnings"
-      ],
-      "properties": {
-        "from_schema_version": {
-          "const": "1.0.1"
-        },
-        "from_method_version": {
-          "const": "1.0.1"
-        },
-        "migrated_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "warnings": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  },
-  "$defs": {
-    "component": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "input_value",
-        "weight",
-        "rationale",
-        "remediation"
-      ],
-      "properties": {
-        "input_value": {},
-        "weight": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "rationale": {
-          "type": "string",
-          "minLength": 1
-        },
-        "remediation": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
-    },
-    "human_decision": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -343,6 +565,63 @@
         },
         "notes": {
           "type": "string"
+        }
+      }
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_input_sha256",
+        "evidence_ledger_sha256",
+        "record_payload_sha256"
+      ],
+      "properties": {
+        "canonical_input_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "evidence_ledger_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "record_payload_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_schema_version",
+        "from_method_version",
+        "migrated_at",
+        "warnings"
+      ],
+      "properties": {
+        "from_schema_version": {
+          "enum": [
+            "1.0.1",
+            "1.1.0"
+          ]
+        },
+        "from_method_version": {
+          "enum": [
+            "1.0.1",
+            "1.1.0"
+          ]
+        },
+        "migrated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }

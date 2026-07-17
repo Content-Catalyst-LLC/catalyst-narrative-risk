@@ -10,6 +10,7 @@ from narrative_risk.service import (
     CONTRACT_ID,
     METHOD_ID,
     SCHEMA_ID,
+    LEDGER_SCHEMA_ID,
     VERSION,
     NarrativeRiskValidationError,
     build_narrative_risk_record,
@@ -64,8 +65,9 @@ def test_record_has_canonical_layers_and_identifiers():
     assert record["contract"] == {"contract_id": CONTRACT_ID, "contract_version": VERSION}
     assert record["identifiers"]["method_id"] == METHOD_ID
     assert record["identifiers"]["schema_id"] == SCHEMA_ID
+    assert record["identifiers"]["ledger_schema_id"] == LEDGER_SCHEMA_ID
     assert set(record) >= {
-        "normalized_input", "calculations", "interpretation", "human_decision", "method_snapshot"
+        "normalized_input", "evidence_ledger", "calculations", "interpretation", "human_decision", "method_snapshot"
     }
     assert "risk_score" not in record
     assert "claim" not in record
@@ -111,11 +113,13 @@ def test_record_reproduces_exactly_from_stored_method_and_schema_identity():
         "exact_match": True,
         "method_snapshot_hash_match": True,
         "canonical_input_hash_match": True,
+        "evidence_ledger_hash_match": True,
         "record_payload_hash_match": True,
         "record_id": FIXED["record_id"],
         "method_id": METHOD_ID,
         "method_version": VERSION,
         "schema_id": SCHEMA_ID,
+        "ledger_schema_id": LEDGER_SCHEMA_ID,
     }
 
 

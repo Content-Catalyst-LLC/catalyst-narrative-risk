@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Require exact canonical record and SHA-256 parity across Python and JavaScript."""
+"""Require exact v1.2.0 record, evidence-ledger, and digest parity across runtimes."""
 
 from __future__ import annotations
 
@@ -21,31 +21,28 @@ def main() -> int:
         ["node", str(ROOT / "scripts" / "browser_record_dump.js")],
         check=True, capture_output=True, text=True,
     ).stdout)
+    payload = json.loads((ROOT / "data" / "sample_narrative_risk_input.json").read_text(encoding="utf-8"))
     python = build_narrative_risk_record(
-        {
-            "claim": "A Montréal climate narrative requires transparent review.",
-            "source_type": "official_or_primary", "evidence_strength": "strong", "uncertainty": "low",
-            "narrative_volatility": "medium", "stakeholder_pressure": "low", "time_sensitivity": "high",
-            "consequences": "high", "review_status": "reviewed", "source_count": 5,
-            "method_notes": "Unicode and digest parity fixture.",
-        },
+        payload,
         generated_at="2026-07-17T12:00:00+00:00",
         record_id="urn:uuid:10000000-0000-4000-8000-000000000001",
         case_id="urn:uuid:10000000-0000-4000-8000-000000000002",
         human_decision={
             "status": "reviewed", "disposition": "approved_with_conditions", "reviewer_id": "reviewer-17",
             "reviewer_name": "Review Lead", "reviewed_at": "2026-07-17T13:00:00+00:00",
-            "notes": "Use with the stated time boundary.",
+            "notes": "Use within the measured pilot boundary.",
         },
     )
     if canonical_json(browser) != canonical_json(python):
         for key in python:
-            if browser.get(key) != python.get(key):
+            if canonical_json(browser.get(key)) != canonical_json(python.get(key)):
                 raise AssertionError(f"cross-runtime record mismatch in {key}")
         raise AssertionError("cross-runtime canonical record mismatch")
-    if not verify_record_reproducibility(python)["exact_match"]:
-        raise AssertionError("Python record is not reproducible")
-    print("Cross-runtime canonical record and digest parity passed.")
+    report = verify_record_reproducibility(python)
+    checks = ["exact_match", "method_snapshot_hash_match", "canonical_input_hash_match", "evidence_ledger_hash_match", "record_payload_hash_match"]
+    if not all(report[key] for key in checks):
+        raise AssertionError(f"Python record is not reproducible: {report}")
+    print("Cross-runtime canonical record, evidence ledger, and digest parity passed.")
     return 0
 
 

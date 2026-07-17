@@ -1,23 +1,13 @@
-# WordPress Demo
+# WordPress demo
 
-Plugin folder:
-
-```text
-wordpress/catalyst-narrative-risk-demo/
-```
-
-Shortcode:
+Install `wordpress/catalyst-narrative-risk-demo/` and add:
 
 ```text
 [catalyst_narrative_risk_demo]
 ```
 
-The demo is client-side and does not submit visitor inputs to Sustainable Catalyst. It creates a browser-generated narrative-risk record for educational and exploratory use.
+The demo runs entirely in the browser. Scalar fields can be used alone, or an optional JSON object can supply `claims`, `sources`, `evidence_items`, and `relationships`.
 
-Recommended page wrapper:
+When ledger JSON is supplied, the interface removes manual source type, evidence strength, and source count values before invoking the engine. The engine derives those values from linked evidence and rejects invalid cross-references or controlled vocabularies.
 
-```html
-<div class="scnrisk-demo-shell">
-  [catalyst_narrative_risk_demo]
-</div>
-```
+The result panel displays score, component weights, evidence coverage, derived source inputs, source citations, flags, review actions, human-decision state, and complete JSON export.

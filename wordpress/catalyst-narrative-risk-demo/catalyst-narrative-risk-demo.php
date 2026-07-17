@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk Demo
  * Description: Browser-based Sustainable Catalyst Narrative Risk demo with shortcode [catalyst_narrative_risk_demo].
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,10 +13,10 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.1.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.1.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.1.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.1.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.2.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.2.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js'), '1.2.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.2.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -30,7 +30,7 @@ function cnrisk_demo_shortcode() {
       <div class="cnrisk-demo__head">
         <p class="cnrisk-demo__eyebrow">Interactive demo</p>
         <h3>Catalyst Narrative Risk</h3>
-        <p>Build a structured review record for a claim, source base, uncertainty, pressure, and interpretation risk.</p>
+        <p>Build a traceable review record linking claims to sources, evidence excerpts, provenance, uncertainty, and human judgment.</p>
       </div>
 
       <div class="cnrisk-demo__grid">
@@ -133,9 +133,15 @@ function cnrisk_demo_shortcode() {
             <textarea name="method_notes" rows="3">Claim needs narrower language, stronger baseline evidence, and a review date before publication.</textarea>
           </label>
 
+          <label>
+            <span>Evidence ledger JSON (optional)</span>
+            <textarea name="evidence_ledger_json" rows="8" placeholder='{"claims": [...], "sources": [...], "evidence_items": [...], "relationships": [...]}'></textarea>
+            <small>When provided, source type, evidence strength, and source count are derived from linked evidence. Use “Load traceable sample” to see the contract.</small>
+          </label>
+
           <div class="cnrisk-demo__actions">
             <button type="submit">Generate record</button>
-            <button type="button" data-cnrisk-sample>Load sample</button>
+            <button type="button" data-cnrisk-sample>Load traceable sample</button>
             <button type="button" data-cnrisk-download>Download JSON</button>
           </div>
         </form>
@@ -154,6 +160,17 @@ function cnrisk_demo_shortcode() {
           <div class="cnrisk-demo__block">
             <h4>Contract identity</h4>
             <p data-cnrisk-identity>No record generated yet.</p>
+          </div>
+
+          <div class="cnrisk-demo__block">
+            <h4>Evidence coverage</h4>
+            <p data-cnrisk-coverage>No ledger analyzed yet.</p>
+            <p><strong>Derived scoring inputs:</strong> <span data-cnrisk-derived>Not yet calculated.</span></p>
+          </div>
+
+          <div class="cnrisk-demo__block">
+            <h4>Source list</h4>
+            <ul data-cnrisk-sources><li>No item-level sources recorded.</li></ul>
           </div>
 
           <div class="cnrisk-demo__block">

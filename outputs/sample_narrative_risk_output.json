@@ -2,34 +2,231 @@
   "record_type": "catalyst_narrative_risk_record",
   "contract": {
     "contract_id": "urn:catalyst:narrative-risk:contract:canonical",
-    "contract_version": "1.1.0"
+    "contract_version": "1.2.0"
   },
   "identifiers": {
-    "record_id": "urn:uuid:20000000-0000-4000-8000-000000000001",
-    "case_id": "urn:uuid:20000000-0000-4000-8000-000000000002",
+    "record_id": "urn:uuid:30000000-0000-4000-8000-000000000001",
+    "case_id": "urn:uuid:30000000-0000-4000-8000-000000000002",
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0",
-    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
+    "schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0",
+    "input_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.2.0",
+    "ledger_schema_id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0"
   },
   "generated_at": "2026-07-17T12:00:00+00:00",
   "normalized_input": {
-    "claim": "The proposed initiative will materially improve public trust in sustainability reporting within one year.",
-    "source_type": "reputable_secondary",
-    "evidence_strength": "limited",
-    "uncertainty": "high",
-    "narrative_volatility": "medium",
-    "stakeholder_pressure": "high",
+    "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+    "source_type": "official_or_primary",
+    "evidence_strength": "strong",
+    "uncertainty": "medium",
+    "narrative_volatility": "low",
+    "stakeholder_pressure": "medium",
     "time_sensitivity": "medium",
     "consequences": "high",
     "review_status": "partly_reviewed",
     "source_count": 2,
-    "method_notes": "Claim needs a narrower scope, stronger baseline evidence, and a review date before publication."
+    "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
+  },
+  "evidence_ledger": {
+    "ledger_version": "1.2.0",
+    "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "claims": [
+      {
+        "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+        "claim_type": "factual",
+        "role": "primary",
+        "notes": "The claim is limited to the pilot sites and measured period."
+      },
+      {
+        "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "text": "The observed reduction is likely to persist under comparable operating conditions.",
+        "claim_type": "predictive",
+        "role": "supporting",
+        "notes": "This supporting claim has less direct evidence than the primary claim."
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "title": "Pilot meter audit",
+        "source_type": "peer_reviewed_or_audited",
+        "creators": [
+          "Energy Audit Team"
+        ],
+        "publisher": "Independent Audit Group",
+        "published_year": 2026,
+        "url": "https://example.org/pilot-audit",
+        "accessed_at": "2026-07-17T12:00:00+00:00",
+        "identifiers": [
+          {
+            "scheme": "doi",
+            "value": "10.0000/example.audit"
+          }
+        ],
+        "independence_group": "independent-audit-group",
+        "duplicate_of_source_id": null,
+        "directness": "direct",
+        "freshness": "current",
+        "provenance": {
+          "acquisition_method": "document_import",
+          "imported_from": "knowledge-library:pilot-meter-audit",
+          "imported_at": "2026-07-17T12:00:00+00:00",
+          "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "notes": "Independent audit of weather-normalized meter data."
+      },
+      {
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "title": "Utility interval dataset",
+        "source_type": "official_or_primary",
+        "creators": [
+          "City Utility"
+        ],
+        "publisher": "City Utility",
+        "published_year": 2026,
+        "url": "https://example.org/utility-data",
+        "accessed_at": "2026-07-17T12:00:00+00:00",
+        "identifiers": [
+          {
+            "scheme": "catalog",
+            "value": "dataset:utility-interval-2026"
+          }
+        ],
+        "independence_group": "city-utility",
+        "duplicate_of_source_id": null,
+        "directness": "direct",
+        "freshness": "current",
+        "provenance": {
+          "acquisition_method": "catalyst_data",
+          "imported_from": "catalyst-data:utility-interval-2026",
+          "imported_at": "2026-07-17T12:00:00+00:00",
+          "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "notes": "Primary interval readings used by the audit."
+      }
+    ],
+    "evidence_items": [
+      {
+        "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_type": "finding",
+        "excerpt": "Weather-normalized consumption declined 11.8 percent across the pilot sites.",
+        "locator": "p. 14",
+        "captured_at": "2026-07-17T12:05:00+00:00",
+        "excerpt_sha256": "8b1690fa4e70d7b1f71252ebeaaa3badd515eb4f4a46847b4c1d6ccf2ca4ad21",
+        "notes": "Audit finding rounded to approximately 12 percent in the claim."
+      },
+      {
+        "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "evidence_type": "data",
+        "excerpt": "The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.",
+        "locator": "dataset row 18",
+        "captured_at": "2026-07-17T12:06:00+00:00",
+        "excerpt_sha256": "ccd634214ff2f08b11603a7d685b4169f0aa64a7fd3283fb8e3ebf404d793a6c",
+        "notes": "Primary data independently checked against the audit calculation."
+      }
+    ],
+    "relationships": [
+      {
+        "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "relation_type": "support",
+        "strength": "strong",
+        "notes": "Direct audited finding."
+      },
+      {
+        "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "relation_type": "support",
+        "strength": "strong",
+        "notes": "Primary data corroboration from a separate source group."
+      },
+      {
+        "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+        "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "relation_type": "qualify",
+        "strength": "limited",
+        "notes": "The audit supports persistence only under comparable conditions."
+      }
+    ],
+    "coverage": {
+      "per_claim": [
+        {
+          "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "evidence_count": 2,
+          "source_count": 2,
+          "independent_source_count": 2,
+          "relationship_counts": {
+            "support": 2,
+            "qualify": 0,
+            "contradict": 0,
+            "contextualize": 0,
+            "unresolved": 0
+          },
+          "positive_strength": "strong",
+          "coverage_status": "substantial",
+          "contested": false
+        },
+        {
+          "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "evidence_count": 1,
+          "source_count": 1,
+          "independent_source_count": 1,
+          "relationship_counts": {
+            "support": 0,
+            "qualify": 1,
+            "contradict": 0,
+            "contextualize": 0,
+            "unresolved": 0
+          },
+          "positive_strength": "limited",
+          "coverage_status": "partial",
+          "contested": false
+        }
+      ],
+      "overall": {
+        "claim_count": 2,
+        "source_count": 2,
+        "evidence_count": 2,
+        "relationship_count": 3,
+        "independent_source_count": 2,
+        "duplicate_source_count": 0,
+        "direct_source_count": 2,
+        "stale_source_count": 0,
+        "unsupported_claim_count": 0,
+        "contested_claim_count": 0,
+        "coverage_status": "partial"
+      }
+    },
+    "source_list": [
+      {
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "citation_key": "Team2026-aaaaaaaa",
+        "citation": "Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17)."
+      },
+      {
+        "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "citation_key": "Utility2026-bbbbbbbb",
+        "citation": "City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17)."
+      }
+    ],
+    "derived_scoring_inputs": {
+      "ledger_applied": true,
+      "source_type": "official_or_primary",
+      "evidence_strength": "strong",
+      "source_count": 2,
+      "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+    }
   },
   "method_snapshot": {
     "method_id": "urn:catalyst:narrative-risk:method:transparent-heuristic",
-    "method_version": "1.1.0",
+    "method_version": "1.2.0",
     "name": "Transparent Heuristic Narrative Risk Method",
-    "description": "A weighted, inspectable review heuristic that structures risk without verifying truth or replacing human judgment.",
+    "description": "A weighted, inspectable review heuristic with a traceable claims, sources, and evidence ledger. It structures risk without verifying truth or replacing human judgment.",
     "algorithm": {
       "type": "weighted_additive_v1",
       "component_order": [
@@ -66,7 +263,7 @@
       ]
     },
     "controlled_vocabulary_id": "urn:catalyst:narrative-risk:vocabularies:canonical",
-    "controlled_vocabulary_version": "1.1.0",
+    "controlled_vocabulary_version": "1.2.0",
     "defaults": {
       "source_type": "reputable_secondary",
       "evidence_strength": "moderate",
@@ -349,38 +546,90 @@
         }
       ]
     },
-    "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score."
+    "human_decision_boundary": "Heuristic interpretation is advisory. A human disposition is stored separately and is never inferred from the score.",
+    "ledger_policy": {
+      "policy_version": "1.2.0",
+      "primary_claim_role": "primary",
+      "positive_relation_types": [
+        "support",
+        "qualify"
+      ],
+      "counted_relation_types": [
+        "support",
+        "qualify",
+        "contradict",
+        "contextualize",
+        "unresolved"
+      ],
+      "strength_order": [
+        "unclear",
+        "weak",
+        "limited",
+        "moderate",
+        "strong"
+      ],
+      "source_type_derivation": "Select the lowest-risk source type among sources linked by support or qualification; if none exist, inspect all linked sources; if none are linked, use unknown.",
+      "source_count_derivation": "Count unique sources connected to the primary claim through evidence relationships.",
+      "evidence_strength_derivation": "Start with the strongest positive evidence relationship, downgrade one level when fewer than two independent source groups support the primary claim, and downgrade one additional level when contradictory evidence is present.",
+      "minimum_independent_groups_for_no_downgrade": 2,
+      "single_group_downgrade_steps": 1,
+      "contradiction_downgrade_steps": 1,
+      "coverage_statuses": [
+        "none",
+        "partial",
+        "substantial",
+        "contested"
+      ],
+      "substantial_minimum_independent_groups": 2,
+      "substantial_minimum_strength": "moderate"
+    },
+    "ledger_interpretation": {
+      "flags": {
+        "no_relationships": "No evidence relationship has been recorded for the primary claim",
+        "contested": "The evidence ledger contains contradictory evidence for the primary claim",
+        "dependent_sources": "Source duplication or dependency reduces independent corroboration",
+        "stale_sources": "One or more linked sources are marked stale",
+        "indirect_only": "The primary claim is supported only by indirect or unknown-directness sources"
+      },
+      "actions": {
+        "record_relationships": "Link each material claim to specific evidence excerpts and sources.",
+        "resolve_contestation": "Document how contradictory evidence changes wording, confidence, or intended use.",
+        "add_independent_sources": "Add independently produced corroboration or disclose source dependency.",
+        "refresh_stale_sources": "Refresh stale sources before publication or decision use.",
+        "add_direct_evidence": "Add direct evidence or explain why indirect evidence is sufficient."
+      }
+    }
   },
-  "method_snapshot_sha256": "7e498013f5c4c8c4b88d9703d8c151684f1b245baff54c35a44d75555fd169f4",
+  "method_snapshot_sha256": "e1c85e06985545fda64bb128def20c0fe93fdb0e7046e780679e3932fc059cf7",
   "calculations": {
     "components": {
       "source_type": {
-        "input_value": "reputable_secondary",
-        "weight": 8,
+        "input_value": "official_or_primary",
+        "weight": 0,
         "rationale": "Less direct or less accountable source types increase the need for corroboration.",
         "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
       },
       "evidence_strength": {
-        "input_value": "limited",
-        "weight": 20,
+        "input_value": "strong",
+        "weight": 0,
         "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
         "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
       },
       "uncertainty": {
-        "input_value": "high",
-        "weight": 18,
+        "input_value": "medium",
+        "weight": 10,
         "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
         "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
       },
       "narrative_volatility": {
-        "input_value": "medium",
-        "weight": 10,
+        "input_value": "low",
+        "weight": 3,
         "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
         "remediation": "Timestamp the assessment and re-check material changes before reuse."
       },
       "stakeholder_pressure": {
-        "input_value": "high",
-        "weight": 18,
+        "input_value": "medium",
+        "weight": 10,
         "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
         "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
       },
@@ -409,33 +658,27 @@
         "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
       }
     },
-    "raw_total": 118,
+    "raw_total": 67,
     "multiplier": 0.68,
-    "scaled_score": 80.24,
-    "risk_score": 80,
+    "scaled_score": 45.56,
+    "risk_score": 46,
     "threshold": {
-      "level": "High",
-      "minimum": 70,
-      "maximum": 100
+      "level": "Medium",
+      "minimum": 40,
+      "maximum": 69
     }
   },
   "interpretation": {
-    "risk_level": "High",
+    "risk_level": "Medium",
     "flags": [
-      "Evidence does not yet support confident use",
-      "High uncertainty should be stated explicitly",
-      "Stakeholder pressure may be influencing interpretation",
       "High-consequence claim needs stricter review"
     ],
     "review_actions": [
       "Add at least one independent source or primary reference.",
-      "Rewrite claim with narrower language until evidence improves.",
-      "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
-      "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
       "Escalate to domain, legal, compliance, or editorial review as appropriate.",
       "Record a reviewer, date, and decision before treating the claim as approved."
     ],
-    "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language."
+    "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
   },
   "human_decision": {
     "status": "draft",
@@ -446,7 +689,8 @@
     "notes": ""
   },
   "reproducibility": {
-    "canonical_input_sha256": "45f1a7d69fd4e024265c700ec7e61ed077bea569f867d19d617bcb9134ab1bc1",
-    "record_payload_sha256": "6bddb1a0c97fbeafa2e45d2aa92d3df9d627275eaf942bab907787ac951ae8fe"
+    "canonical_input_sha256": "a30d185caab50cb177bac1ecc5097198b8c7b3c64f4a06fdee39a63d078fb56a",
+    "evidence_ledger_sha256": "bad5549a343b950944935572cfe50fcf0871036576f7023d93b9ab8c7716b841",
+    "record_payload_sha256": "a564467278315322367156735b1d7d3a80b97a84a13cb7a62b6959c4adddbdbe"
   }
 }

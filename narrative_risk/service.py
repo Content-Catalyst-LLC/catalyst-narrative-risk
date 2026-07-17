@@ -1,8 +1,8 @@
-"""Canonical v1.1.0 method engine for Catalyst Narrative Risk.
+"""Canonical v1.2.0 narrative-risk method and evidence-ledger engine.
 
-The engine separates normalized input, deterministic calculations, machine
-interpretation, and human decisions. It structures review and does not verify
-truth, certify evidence, or replace professional judgment.
+The engine separates normalized scalar inputs, a traceable claims/sources/evidence
+ledger, deterministic calculations, machine interpretation, and human decisions.
+It structures review and does not verify truth or replace professional judgment.
 """
 
 from __future__ import annotations
@@ -24,46 +24,30 @@ from .contracts import (
     sha256_digest,
     validate_against_schema,
 )
+from .errors import NarrativeRiskValidationError
+from .ledger import build_evidence_ledger, ledger_input_from_record, ledger_interpretation
 
-VERSION = "1.1.0"
-METHOD_VERSION = "1.1.0"
-SCHEMA_VERSION = "1.1.0"
+VERSION = "1.2.0"
+METHOD_VERSION = "1.2.0"
+SCHEMA_VERSION = "1.2.0"
 RECORD_TYPE = "catalyst_narrative_risk_record"
 CONTRACT_ID = "urn:catalyst:narrative-risk:contract:canonical"
 METHOD_ID = "urn:catalyst:narrative-risk:method:transparent-heuristic"
-SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.1.0"
-INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.1.0"
-METHOD = "transparent heuristic scoring; not truth verification"
+SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.2.0"
+INPUT_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.2.0"
+LEDGER_SCHEMA_ID = "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.2.0"
+METHOD = "transparent heuristic scoring with traceable evidence relationships; not truth verification"
 
-INPUT_FIELDS = {
-    "claim",
-    "source_type",
-    "evidence_strength",
-    "uncertainty",
-    "narrative_volatility",
-    "stakeholder_pressure",
-    "time_sensitivity",
-    "consequences",
-    "review_status",
-    "source_count",
+SCALAR_INPUT_FIELDS = {
+    "claim", "source_type", "evidence_strength", "uncertainty", "narrative_volatility",
+    "stakeholder_pressure", "time_sensitivity", "consequences", "review_status", "source_count",
     "method_notes",
 }
-
-HUMAN_DECISION_FIELDS = {
-    "status",
-    "disposition",
-    "reviewer_id",
-    "reviewer_name",
-    "reviewed_at",
-    "notes",
-}
-
+LEDGER_INPUT_FIELDS = {"claims", "sources", "evidence_items", "relationships"}
+INPUT_FIELDS = SCALAR_INPUT_FIELDS | LEDGER_INPUT_FIELDS
+HUMAN_DECISION_FIELDS = {"status", "disposition", "reviewer_id", "reviewer_name", "reviewed_at", "notes"}
 HUMAN_DECISION_STATUS = {"draft", "pending_review", "reviewed"}
 HUMAN_DISPOSITIONS = {"undecided", "approved", "approved_with_conditions", "revise", "rejected"}
-
-
-class NarrativeRiskValidationError(ValueError):
-    """Raised when a narrative-risk payload cannot be normalized safely."""
 
 
 @dataclass(frozen=True)
@@ -138,12 +122,11 @@ def validate_method_snapshot(method_snapshot: Mapping[str, Any]) -> None:
         raise
 
 
-def normalize_narrative_risk_input(
+def _normalize_payload(
     payload: Mapping[str, Any],
     *,
     method_snapshot: Mapping[str, Any] | None = None,
-) -> NarrativeRiskInput:
-    """Normalize and strictly validate a payload against the canonical input contract."""
+) -> tuple[NarrativeRiskInput, Dict[str, Any]]:
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
     unknown = sorted(set(payload) - INPUT_FIELDS)
@@ -154,21 +137,63 @@ def normalize_narrative_risk_input(
     validate_method_snapshot(method)
     defaults = method["defaults"]
     weights = method["weights"]
+    claim = _clean_text(payload.get("claim"), "claim", required=True)
+
+    fallback = {
+        "source_type": _clean_choice(payload.get("source_type"), field="source_type", allowed=weights["source_type"], default=defaults["source_type"]),
+        "evidence_strength": _clean_choice(payload.get("evidence_strength"), field="evidence_strength", allowed=weights["evidence_strength"], default=defaults["evidence_strength"]),
+        "source_count": _clean_source_count(payload.get("source_count"), int(defaults["source_count"])),
+    }
+    ledger = build_evidence_ledger(
+        payload,
+        narrative_claim=claim,
+        method_snapshot=method,
+        fallback_scoring_inputs=fallback,
+    )
+    derived = ledger["derived_scoring_inputs"]
+    if derived["ledger_applied"]:
+        for field in ("source_type", "evidence_strength", "source_count"):
+            if field in payload and payload.get(field) not in (None, "") and fallback[field] != derived[field]:
+                raise NarrativeRiskValidationError(
+                    f"{field} conflicts with the value derived from the evidence ledger: {derived[field]}"
+                )
+        source_type = derived["source_type"]
+        evidence_strength = derived["evidence_strength"]
+        source_count = int(derived["source_count"])
+    else:
+        source_type = fallback["source_type"]
+        evidence_strength = fallback["evidence_strength"]
+        source_count = int(fallback["source_count"])
 
     normalized = NarrativeRiskInput(
-        claim=_clean_text(payload.get("claim"), "claim", required=True),
-        source_type=_clean_choice(payload.get("source_type"), field="source_type", allowed=weights["source_type"], default=defaults["source_type"]),
-        evidence_strength=_clean_choice(payload.get("evidence_strength"), field="evidence_strength", allowed=weights["evidence_strength"], default=defaults["evidence_strength"]),
+        claim=claim,
+        source_type=source_type,
+        evidence_strength=evidence_strength,
         uncertainty=_clean_choice(payload.get("uncertainty"), field="uncertainty", allowed=weights["three_level_scale"], default=defaults["uncertainty"]),
         narrative_volatility=_clean_choice(payload.get("narrative_volatility"), field="narrative_volatility", allowed=weights["three_level_scale"], default=defaults["narrative_volatility"]),
         stakeholder_pressure=_clean_choice(payload.get("stakeholder_pressure"), field="stakeholder_pressure", allowed=weights["three_level_scale"], default=defaults["stakeholder_pressure"]),
         time_sensitivity=_clean_choice(payload.get("time_sensitivity"), field="time_sensitivity", allowed=weights["three_level_scale"], default=defaults["time_sensitivity"]),
         consequences=_clean_choice(payload.get("consequences"), field="consequences", allowed=weights["consequences"], default=defaults["consequences"]),
         review_status=_clean_choice(payload.get("review_status"), field="review_status", allowed=weights["review_status"], default=defaults["review_status"]),
-        source_count=_clean_source_count(payload.get("source_count"), int(defaults["source_count"])),
+        source_count=source_count,
         method_notes=_clean_text(payload.get("method_notes", defaults["method_notes"]), "method_notes"),
     )
-    validate_against_schema(asdict(normalized), INPUT_SCHEMA_PATH)
+    try:
+        validate_against_schema(asdict(normalized), INPUT_SCHEMA_PATH)
+    except Exception as exc:
+        if exc.__class__.__module__.startswith("jsonschema"):
+            raise NarrativeRiskValidationError(f"invalid normalized input: {exc.message}") from exc
+        raise
+    return normalized, ledger
+
+
+def normalize_narrative_risk_input(
+    payload: Mapping[str, Any],
+    *,
+    method_snapshot: Mapping[str, Any] | None = None,
+) -> NarrativeRiskInput:
+    """Normalize scalar scoring inputs, including ledger-derived values."""
+    normalized, _ledger = _normalize_payload(payload, method_snapshot=method_snapshot)
     return normalized
 
 
@@ -200,7 +225,6 @@ def _evaluate_rule(rule: Mapping[str, Any], normalized: Mapping[str, Any], *, sc
         return not current and score < int(rule["value"])
     if operator == "any_eq":
         return any(normalized.get(field) == rule.get("value") for field in rule.get("fields", []))
-
     field = rule.get("field")
     actual = normalized.get(field)
     expected = rule.get("value")
@@ -223,19 +247,25 @@ def _apply_rules(rules: Iterable[Mapping[str, Any]], normalized: Mapping[str, An
     return output
 
 
+def _append_unique(target: List[str], values: Iterable[str]) -> None:
+    for value in values:
+        if value not in target:
+            target.append(value)
+
+
 def score_narrative_risk(
     payload: Mapping[str, Any] | None = None,
     *,
     method_snapshot: Mapping[str, Any] | None = None,
     **fields: Any,
 ) -> Dict[str, Any]:
-    """Return the canonical normalized/calculation/interpretation analysis layers."""
+    """Return normalized input, evidence ledger, calculations, and interpretation."""
     if payload is not None and fields:
         raise NarrativeRiskValidationError("provide either payload or keyword fields, not both")
     source = payload if payload is not None else fields
     method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
     validate_method_snapshot(method)
-    inp = normalize_narrative_risk_input(source, method_snapshot=method)
+    inp, ledger = _normalize_payload(source, method_snapshot=method)
     normalized = asdict(inp)
 
     component_results: Dict[str, Dict[str, Any]] = {}
@@ -265,14 +295,20 @@ def score_narrative_risk(
     risk_level = threshold["level"]
 
     interpretation_spec = method["interpretation"]
+    flags = _apply_rules(interpretation_spec["flag_rules"], normalized, risk_score)
+    actions = _apply_rules(interpretation_spec["action_rules"], normalized, risk_score)
+    ledger_notes = ledger_interpretation(ledger, method)
+    _append_unique(flags, ledger_notes["flags"])
+    _append_unique(actions, ledger_notes["actions"])
     interpretation = {
         "risk_level": risk_level,
-        "flags": _apply_rules(interpretation_spec["flag_rules"], normalized, risk_score),
-        "review_actions": _apply_rules(interpretation_spec["action_rules"], normalized, risk_score),
+        "flags": flags,
+        "review_actions": actions,
         "decision_note": interpretation_spec["decision_notes"][risk_level],
     }
     return {
         "normalized_input": normalized,
+        "evidence_ledger": ledger,
         "calculations": {
             "components": component_results,
             "raw_total": raw_total,
@@ -352,7 +388,7 @@ def build_narrative_risk_record(
     method_snapshot: Mapping[str, Any] | None = None,
     migration: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    """Build a complete canonical record with an embedded reproducible method."""
+    """Build a complete v1.2.0 record with an embedded evidence ledger and method."""
     if not isinstance(payload, Mapping):
         raise NarrativeRiskValidationError("payload must be a JSON object")
     method = deepcopy(dict(method_snapshot)) if method_snapshot is not None else current_method_snapshot()
@@ -372,9 +408,11 @@ def build_narrative_risk_record(
             "method_id": method["method_id"],
             "schema_id": contract["record_schema_id"],
             "input_schema_id": contract["input_schema_id"],
+            "ledger_schema_id": contract["ledger_schema_id"],
         },
         "generated_at": generated,
         "normalized_input": analysis["normalized_input"],
+        "evidence_ledger": analysis["evidence_ledger"],
         "method_snapshot": method,
         "method_snapshot_sha256": sha256_digest(method),
         "calculations": analysis["calculations"],
@@ -385,6 +423,7 @@ def build_narrative_risk_record(
         record["migration"] = deepcopy(dict(migration))
     record["reproducibility"] = {
         "canonical_input_sha256": sha256_digest(record["normalized_input"]),
+        "evidence_ledger_sha256": sha256_digest(record["evidence_ledger"]),
         "record_payload_sha256": sha256_digest(record),
     }
     validate_narrative_risk_record(record)
@@ -403,13 +442,15 @@ def validate_narrative_risk_record(record: Mapping[str, Any]) -> None:
 
 
 def reproduce_narrative_risk_record(record: Mapping[str, Any]) -> Dict[str, Any]:
-    """Rebuild a record from its stored normalized input and method snapshot."""
+    """Rebuild a record from its normalized input, ledger, and method snapshot."""
     validate_narrative_risk_record(record)
     method = record["method_snapshot"]
     if sha256_digest(method) != record["method_snapshot_sha256"]:
         raise NarrativeRiskValidationError("method_snapshot_sha256 does not match the embedded method snapshot")
+    payload = dict(record["normalized_input"])
+    payload.update(ledger_input_from_record(record))
     return build_narrative_risk_record(
-        record["normalized_input"],
+        payload,
         generated_at=record["generated_at"],
         record_id=record["identifiers"]["record_id"],
         case_id=record["identifiers"]["case_id"],
@@ -420,7 +461,7 @@ def reproduce_narrative_risk_record(record: Mapping[str, Any]) -> Dict[str, Any]
 
 
 def verify_record_reproducibility(record: Mapping[str, Any]) -> Dict[str, Any]:
-    """Return a deterministic verification report for an exported record."""
+    """Return deterministic verification for method, input, ledger, and record payload."""
     validate_narrative_risk_record(record)
     expected_method_hash = sha256_digest(record["method_snapshot"])
     payload = dict(record)
@@ -432,9 +473,11 @@ def verify_record_reproducibility(record: Mapping[str, Any]) -> Dict[str, Any]:
         "exact_match": exact_match,
         "method_snapshot_hash_match": expected_method_hash == record["method_snapshot_sha256"],
         "canonical_input_hash_match": sha256_digest(record["normalized_input"]) == reproducibility["canonical_input_sha256"],
+        "evidence_ledger_hash_match": sha256_digest(record["evidence_ledger"]) == reproducibility["evidence_ledger_sha256"],
         "record_payload_hash_match": expected_payload_hash == reproducibility["record_payload_sha256"],
         "record_id": record["identifiers"]["record_id"],
         "method_id": record["identifiers"]["method_id"],
         "method_version": record["method_snapshot"]["method_version"],
         "schema_id": record["identifiers"]["schema_id"],
+        "ledger_schema_id": record["identifiers"]["ledger_schema_id"],
     }

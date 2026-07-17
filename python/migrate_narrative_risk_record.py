@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Migrate a Catalyst Narrative Risk v1.0.1 record to v1.1.0."""
+"""Migrate a Catalyst Narrative Risk v1.0.1 or v1.1.0 record to v1.2.0."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from narrative_risk.migrations import migrate_v1_0_1_record
+from narrative_risk.migrations import migrate_record
 from narrative_risk.service import NarrativeRiskValidationError, verify_record_reproducibility
 
 
@@ -24,7 +24,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         legacy = json.loads(Path(args.input).read_text(encoding="utf-8"))
-        migrated = migrate_v1_0_1_record(legacy, migrated_at=args.migrated_at)
+        migrated = migrate_record(legacy, migrated_at=args.migrated_at)
         report = verify_record_reproducibility(migrated)
         if not report["exact_match"]:
             raise NarrativeRiskValidationError("migrated record failed reproducibility verification")

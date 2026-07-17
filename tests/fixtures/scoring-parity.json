@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.1.0",
+  "contract_version": "1.2.0",
   "valid": [
     {
       "name": "zero_weight_low",
@@ -29,6 +29,63 @@
           "review_status": "reviewed",
           "source_count": 5,
           "method_notes": "Reviewed against the primary record."
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
+              "text": "A narrowly scoped claim is supported by current primary evidence.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:67fae6a36e04e6222f60d5892517abe99b57f847fb6a296e00423975eb7c6ce3",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "official_or_primary",
+            "evidence_strength": "strong",
+            "source_count": 5,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -100,10 +157,12 @@
         "interpretation": {
           "risk_level": "Low",
           "flags": [
-            "No major heuristic risk flags"
+            "No major heuristic risk flags",
+            "No evidence relationship has been recorded for the primary claim"
           ],
           "review_actions": [
-            "Maintain source links, method notes, and review date for future audit."
+            "Maintain source links, method notes, and review date for future audit.",
+            "Link each material claim to specific evidence excerpts and sources."
           ],
           "decision_note": "Risk appears lower by heuristic review, but source links and review date should still be preserved."
         }
@@ -127,6 +186,63 @@
           "review_status": "partly_reviewed",
           "source_count": 2,
           "method_notes": ""
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
+              "text": "A default-input claim requires ordinary review.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:a5bcd9fafc9cb1e1dad804a58efb8c61391143f9804d8e977cfdebf5a1077da6",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "reputable_secondary",
+            "evidence_strength": "moderate",
+            "source_count": 2,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -197,10 +313,13 @@
         },
         "interpretation": {
           "risk_level": "Medium",
-          "flags": [],
+          "flags": [
+            "No evidence relationship has been recorded for the primary claim"
+          ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
-            "Record a reviewer, date, and decision before treating the claim as approved."
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
           ],
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
         }
@@ -234,6 +353,63 @@
           "review_status": "not_reviewed",
           "source_count": 0,
           "method_notes": ""
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
+              "text": "A consequential unsupported claim is ready for immediate public use.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:27dbaa95d395adae15075768678e291713e596658801a38114983f81feebee0b",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "unknown",
+            "evidence_strength": "weak",
+            "source_count": 0,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -312,7 +488,8 @@
             "Stakeholder pressure may be influencing interpretation",
             "Time-sensitive claim requires recent source check",
             "High-consequence claim needs stricter review",
-            "Claim has not completed review"
+            "Claim has not completed review",
+            "No evidence relationship has been recorded for the primary claim"
           ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
@@ -321,7 +498,8 @@
             "Re-check source freshness before publication or decision use.",
             "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
             "Escalate to domain, legal, compliance, or editorial review as appropriate.",
-            "Record a reviewer, date, and decision before treating the claim as approved."
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
           ],
           "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language."
         }
@@ -355,6 +533,63 @@
           "review_status": "reviewed",
           "source_count": 0,
           "method_notes": "Boundary fixture."
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
+              "text": "A reviewed but under-sourced critical claim remains below the medium threshold.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:c50eee62e815fbb58c7cb24eac69d04e4d5e31f0ed01b78bff2481865e2e4b28",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "official_or_primary",
+            "evidence_strength": "strong",
+            "source_count": 0,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -427,11 +662,13 @@
           "risk_level": "Low",
           "flags": [
             "Single-source or under-sourced claim",
-            "High-consequence claim needs stricter review"
+            "High-consequence claim needs stricter review",
+            "No evidence relationship has been recorded for the primary claim"
           ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
-            "Escalate to domain, legal, compliance, or editorial review as appropriate."
+            "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+            "Link each material claim to specific evidence excerpts and sources."
           ],
           "decision_note": "Risk appears lower by heuristic review, but source links and review date should still be preserved."
         }
@@ -465,6 +702,63 @@
           "review_status": "partly_reviewed",
           "source_count": 0,
           "method_notes": "Boundary fixture."
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
+              "text": "A time-sensitive under-sourced claim reaches the medium threshold.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:70cbfbf51cb85dd547e5c2a1ab2e84383b0f857afa498af9d93ee617c55596ff",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "official_or_primary",
+            "evidence_strength": "strong",
+            "source_count": 0,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -536,11 +830,13 @@
         "interpretation": {
           "risk_level": "Medium",
           "flags": [
-            "Single-source or under-sourced claim"
+            "Single-source or under-sourced claim",
+            "No evidence relationship has been recorded for the primary claim"
           ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
-            "Record a reviewer, date, and decision before treating the claim as approved."
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
           ],
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
         }
@@ -574,6 +870,63 @@
           "review_status": "partly_reviewed",
           "source_count": 2,
           "method_notes": "normalized notes"
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
+              "text": "Normalized claim text.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [],
+          "evidence_items": [],
+          "relationships": [],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:5ee38e55f5ba0997937c26de739ab9cb544e8124adef32e459371912b4578809",
+                "evidence_count": 0,
+                "source_count": 0,
+                "independent_source_count": 0,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "unclear",
+                "coverage_status": "none",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 0,
+              "evidence_count": 0,
+              "relationship_count": 0,
+              "independent_source_count": 0,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 1,
+              "contested_claim_count": 0,
+              "coverage_status": "none"
+            }
+          },
+          "source_list": [],
+          "derived_scoring_inputs": {
+            "ledger_applied": false,
+            "source_type": "reputable_secondary",
+            "evidence_strength": "moderate",
+            "source_count": 2,
+            "basis": "No primary-claim relationships were recorded; explicit or default scalar scoring inputs were retained."
+          }
         },
         "calculations": {
           "components": {
@@ -644,12 +997,740 @@
         },
         "interpretation": {
           "risk_level": "Medium",
-          "flags": [],
+          "flags": [
+            "No evidence relationship has been recorded for the primary claim"
+          ],
           "review_actions": [
             "Add at least one independent source or primary reference.",
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Link each material claim to specific evidence excerpts and sources."
+          ],
+          "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
+        }
+      }
+    },
+    {
+      "name": "traceable_evidence_ledger",
+      "payload": {
+        "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+        "uncertainty": "medium",
+        "narrative_volatility": "low",
+        "stakeholder_pressure": "medium",
+        "time_sensitivity": "medium",
+        "consequences": "high",
+        "review_status": "partly_reviewed",
+        "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+            "claim_type": "factual",
+            "role": "primary",
+            "notes": "The claim is limited to the pilot sites and measured period."
+          },
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "text": "The observed reduction is likely to persist under comparable operating conditions.",
+            "claim_type": "predictive",
+            "role": "supporting",
+            "notes": "This supporting claim has less direct evidence than the primary claim."
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Pilot meter audit",
+            "source_type": "peer_reviewed_or_audited",
+            "creators": [
+              "Energy Audit Team"
+            ],
+            "publisher": "Independent Audit Group",
+            "published_year": 2026,
+            "url": "https://example.org/pilot-audit",
+            "accessed_at": "2026-07-17T12:00:00+00:00",
+            "identifiers": [
+              {
+                "scheme": "doi",
+                "value": "10.0000/example.audit"
+              }
+            ],
+            "independence_group": "independent-audit-group",
+            "duplicate_of_source_id": null,
+            "directness": "direct",
+            "freshness": "current",
+            "provenance": {
+              "acquisition_method": "document_import",
+              "imported_from": "knowledge-library:pilot-meter-audit",
+              "imported_at": "2026-07-17T12:00:00+00:00",
+              "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "notes": "Independent audit of weather-normalized meter data."
+          },
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "title": "Utility interval dataset",
+            "source_type": "official_or_primary",
+            "creators": [
+              "City Utility"
+            ],
+            "publisher": "City Utility",
+            "published_year": 2026,
+            "url": "https://example.org/utility-data",
+            "accessed_at": "2026-07-17T12:00:00+00:00",
+            "identifiers": [
+              {
+                "scheme": "catalog",
+                "value": "dataset:utility-interval-2026"
+              }
+            ],
+            "independence_group": "city-utility",
+            "duplicate_of_source_id": null,
+            "directness": "direct",
+            "freshness": "current",
+            "provenance": {
+              "acquisition_method": "catalyst_data",
+              "imported_from": "catalyst-data:utility-interval-2026",
+              "imported_at": "2026-07-17T12:00:00+00:00",
+              "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "notes": "Primary interval readings used by the audit."
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "evidence_type": "finding",
+            "excerpt": "Weather-normalized consumption declined 11.8 percent across the pilot sites.",
+            "locator": "p. 14",
+            "captured_at": "2026-07-17T12:05:00+00:00",
+            "notes": "Audit finding rounded to approximately 12 percent in the claim."
+          },
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "evidence_type": "data",
+            "excerpt": "The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.",
+            "locator": "dataset row 18",
+            "captured_at": "2026-07-17T12:06:00+00:00",
+            "notes": "Primary data independently checked against the audit calculation."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong",
+            "notes": "Direct audited finding."
+          },
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "relation_type": "support",
+            "strength": "strong",
+            "notes": "Primary data corroboration from a separate source group."
+          },
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "qualify",
+            "strength": "limited",
+            "notes": "The audit supports persistence only under comparable conditions."
+          }
+        ]
+      },
+      "expected": {
+        "normalized_input": {
+          "claim": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+          "source_type": "official_or_primary",
+          "evidence_strength": "strong",
+          "uncertainty": "medium",
+          "narrative_volatility": "low",
+          "stakeholder_pressure": "medium",
+          "time_sensitivity": "medium",
+          "consequences": "high",
+          "review_status": "partly_reviewed",
+          "source_count": 2,
+          "method_notes": "Use only within the measured pilot boundary and retain the weather-normalization assumptions."
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "text": "Independent measurements indicate the pilot reduced energy use by approximately 12 percent.",
+              "claim_type": "factual",
+              "role": "primary",
+              "notes": "The claim is limited to the pilot sites and measured period."
+            },
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "text": "The observed reduction is likely to persist under comparable operating conditions.",
+              "claim_type": "predictive",
+              "role": "supporting",
+              "notes": "This supporting claim has less direct evidence than the primary claim."
+            }
+          ],
+          "sources": [
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "title": "Pilot meter audit",
+              "source_type": "peer_reviewed_or_audited",
+              "creators": [
+                "Energy Audit Team"
+              ],
+              "publisher": "Independent Audit Group",
+              "published_year": 2026,
+              "url": "https://example.org/pilot-audit",
+              "accessed_at": "2026-07-17T12:00:00+00:00",
+              "identifiers": [
+                {
+                  "scheme": "doi",
+                  "value": "10.0000/example.audit"
+                }
+              ],
+              "independence_group": "independent-audit-group",
+              "duplicate_of_source_id": null,
+              "directness": "direct",
+              "freshness": "current",
+              "provenance": {
+                "acquisition_method": "document_import",
+                "imported_from": "knowledge-library:pilot-meter-audit",
+                "imported_at": "2026-07-17T12:00:00+00:00",
+                "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "notes": "Independent audit of weather-normalized meter data."
+            },
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "title": "Utility interval dataset",
+              "source_type": "official_or_primary",
+              "creators": [
+                "City Utility"
+              ],
+              "publisher": "City Utility",
+              "published_year": 2026,
+              "url": "https://example.org/utility-data",
+              "accessed_at": "2026-07-17T12:00:00+00:00",
+              "identifiers": [
+                {
+                  "scheme": "catalog",
+                  "value": "dataset:utility-interval-2026"
+                }
+              ],
+              "independence_group": "city-utility",
+              "duplicate_of_source_id": null,
+              "directness": "direct",
+              "freshness": "current",
+              "provenance": {
+                "acquisition_method": "catalyst_data",
+                "imported_from": "catalyst-data:utility-interval-2026",
+                "imported_at": "2026-07-17T12:00:00+00:00",
+                "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              },
+              "notes": "Primary interval readings used by the audit."
+            }
+          ],
+          "evidence_items": [
+            {
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "evidence_type": "finding",
+              "excerpt": "Weather-normalized consumption declined 11.8 percent across the pilot sites.",
+              "locator": "p. 14",
+              "captured_at": "2026-07-17T12:05:00+00:00",
+              "excerpt_sha256": "8b1690fa4e70d7b1f71252ebeaaa3badd515eb4f4a46847b4c1d6ccf2ca4ad21",
+              "notes": "Audit finding rounded to approximately 12 percent in the claim."
+            },
+            {
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "evidence_type": "data",
+              "excerpt": "The interval dataset shows a 12.1 percent reduction relative to the normalized baseline.",
+              "locator": "dataset row 18",
+              "captured_at": "2026-07-17T12:06:00+00:00",
+              "excerpt_sha256": "ccd634214ff2f08b11603a7d685b4169f0aa64a7fd3283fb8e3ebf404d793a6c",
+              "notes": "Primary data independently checked against the audit calculation."
+            }
+          ],
+          "relationships": [
+            {
+              "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "relation_type": "support",
+              "strength": "strong",
+              "notes": "Direct audited finding."
+            },
+            {
+              "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+              "relation_type": "support",
+              "strength": "strong",
+              "notes": "Primary data corroboration from a separate source group."
+            },
+            {
+              "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:9999999999999999999999999999999999999999999999999999999999999999",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "relation_type": "qualify",
+              "strength": "limited",
+              "notes": "The audit supports persistence only under comparable conditions."
+            }
+          ],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+                "evidence_count": 2,
+                "source_count": 2,
+                "independent_source_count": 2,
+                "relationship_counts": {
+                  "support": 2,
+                  "qualify": 0,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "strong",
+                "coverage_status": "substantial",
+                "contested": false
+              },
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+                "evidence_count": 1,
+                "source_count": 1,
+                "independent_source_count": 1,
+                "relationship_counts": {
+                  "support": 0,
+                  "qualify": 1,
+                  "contradict": 0,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "limited",
+                "coverage_status": "partial",
+                "contested": false
+              }
+            ],
+            "overall": {
+              "claim_count": 2,
+              "source_count": 2,
+              "evidence_count": 2,
+              "relationship_count": 3,
+              "independent_source_count": 2,
+              "duplicate_source_count": 0,
+              "direct_source_count": 2,
+              "stale_source_count": 0,
+              "unsupported_claim_count": 0,
+              "contested_claim_count": 0,
+              "coverage_status": "partial"
+            }
+          },
+          "source_list": [
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "citation_key": "Team2026-aaaaaaaa",
+              "citation": "Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17)."
+            },
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "citation_key": "Utility2026-bbbbbbbb",
+              "citation": "City Utility (2026) Utility interval dataset. City Utility. Available at: https://example.org/utility-data (Accessed: 2026-07-17)."
+            }
+          ],
+          "derived_scoring_inputs": {
+            "ledger_applied": true,
+            "source_type": "official_or_primary",
+            "evidence_strength": "strong",
+            "source_count": 2,
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+          }
+        },
+        "calculations": {
+          "components": {
+            "source_type": {
+              "input_value": "official_or_primary",
+              "weight": 0,
+              "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+              "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+            },
+            "evidence_strength": {
+              "input_value": "strong",
+              "weight": 0,
+              "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+              "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+            },
+            "uncertainty": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+              "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+            },
+            "narrative_volatility": {
+              "input_value": "low",
+              "weight": 3,
+              "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+              "remediation": "Timestamp the assessment and re-check material changes before reuse."
+            },
+            "stakeholder_pressure": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+              "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+            },
+            "time_sensitivity": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+              "remediation": "Confirm source freshness and assign a reassessment date."
+            },
+            "consequences": {
+              "input_value": "high",
+              "weight": 18,
+              "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+              "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+            },
+            "review_status": {
+              "input_value": "partly_reviewed",
+              "weight": 8,
+              "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+              "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+            },
+            "source_count": {
+              "input_value": 2,
+              "weight": 8,
+              "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+              "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+            }
+          },
+          "raw_total": 67,
+          "multiplier": 0.68,
+          "scaled_score": 45.56,
+          "risk_score": 46,
+          "threshold": {
+            "level": "Medium",
+            "minimum": 40,
+            "maximum": 69
+          }
+        },
+        "interpretation": {
+          "risk_level": "Medium",
+          "flags": [
+            "High-consequence claim needs stricter review"
+          ],
+          "review_actions": [
+            "Add at least one independent source or primary reference.",
+            "Escalate to domain, legal, compliance, or editorial review as appropriate.",
             "Record a reviewer, date, and decision before treating the claim as approved."
           ],
           "decision_note": "Use cautiously with visible uncertainty, source links, and review notes."
+        }
+      }
+    },
+    {
+      "name": "contested_dependent_stale_ledger",
+      "payload": {
+        "claim": "The indicator proves the program caused the outcome.",
+        "uncertainty": "high",
+        "narrative_volatility": "medium",
+        "stakeholder_pressure": "high",
+        "time_sensitivity": "high",
+        "consequences": "critical",
+        "review_status": "not_reviewed",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "text": "The indicator proves the program caused the outcome.",
+            "claim_type": "causal",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "title": "Internal indicator memo",
+            "source_type": "internal_unreviewed",
+            "creators": [
+              "Program Team"
+            ],
+            "published_year": 2026,
+            "independence_group": "program-team",
+            "directness": "indirect",
+            "freshness": "stale"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "excerpt": "The indicator increased after launch.",
+            "evidence_type": "observation"
+          },
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+            "excerpt": "The memo notes that other causes cannot be excluded.",
+            "evidence_type": "context"
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+            "relation_type": "support",
+            "strength": "strong"
+          },
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+            "relation_type": "contradict",
+            "strength": "moderate"
+          }
+        ]
+      },
+      "expected": {
+        "normalized_input": {
+          "claim": "The indicator proves the program caused the outcome.",
+          "source_type": "internal_unreviewed",
+          "evidence_strength": "limited",
+          "uncertainty": "high",
+          "narrative_volatility": "medium",
+          "stakeholder_pressure": "high",
+          "time_sensitivity": "high",
+          "consequences": "critical",
+          "review_status": "not_reviewed",
+          "source_count": 1,
+          "method_notes": ""
+        },
+        "evidence_ledger": {
+          "ledger_version": "1.2.0",
+          "primary_claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "claims": [
+            {
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+              "text": "The indicator proves the program caused the outcome.",
+              "claim_type": "causal",
+              "role": "primary",
+              "notes": ""
+            }
+          ],
+          "sources": [
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "title": "Internal indicator memo",
+              "source_type": "internal_unreviewed",
+              "creators": [
+                "Program Team"
+              ],
+              "publisher": "",
+              "published_year": 2026,
+              "url": null,
+              "accessed_at": null,
+              "identifiers": [],
+              "independence_group": "program-team",
+              "duplicate_of_source_id": null,
+              "directness": "indirect",
+              "freshness": "stale",
+              "provenance": {
+                "acquisition_method": "manual",
+                "imported_from": null,
+                "imported_at": null,
+                "content_sha256": null
+              },
+              "notes": ""
+            }
+          ],
+          "evidence_items": [
+            {
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "evidence_type": "observation",
+              "excerpt": "The indicator increased after launch.",
+              "locator": "",
+              "captured_at": null,
+              "excerpt_sha256": "363116ee3cc80a0c7a9d00654b982374051c6a3c591ed3a4dde3ccb7fc925961",
+              "notes": ""
+            },
+            {
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "evidence_type": "context",
+              "excerpt": "The memo notes that other causes cannot be excluded.",
+              "locator": "",
+              "captured_at": null,
+              "excerpt_sha256": "544f76813bfc742daa6f960b9dac6f86299696554637296e4b565487fd79e0a1",
+              "notes": ""
+            }
+          ],
+          "relationships": [
+            {
+              "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:7777777777777777777777777777777777777777777777777777777777777777",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:5555555555555555555555555555555555555555555555555555555555555555",
+              "relation_type": "support",
+              "strength": "strong",
+              "notes": ""
+            },
+            {
+              "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:8888888888888888888888888888888888888888888888888888888888888888",
+              "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+              "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:6666666666666666666666666666666666666666666666666666666666666666",
+              "relation_type": "contradict",
+              "strength": "moderate",
+              "notes": ""
+            }
+          ],
+          "coverage": {
+            "per_claim": [
+              {
+                "claim_id": "urn:catalyst:narrative-risk:claim:sha256:3333333333333333333333333333333333333333333333333333333333333333",
+                "evidence_count": 2,
+                "source_count": 1,
+                "independent_source_count": 1,
+                "relationship_counts": {
+                  "support": 1,
+                  "qualify": 0,
+                  "contradict": 1,
+                  "contextualize": 0,
+                  "unresolved": 0
+                },
+                "positive_strength": "strong",
+                "coverage_status": "contested",
+                "contested": true
+              }
+            ],
+            "overall": {
+              "claim_count": 1,
+              "source_count": 1,
+              "evidence_count": 2,
+              "relationship_count": 2,
+              "independent_source_count": 1,
+              "duplicate_source_count": 0,
+              "direct_source_count": 0,
+              "stale_source_count": 1,
+              "unsupported_claim_count": 0,
+              "contested_claim_count": 1,
+              "coverage_status": "contested"
+            }
+          },
+          "source_list": [
+            {
+              "source_id": "urn:catalyst:narrative-risk:source:sha256:4444444444444444444444444444444444444444444444444444444444444444",
+              "citation_key": "Team2026-44444444",
+              "citation": "Program Team (2026) Internal indicator memo."
+            }
+          ],
+          "derived_scoring_inputs": {
+            "ledger_applied": true,
+            "source_type": "internal_unreviewed",
+            "evidence_strength": "limited",
+            "source_count": 1,
+            "basis": "Derived from evidence relationships linked to the primary claim using the embedded v1.2.0 ledger policy."
+          }
+        },
+        "calculations": {
+          "components": {
+            "source_type": {
+              "input_value": "internal_unreviewed",
+              "weight": 14,
+              "rationale": "Less direct or less accountable source types increase the need for corroboration.",
+              "remediation": "Prefer primary, audited, or independently verifiable sources and preserve links."
+            },
+            "evidence_strength": {
+              "input_value": "limited",
+              "weight": 20,
+              "rationale": "Claims supported by limited, unclear, or weak evidence carry greater interpretation risk.",
+              "remediation": "Narrow the claim, add stronger evidence, or state the evidentiary limitation explicitly."
+            },
+            "uncertainty": {
+              "input_value": "high",
+              "weight": 18,
+              "rationale": "Unresolved assumptions and unknowns increase the chance that confidence exceeds support.",
+              "remediation": "Separate knowns, assumptions, and unknowns and state confidence limits."
+            },
+            "narrative_volatility": {
+              "input_value": "medium",
+              "weight": 10,
+              "rationale": "Fast-changing narratives can make otherwise credible evidence stale or incomplete.",
+              "remediation": "Timestamp the assessment and re-check material changes before reuse."
+            },
+            "stakeholder_pressure": {
+              "input_value": "high",
+              "weight": 18,
+              "rationale": "Strong incentives or reputational pressure may shape framing, omission, or interpretation.",
+              "remediation": "Document relevant incentives, conflicts, and alternative interpretations."
+            },
+            "time_sensitivity": {
+              "input_value": "high",
+              "weight": 18,
+              "rationale": "Time-sensitive claims require fresher evidence and a shorter review horizon.",
+              "remediation": "Confirm source freshness and assign a reassessment date."
+            },
+            "consequences": {
+              "input_value": "critical",
+              "weight": 24,
+              "rationale": "Greater potential harm from overstatement warrants stricter review even when evidence appears adequate.",
+              "remediation": "Escalate to the appropriate domain, legal, compliance, or editorial reviewer."
+            },
+            "review_status": {
+              "input_value": "not_reviewed",
+              "weight": 18,
+              "rationale": "Incomplete review leaves assumptions, source quality, and intended use insufficiently tested.",
+              "remediation": "Record a reviewer, review date, disposition, and any conditions before approval."
+            },
+            "source_count": {
+              "input_value": 1,
+              "weight": 16,
+              "rationale": "A claim supported by few sources is more vulnerable to duplication, error, and untested framing.",
+              "remediation": "Add independent corroboration or explain why a single authoritative source is sufficient."
+            }
+          },
+          "raw_total": 156,
+          "multiplier": 0.68,
+          "scaled_score": 106.08,
+          "risk_score": 100,
+          "threshold": {
+            "level": "High",
+            "minimum": 70,
+            "maximum": 100
+          }
+        },
+        "interpretation": {
+          "risk_level": "High",
+          "flags": [
+            "Single-source or under-sourced claim",
+            "Evidence does not yet support confident use",
+            "High uncertainty should be stated explicitly",
+            "Stakeholder pressure may be influencing interpretation",
+            "Time-sensitive claim requires recent source check",
+            "High-consequence claim needs stricter review",
+            "Claim has not completed review",
+            "The evidence ledger contains contradictory evidence for the primary claim",
+            "One or more linked sources are marked stale",
+            "The primary claim is supported only by indirect or unknown-directness sources"
+          ],
+          "review_actions": [
+            "Add at least one independent source or primary reference.",
+            "Rewrite claim with narrower language until evidence improves.",
+            "Add an uncertainty note that separates knowns, assumptions, and unknowns.",
+            "Re-check source freshness before publication or decision use.",
+            "Document whether pressure, incentives, or reputational concerns may be shaping the claim.",
+            "Escalate to domain, legal, compliance, or editorial review as appropriate.",
+            "Record a reviewer, date, and decision before treating the claim as approved.",
+            "Document how contradictory evidence changes wording, confidence, or intended use.",
+            "Refresh stale sources before publication or decision use.",
+            "Add direct evidence or explain why indirect evidence is sufficient."
+          ],
+          "decision_note": "Do not use as a confident public claim without additional review, source support, and narrowed language."
         }
       }
     }
@@ -729,6 +1810,542 @@
         "source_count": 1000001
       },
       "message": "source_count must be no greater than 1000000"
+    },
+    {
+      "name": "two_primary_claims",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          },
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "text": "Second",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "claims must contain exactly one primary claim"
+    },
+    {
+      "name": "primary_claim_mismatch",
+      "payload": {
+        "claim": "Different claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "claim must exactly match the primary claim text"
+    },
+    {
+      "name": "evidence_unknown_source",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "evidence_items[0].source_id does not reference a normalized source"
+    },
+    {
+      "name": "relationship_unknown_claim",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:2222222222222222222222222222222222222222222222222222222222222222",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "relationships[0].claim_id does not reference a normalized claim"
+    },
+    {
+      "name": "relationship_unknown_evidence",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "relationships[0].evidence_id does not reference normalized evidence"
+    },
+    {
+      "name": "conflicting_source_count",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ],
+        "source_count": 5
+      },
+      "message": "source_count conflicts with the value derived from the evidence ledger: 1"
+    },
+    {
+      "name": "conflicting_evidence_strength",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ],
+        "evidence_strength": "strong"
+      },
+      "message": "evidence_strength conflicts with the value derived from the evidence ledger: moderate"
+    },
+    {
+      "name": "invalid_source_url",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current",
+            "url": "not-a-url"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "sources[0].url must be an absolute http or https URL"
+    },
+    {
+      "name": "invalid_provenance_hash",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current",
+            "provenance": {
+              "content_sha256": "ABC"
+            }
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "sources[0].provenance.content_sha256 must be a lowercase SHA-256 digest or null"
+    },
+    {
+      "name": "invalid_identifier_scheme",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current",
+            "identifiers": [
+              {
+                "scheme": "pmid",
+                "value": "1"
+              }
+            ]
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "sources[0].identifiers[0].scheme must be one of: doi, isbn, issn, url, handle, ark, catalog, other"
+    },
+    {
+      "name": "sources_not_array",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": {},
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "sources must be an array"
+    },
+    {
+      "name": "self_duplicate_source",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current",
+            "duplicate_of_source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "a source cannot duplicate itself"
+    },
+    {
+      "name": "duplicate_relationship",
+      "payload": {
+        "claim": "A ledger claim.",
+        "claims": [
+          {
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "text": "A ledger claim.",
+            "role": "primary"
+          }
+        ],
+        "sources": [
+          {
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "title": "Source",
+            "source_type": "official_or_primary",
+            "independence_group": "g1",
+            "directness": "direct",
+            "freshness": "current"
+          }
+        ],
+        "evidence_items": [
+          {
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "source_id": "urn:catalyst:narrative-risk:source:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "excerpt": "Evidence excerpt."
+          }
+        ],
+        "relationships": [
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          },
+          {
+            "relationship_id": "urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "claim_id": "urn:catalyst:narrative-risk:claim:sha256:1111111111111111111111111111111111111111111111111111111111111111",
+            "evidence_id": "urn:catalyst:narrative-risk:evidence:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "relation_type": "support",
+            "strength": "strong"
+          }
+        ]
+      },
+      "message": "duplicate relationship_id: urn:catalyst:narrative-risk:relationship:sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
     }
   ]
 }
