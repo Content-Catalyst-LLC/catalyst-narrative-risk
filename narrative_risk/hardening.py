@@ -1,4 +1,4 @@
-"""Security, privacy, backup, accessibility, and production-readiness controls for v1.10.0.
+"""Security, privacy, backup, accessibility, and production-readiness controls for v2.0.0.
 
 The hardening layer evaluates deployment controls and creates auditable reports. It
 never certifies a deployment as secure by itself; operators remain responsible for
@@ -31,7 +31,7 @@ from .contracts import (
 )
 from .errors import NarrativeRiskValidationError
 
-VERSION = "1.10.0"
+VERSION = "2.0.0"
 ENVIRONMENTS = {"development", "test", "staging", "production"}
 CHECK_STATUSES = {"pass", "warn", "fail"}
 SEVERITIES = {"info", "low", "medium", "high", "critical"}

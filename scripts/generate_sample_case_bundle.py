@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the canonical v1.10.0 governed, monitored, stakeholder-aware comparative case bundle."""
+"""Generate the canonical v2.0.0 governed, monitored, stakeholder-aware comparative case bundle."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -13,6 +13,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from narrative_risk.workspaces import SQLiteCaseRepository
+from narrative_risk.connected import build_platform_profile
+from narrative_risk.contracts import contract_definition, load_json as load_contract_json, sha256_digest
 
 CASE_ID = "urn:uuid:70000000-0000-4000-8000-000000000001"
 
@@ -29,6 +31,8 @@ def main() -> int:
             case_id=CASE_ID,
             title="Comparative public-impact narrative",
             summary="Governed, monitored, stakeholder-aware comparison of competing public-impact narratives.",
+            organization_id="org:sustainable-catalyst",
+            project_id="project:connected-narrative-risk",
             status="in_review",
             priority="high",
             tags=["release", "comparative-narratives", "scenario-analysis"],
@@ -249,6 +253,74 @@ def main() -> int:
             import base64
             raw = base64.b64decode(artifact["content"]) if artifact["content_encoding"] == "base64" else artifact["content"].encode("utf-8")
             (ROOT / "outputs" / f"sample_public_brief.{artifact['filename'].split('.',1)[1]}").write_bytes(raw)
+
+        evidence_event = repo.ingest_platform_event({
+            "event_id": "urn:uuid:72000000-0000-4000-8000-000000000001",
+            "case_id": CASE_ID,
+            "source_module": "knowledge_library",
+            "target_modules": ["narrative_risk", "research_librarian"],
+            "event_type": "evidence_added",
+            "occurred_at": "2026-07-17T19:39:30+00:00",
+            "idempotency_key": "sample-knowledge-library-evidence-v2",
+            "payload": {
+                "source_id": "source:municipal-energy-audit-2026",
+                "claim_id": payload["claims"][0].get("claim_id", "claim:primary"),
+                "provenance": "Knowledge Library canonical source record",
+            },
+        })
+        monitoring_event = repo.ingest_platform_event({
+            "event_id": "urn:uuid:72000000-0000-4000-8000-000000000002",
+            "case_id": CASE_ID,
+            "source_module": "site_intelligence",
+            "target_modules": ["narrative_risk", "decision_studio"],
+            "event_type": "monitoring_signal",
+            "occurred_at": "2026-07-17T19:39:35+00:00",
+            "idempotency_key": "sample-site-intelligence-signal-v2",
+            "payload": {
+                "signal_id": site_event.get("event_id", "site-intelligence-sample"),
+                "materiality": "review_required",
+                "watch_id": watch["watch_id"],
+            },
+        })
+        repo.create_integration_route({
+            "route_id": "urn:uuid:73000000-0000-4000-8000-000000000001",
+            "case_id": CASE_ID,
+            "source_module": "knowledge_library",
+            "target_module": "narrative_risk",
+            "artifact_type": "structured-evidence-source",
+            "artifact_id": evidence_event["event_id"],
+            "status": "acknowledged",
+            "created_at": "2026-07-17T19:39:40+00:00",
+            "external_reference": "knowledge-library://source/municipal-energy-audit-2026",
+            "payload_sha256": evidence_event["event_sha256"],
+        })
+        repo.create_integration_route({
+            "route_id": "urn:uuid:73000000-0000-4000-8000-000000000002",
+            "case_id": CASE_ID,
+            "source_module": "narrative_risk",
+            "target_module": "decision_studio",
+            "artifact_type": "comparative-decision-handoff",
+            "artifact_id": repo.list_decision_studio_handoffs(CASE_ID)[0]["handoff_id"],
+            "status": "delivered",
+            "created_at": "2026-07-17T19:39:45+00:00",
+            "external_reference": "decision-studio://handoff/comparative-public-impact",
+            "payload_sha256": monitoring_event["event_sha256"],
+        })
+        dossier = repo.create_connected_dossier(
+            CASE_ID, generated_at="2026-07-17T19:39:50+00:00",
+            dossier_id="urn:uuid:74000000-0000-4000-8000-000000000001",
+        )
+        institutional_workspace = repo.create_institutional_workspace(
+            "org:sustainable-catalyst", generated_at="2026-07-17T19:39:55+00:00",
+            workspace_id="urn:uuid:75000000-0000-4000-8000-000000000001",
+        )
+        manifest = load_contract_json(ROOT / "narrative_risk_manifest.json")
+        platform_profile = build_platform_profile(
+            manifest=manifest, contract=contract_definition(), generated_at="2026-07-17T19:39:58+00:00"
+        )
+        (ROOT / "outputs/sample_connected_dossier.json").write_text(json.dumps(dossier, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        (ROOT / "outputs/sample_institutional_workspace.json").write_text(json.dumps(institutional_workspace, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        (ROOT / "outputs/sample_platform_profile.json").write_text(json.dumps(platform_profile, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
         bundle = repo.export_case_bundle(CASE_ID, exported_at="2026-07-17T19:40:00+00:00")
         output = ROOT / "outputs/sample_case_bundle.json"

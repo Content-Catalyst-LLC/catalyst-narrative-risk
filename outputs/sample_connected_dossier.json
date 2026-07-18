@@ -1,0 +1,124 @@
+{
+  "dossier_type": "catalyst-narrative-risk-connected-dossier",
+  "dossier_version": "2.0.0",
+  "dossier_id": "urn:uuid:74000000-0000-4000-8000-000000000001",
+  "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
+  "generated_at": "2026-07-17T19:39:50+00:00",
+  "case_summary": {
+    "title": "Comparative public-impact narrative",
+    "status": "approved",
+    "priority": "high",
+    "organization_id": "org:sustainable-catalyst",
+    "project_id": "project:connected-narrative-risk",
+    "current_revision": 2,
+    "tags": [
+      "release",
+      "comparative-narratives",
+      "scenario-analysis"
+    ]
+  },
+  "analytical_summary": {
+    "record_id": "urn:uuid:d58a7083-55b9-4ff1-805e-ed3bec8fa19a",
+    "risk_score": 71,
+    "risk_level": "High",
+    "claim_count": 2,
+    "source_count": 2,
+    "narrative_node_count": 3
+  },
+  "governance_summary": {
+    "workflow_status": "approved",
+    "current_stage": "final",
+    "final_disposition": "approve_with_conditions",
+    "publication_allowed": true,
+    "reassessment_at": "2026-10-17T12:00:00+00:00"
+  },
+  "monitoring_summary": {
+    "open_alert_count": 3,
+    "critical_alert_count": 2,
+    "latest_alert_at": "2028-07-18T12:00:00+00:00"
+  },
+  "stakeholder_summary": {
+    "actor_count": 3,
+    "pressure_count": 1,
+    "suggested_pressure": "high",
+    "flag_count": 3
+  },
+  "comparative_summary": {
+    "comparison_count": 0,
+    "scenario_count": 0,
+    "evaluated_scenario_count": 0
+  },
+  "publication_summary": {
+    "package_count": 1,
+    "published_count": 1,
+    "handoff_count": 4
+  },
+  "privacy_summary": {
+    "assessment_count": 1,
+    "latest_status": "current",
+    "legal_hold": false
+  },
+  "module_links": [
+    {
+      "module": "narrative_risk",
+      "event_count": 0,
+      "outbound_route_count": 1,
+      "inbound_route_count": 1
+    },
+    {
+      "module": "knowledge_library",
+      "event_count": 1,
+      "outbound_route_count": 1,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "catalyst_data",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "site_intelligence",
+      "event_count": 1,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "catalyst_canvas",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "decision_studio",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 1
+    },
+    {
+      "module": "research_librarian",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "workbench",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "catalyst_analytics",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    },
+    {
+      "module": "publication_api",
+      "event_count": 0,
+      "outbound_route_count": 0,
+      "inbound_route_count": 0
+    }
+  ],
+  "dossier_sha256": "937617fcaa9daeea9e705442439154ed324f51b54d19de908bf2e0cbc3d94706"
+}

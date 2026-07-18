@@ -1,6 +1,6 @@
 # WordPress Publication Interfaces
 
-Catalyst Narrative Risk v1.10.0 includes four shortcodes:
+Catalyst Narrative Risk v2.0.0 includes four shortcodes:
 
 ```text
 [catalyst_narrative_risk_demo]
@@ -11,7 +11,7 @@ Catalyst Narrative Risk v1.10.0 includes four shortcodes:
 
 ## Publication workspace
 
-`[catalyst_narrative_risk_publication_workspace]` provides a browser preview for an already governed briefing and can export preview JSON, Markdown, and HTML. It does not create institutional approval. Production PDF, CSV, JSON-LD, embed, API, and platform-handoff records must be created through the persistent v1.10.0 REST workspace.
+`[catalyst_narrative_risk_publication_workspace]` provides a browser preview for an already governed briefing and can export preview JSON, Markdown, and HTML. It does not create institutional approval. Production PDF, CSV, JSON-LD, embed, API, and platform-handoff records must be created through the persistent v2.0.0 REST workspace.
 
 ## Public brief
 

@@ -1,0 +1,73 @@
+{
+  "workspace_type": "catalyst-narrative-risk-institutional-workspace",
+  "workspace_version": "2.0.0",
+  "workspace_id": "urn:uuid:75000000-0000-4000-8000-000000000001",
+  "organization_id": "org:sustainable-catalyst",
+  "generated_at": "2026-07-17T19:39:55+00:00",
+  "case_count": 1,
+  "status_counts": {
+    "approved": 1
+  },
+  "priority_counts": {
+    "high": 1
+  },
+  "open_monitoring_alerts": 3,
+  "pending_reviews": 4,
+  "publication_ready_cases": 1,
+  "connected_dossier_ids": [
+    "urn:uuid:74000000-0000-4000-8000-000000000001"
+  ],
+  "module_connections": {
+    "narrative_risk": {
+      "events": 0,
+      "outbound_routes": 1,
+      "inbound_routes": 1
+    },
+    "knowledge_library": {
+      "events": 1,
+      "outbound_routes": 1,
+      "inbound_routes": 0
+    },
+    "catalyst_data": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "site_intelligence": {
+      "events": 1,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "catalyst_canvas": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "decision_studio": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 1
+    },
+    "research_librarian": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "workbench": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "catalyst_analytics": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    },
+    "publication_api": {
+      "events": 0,
+      "outbound_routes": 0,
+      "inbound_routes": 0
+    }
+  },
+  "workspace_sha256": "b9cb26c9f07bf6d28d333ba295596417ab4034317cf439d2ed55b8b71334552c"
+}

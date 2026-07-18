@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/integration-route/2.0.0",
+  "title": "Catalyst Narrative Risk Integration Route 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "route_id",
+    "route_version",
+    "case_id",
+    "source_module",
+    "target_module",
+    "artifact_type",
+    "artifact_id",
+    "status",
+    "created_at",
+    "external_reference",
+    "payload_sha256",
+    "route_sha256"
+  ],
+  "properties": {
+    "route_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "route_version": {
+      "const": "2.0.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "source_module": {
+      "enum": [
+        "narrative_risk",
+        "knowledge_library",
+        "catalyst_data",
+        "site_intelligence",
+        "catalyst_canvas",
+        "decision_studio",
+        "research_librarian",
+        "workbench",
+        "catalyst_analytics",
+        "publication_api"
+      ]
+    },
+    "target_module": {
+      "enum": [
+        "narrative_risk",
+        "knowledge_library",
+        "catalyst_data",
+        "site_intelligence",
+        "catalyst_canvas",
+        "decision_studio",
+        "research_librarian",
+        "workbench",
+        "catalyst_analytics",
+        "publication_api"
+      ]
+    },
+    "artifact_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "delivered",
+        "acknowledged",
+        "failed"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "external_reference": {
+      "oneOf": [
+        {
+          "type": "string",
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "route_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

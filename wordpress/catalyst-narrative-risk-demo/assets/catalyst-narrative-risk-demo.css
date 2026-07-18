@@ -68,7 +68,7 @@
 .cnrisk-demo__block p { margin: 0 0 8px; }
 .cnrisk-demo__block p:last-child { margin-bottom: 0; }
 
-/* v1.10.0 accessibility hardening */
+/* v2.0.0 accessibility hardening */
 :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) :where(a,button,input,select,textarea,summary,[tabindex="0"]):focus-visible {
   outline: 3px solid currentColor;
   outline-offset: 3px;

@@ -1,4 +1,4 @@
-"""Governance-aware briefings, publication packages, public embeds, API credentials, and platform handoffs for v1.10.0."""
+"""Governance-aware briefings, publication packages, public embeds, API credentials, and platform handoffs for v2.0.0."""
 from __future__ import annotations
 
 from base64 import b64encode
@@ -20,7 +20,7 @@ from .contracts import (
 )
 from .errors import NarrativeRiskValidationError
 
-VERSION = "1.10.0"
+VERSION = "2.0.0"
 AUDIENCES = {"internal", "executive", "technical", "public", "regulatory", "media"}
 CLASSIFICATIONS = {"internal", "confidential", "restricted", "public"}
 FORMATS = {"json", "markdown", "html", "pdf", "csv", "jsonld"}

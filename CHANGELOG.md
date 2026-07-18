@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0 — Connected Narrative Risk and Claims Governance Platform
+
+- Added a ten-module first-party Catalyst connection registry.
+- Added tamper-evident platform profiles and persistent idempotent platform events.
+- Added checksummed integration routes with explicit source, target, artifact, and delivery state.
+- Added unified connected case dossiers across analysis, evidence, governance, monitoring, stakeholders, comparisons, publication, and privacy.
+- Added exact organization-scoped institutional workspace rollups.
+- Added REST, CLI, SQLite, WordPress, and portable-bundle connected-platform support.
+- Added deterministic v1.10.0 migration while preserving the complete v1.10.0 method.
+
 ## 1.10.0 — Security, Privacy, Accessibility, and Production Hardening
 
 - Added secure Flask defaults, HTTPS and CORS controls, request limits, secure response headers, and deployment diagnostics.

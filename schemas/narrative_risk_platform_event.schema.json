@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/platform-event/2.0.0",
+  "title": "Catalyst Narrative Risk Platform Event 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event_id",
+    "event_version",
+    "case_id",
+    "source_module",
+    "target_modules",
+    "event_type",
+    "occurred_at",
+    "idempotency_key",
+    "payload",
+    "event_sha256"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "event_version": {
+      "const": "2.0.0"
+    },
+    "case_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_module": {
+      "enum": [
+        "narrative_risk",
+        "knowledge_library",
+        "catalyst_data",
+        "site_intelligence",
+        "catalyst_canvas",
+        "decision_studio",
+        "research_librarian",
+        "workbench",
+        "catalyst_analytics",
+        "publication_api"
+      ]
+    },
+    "target_modules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "narrative_risk",
+          "knowledge_library",
+          "catalyst_data",
+          "site_intelligence",
+          "catalyst_canvas",
+          "decision_studio",
+          "research_librarian",
+          "workbench",
+          "catalyst_analytics",
+          "publication_api"
+        ]
+      }
+    },
+    "event_type": {
+      "enum": [
+        "claim_created",
+        "evidence_added",
+        "record_revised",
+        "review_decided",
+        "monitoring_signal",
+        "stakeholder_changed",
+        "scenario_evaluated",
+        "publication_changed",
+        "handoff_created",
+        "retention_changed",
+        "custom"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "payload": {
+      "type": "object"
+    },
+    "event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

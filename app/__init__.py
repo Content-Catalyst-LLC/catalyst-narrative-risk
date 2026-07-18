@@ -7,10 +7,10 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request
 
-from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
+from narrative_risk.contracts import ROOT, contract_definition, controlled_vocabularies, current_method_snapshot, load_json, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record, migrate_v1_8_0_record, migrate_v1_9_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record, migrate_v1_8_0_record, migrate_v1_9_0_record, migrate_v1_10_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -21,6 +21,7 @@ from narrative_risk.service import (
     verify_record_reproducibility,
 )
 from narrative_risk.workspaces import SQLiteCaseRepository
+from narrative_risk.connected import build_platform_profile
 from narrative_risk.hardening import (
     audit_wordpress_accessibility, build_production_readiness_report,
     build_security_readiness_report,
@@ -188,6 +189,11 @@ def create_app(config: dict | None = None):
             "privacy_retention": True,
             "verified_backups": True,
             "accessibility_audits": True,
+            "connected_platform": True,
+            "unified_case_dossiers": True,
+            "institutional_workspaces": True,
+            "cross_module_events": True,
+            "integration_routes": True,
             "workspace": repository.health(),
         }, 200
 
@@ -328,6 +334,14 @@ def create_app(config: dict | None = None):
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
 
+    @app.post("/api/narrative-risk/migrate/v1.10.0")
+    def narrative_risk_migrate_v1100():
+        try:
+            migrated = migrate_v1_10_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
     @app.post("/api/narrative-risk/import/knowledge-library")
     def narrative_risk_import_knowledge_library():
         try:
@@ -352,6 +366,10 @@ def create_app(config: dict | None = None):
             "/api/narrative-risk/packages/{package_id}/artifacts/{format}": {"get": {"summary": "Read a publication artifact", "security": [{"bearerAuth": ["publication:read"]}]}},
             "/api/narrative-risk/packages/{package_id}/embeds": {"post": {"summary": "Create a public embed", "security": [{"bearerAuth": ["embeds:write"]}]}},
             "/api/narrative-risk/packages/{package_id}/handoffs": {"post": {"summary": "Create a platform publication handoff", "security": [{"bearerAuth": ["handoffs:write"]}]}},
+            "/api/narrative-risk/platform/profile": {"get": {"summary": "Read the connected platform profile"}},
+            "/api/narrative-risk/platform/events": {"get": {"summary": "List cross-module events"}, "post": {"summary": "Ingest an idempotent cross-module event", "security": [{"bearerAuth": ["cases:write"]}]}},
+            "/api/narrative-risk/integration-routes": {"get": {"summary": "List checksummed integration routes"}, "post": {"summary": "Create a checksummed integration route", "security": [{"bearerAuth": ["handoffs:write"]}]}},
+            "/api/narrative-risk/cases/{case_id}/connected-dossiers": {"get": {"summary": "List connected case dossiers"}, "post": {"summary": "Create a connected case dossier", "security": [{"bearerAuth": ["cases:write"]}]}},
         }
         return jsonify({"openapi": "3.1.0", "info": {"title": "Catalyst Narrative Risk API", "version": VERSION}, "paths": paths, "components": {"securitySchemes": {"bearerAuth": {"type": "http", "scheme": "bearer"}}}}), 200
 
@@ -886,6 +904,76 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_saved_view_query", exc)
         return jsonify({"saved_views": views, "count": len(views)}), 200
+
+    @app.get("/api/narrative-risk/platform/profile")
+    def connected_platform_profile():
+        manifest = load_json(ROOT / "narrative_risk_manifest.json")
+        return jsonify(build_platform_profile(manifest=manifest, contract=contract_definition())), 200
+
+    @app.post("/api/narrative-risk/platform/events")
+    def ingest_connected_platform_event():
+        denied = require_scope("cases:write")
+        if denied: return denied
+        try: event = repository.ingest_platform_event(_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_platform_event", exc)
+        return jsonify(event), 201
+
+    @app.get("/api/narrative-risk/platform/events")
+    def list_connected_platform_events():
+        denied = require_scope("cases:read")
+        if denied: return denied
+        values = repository.list_platform_events(case_id=request.args.get("case_id"), source_module=request.args.get("source_module"))
+        return jsonify({"platform_events": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/integration-routes")
+    def create_connected_integration_route():
+        denied = require_scope("handoffs:write")
+        if denied: return denied
+        try: route = repository.create_integration_route(_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_integration_route", exc)
+        return jsonify(route), 201
+
+    @app.get("/api/narrative-risk/integration-routes")
+    def list_connected_integration_routes():
+        denied = require_scope("cases:read")
+        if denied: return denied
+        values = repository.list_integration_routes(case_id=request.args.get("case_id"), source_module=request.args.get("source_module"), target_module=request.args.get("target_module"))
+        return jsonify({"integration_routes": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/connected-dossiers")
+    def create_connected_case_dossier(case_id: str):
+        denied = require_scope("cases:write")
+        if denied: return denied
+        try:
+            payload = _json_object()
+            dossier = repository.create_connected_dossier(case_id, generated_at=payload.get("generated_at"), dossier_id=payload.get("dossier_id"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_connected_dossier", exc)
+        return jsonify(dossier), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/connected-dossiers")
+    def list_connected_case_dossiers(case_id: str):
+        denied = require_scope("cases:read")
+        if denied: return denied
+        try: values = repository.list_connected_dossiers(case_id)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_connected_dossier_query", exc)
+        return jsonify({"connected_dossiers": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/institutional-workspaces/<path:organization_id>")
+    def create_connected_institutional_workspace(organization_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try:
+            payload = _json_object()
+            workspace = repository.create_institutional_workspace(organization_id, generated_at=payload.get("generated_at"), workspace_id=payload.get("workspace_id"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_institutional_workspace", exc)
+        return jsonify(workspace), 201
+
+    @app.get("/api/narrative-risk/institutional-workspaces/<path:organization_id>")
+    def list_connected_institutional_workspaces(organization_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        values = repository.list_institutional_workspaces(organization_id)
+        return jsonify({"institutional_workspaces": values, "count": len(values)}), 200
 
     @app.get("/api/narrative-risk/production/security")
     def production_security_report():

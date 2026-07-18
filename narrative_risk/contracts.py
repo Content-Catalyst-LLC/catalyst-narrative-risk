@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.10.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v2.0.0."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.10.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.10.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.10.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.10.0.json"
+VERSION = "2.0.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v2.0.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v2.0.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v2.0.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_narrative_map.schema.json"
@@ -61,6 +61,16 @@ BACKUP_MANIFEST_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_backup_manifest
 ACCESSIBILITY_REPORT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_accessibility_report.schema.json"
 PERFORMANCE_REPORT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_performance_report.schema.json"
 PRODUCTION_READINESS_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_production_readiness.schema.json"
+PLATFORM_PROFILE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_platform_profile.schema.json"
+PLATFORM_EVENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_platform_event.schema.json"
+INTEGRATION_ROUTE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_integration_route.schema.json"
+CONNECTED_DOSSIER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_connected_dossier.schema.json"
+INSTITUTIONAL_WORKSPACE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_institutional_workspace.schema.json"
+LEGACY_V1100_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.10.0.schema.json"
+LEGACY_V1100_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.10.0.schema.json"
+LEGACY_V1100_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.10.0.schema.json"
+LEGACY_V1100_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.10.0.schema.json"
+LEGACY_V1100_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.10.0.schema.json"
 LEGACY_V160_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.6.0.schema.json"
 LEGACY_V160_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.6.0.schema.json"
 LEGACY_V160_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.6.0.schema.json"
@@ -185,6 +195,8 @@ def _registry():
         SECURITY_REPORT_SCHEMA_PATH, PRIVACY_POLICY_SCHEMA_PATH, RETENTION_ASSESSMENT_SCHEMA_PATH,
         BACKUP_MANIFEST_SCHEMA_PATH, ACCESSIBILITY_REPORT_SCHEMA_PATH, PERFORMANCE_REPORT_SCHEMA_PATH,
         PRODUCTION_READINESS_SCHEMA_PATH,
+        PLATFORM_PROFILE_SCHEMA_PATH, PLATFORM_EVENT_SCHEMA_PATH, INTEGRATION_ROUTE_SCHEMA_PATH,
+        CONNECTED_DOSSIER_SCHEMA_PATH, INSTITUTIONAL_WORKSPACE_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
@@ -215,6 +227,9 @@ def _registry():
         LEGACY_V190_INPUT_SCHEMA_PATH, LEGACY_V190_LEDGER_SCHEMA_PATH,
         LEGACY_V190_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V190_METHOD_SCHEMA_PATH,
         LEGACY_V190_RECORD_SCHEMA_PATH,
+        LEGACY_V1100_INPUT_SCHEMA_PATH, LEGACY_V1100_LEDGER_SCHEMA_PATH,
+        LEGACY_V1100_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V1100_METHOD_SCHEMA_PATH,
+        LEGACY_V1100_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:

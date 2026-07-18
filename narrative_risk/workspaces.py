@@ -69,8 +69,12 @@ from .comparisons import (
     run_sensitivity_analysis, build_comparative_portfolio, build_decision_studio_handoff,
     urn as comparison_urn,
 )
+from .connected import (
+    build_connected_dossier, build_institutional_workspace, build_integration_route,
+    normalize_platform_event,
+)
 
-VERSION = "1.10.0"
+VERSION = "2.0.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
@@ -563,6 +567,64 @@ class SQLiteCaseRepository:
             created_at TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS connected_dossiers (
+            dossier_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            dossier_json TEXT NOT NULL,
+            dossier_sha256 TEXT NOT NULL,
+            generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_connected_dossiers_case ON connected_dossiers(case_id, generated_at);
+        CREATE TRIGGER IF NOT EXISTS connected_dossiers_no_update
+        BEFORE UPDATE ON connected_dossiers BEGIN SELECT RAISE(ABORT, 'connected dossiers are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS connected_dossiers_no_delete
+        BEFORE DELETE ON connected_dossiers BEGIN SELECT RAISE(ABORT, 'connected dossiers are append-only'); END;
+
+        CREATE TABLE IF NOT EXISTS platform_events (
+            event_id TEXT PRIMARY KEY,
+            case_id TEXT REFERENCES cases(case_id) ON DELETE RESTRICT,
+            source_module TEXT NOT NULL,
+            event_type TEXT NOT NULL,
+            idempotency_key TEXT NOT NULL UNIQUE,
+            event_json TEXT NOT NULL,
+            event_sha256 TEXT NOT NULL,
+            occurred_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_platform_events_case ON platform_events(case_id, occurred_at);
+        CREATE INDEX IF NOT EXISTS idx_platform_events_source ON platform_events(source_module, event_type);
+        CREATE TRIGGER IF NOT EXISTS platform_events_no_update
+        BEFORE UPDATE ON platform_events BEGIN SELECT RAISE(ABORT, 'platform events are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS platform_events_no_delete
+        BEFORE DELETE ON platform_events BEGIN SELECT RAISE(ABORT, 'platform events are append-only'); END;
+
+        CREATE TABLE IF NOT EXISTS integration_routes (
+            route_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            source_module TEXT NOT NULL,
+            target_module TEXT NOT NULL,
+            artifact_type TEXT NOT NULL,
+            artifact_id TEXT NOT NULL,
+            status TEXT NOT NULL,
+            route_json TEXT NOT NULL,
+            route_sha256 TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_integration_routes_case ON integration_routes(case_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_integration_routes_modules ON integration_routes(source_module, target_module, status);
+
+        CREATE TABLE IF NOT EXISTS institutional_workspaces (
+            workspace_id TEXT PRIMARY KEY,
+            organization_id TEXT NOT NULL,
+            workspace_json TEXT NOT NULL,
+            workspace_sha256 TEXT NOT NULL,
+            generated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_institutional_workspaces_org ON institutional_workspaces(organization_id, generated_at);
+        CREATE TRIGGER IF NOT EXISTS institutional_workspaces_no_update
+        BEFORE UPDATE ON institutional_workspaces BEGIN SELECT RAISE(ABORT, 'institutional workspaces are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS institutional_workspaces_no_delete
+        BEFORE DELETE ON institutional_workspaces BEGIN SELECT RAISE(ABORT, 'institutional workspaces are append-only'); END;
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -599,7 +661,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "publication_briefings", "publication_packages", "public_embeds", "api_keys", "platform_handoffs", "privacy_policies", "retention_assessments", "backup_manifests", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "publication_briefings", "publication_packages", "public_embeds", "api_keys", "platform_handoffs", "privacy_policies", "retention_assessments", "backup_manifests", "connected_dossiers", "platform_events", "integration_routes", "institutional_workspaces", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -1138,6 +1200,9 @@ class SQLiteCaseRepository:
             "public_embeds": self.list_public_embeds(case["case_id"]),
             "platform_handoffs": self.list_platform_handoffs(case["case_id"]),
             "retention_assessments": self.list_retention_assessments(case["case_id"]),
+            "connected_dossiers": self.list_connected_dossiers(case["case_id"]),
+            "platform_events": self.list_platform_events(case_id=case["case_id"]),
+            "integration_routes": self.list_integration_routes(case_id=case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -1219,6 +1284,19 @@ class SQLiteCaseRepository:
                     (bundle.get("publication_packages", []), "package_sha256"),
                     (bundle.get("public_embeds", []), "embed_sha256"),
                     (bundle.get("platform_handoffs", []), "handoff_sha256"),
+                ) for item in values
+            ),
+            "connected_case_ids_match": all(
+                item.get("case_id") == bundle["case"]["case_id"]
+                for item in list(bundle.get("connected_dossiers", [])) + list(bundle.get("platform_events", []))
+                + list(bundle.get("integration_routes", []))
+            ),
+            "connected_hashes_match": all(
+                sha256_digest({k: v for k, v in item.items() if k != hash_field}) == item[hash_field]
+                for values, hash_field in (
+                    (bundle.get("connected_dossiers", []), "dossier_sha256"),
+                    (bundle.get("platform_events", []), "event_sha256"),
+                    (bundle.get("integration_routes", []), "route_sha256"),
                 ) for item in values
             ),
         }
@@ -1370,6 +1448,12 @@ class SQLiteCaseRepository:
                 connection.execute("INSERT INTO platform_handoffs(handoff_id,case_id,package_id,target,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?,?)", (handoff["handoff_id"],handoff["case_id"],handoff["package_id"],handoff["target"],_json_dump(handoff),handoff["handoff_sha256"],handoff["generated_at"]))
             for assessment in bundle.get("retention_assessments", []):
                 connection.execute("INSERT INTO retention_assessments(assessment_id,case_id,policy_id,assessment_json,assessment_sha256,status,assessed_at) VALUES(?,?,?,?,?,?,?)", (assessment["assessment_id"],assessment["case_id"],assessment["policy_id"],_json_dump(assessment),assessment["assessment_sha256"],assessment["status"],assessment["assessed_at"]))
+            for dossier in bundle.get("connected_dossiers", []):
+                connection.execute("INSERT INTO connected_dossiers(dossier_id,case_id,dossier_json,dossier_sha256,generated_at) VALUES(?,?,?,?,?)", (dossier["dossier_id"],dossier["case_id"],_json_dump(dossier),dossier["dossier_sha256"],dossier["generated_at"]))
+            for event in bundle.get("platform_events", []):
+                connection.execute("INSERT INTO platform_events(event_id,case_id,source_module,event_type,idempotency_key,event_json,event_sha256,occurred_at) VALUES(?,?,?,?,?,?,?,?)", (event["event_id"],event["case_id"],event["source_module"],event["event_type"],event["idempotency_key"],_json_dump(event),event["event_sha256"],event["occurred_at"]))
+            for route in bundle.get("integration_routes", []):
+                connection.execute("INSERT INTO integration_routes(route_id,case_id,source_module,target_module,artifact_type,artifact_id,status,route_json,route_sha256,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (route["route_id"],route["case_id"],route["source_module"],route["target_module"],route["artifact_type"],route["artifact_id"],route["status"],_json_dump(route),route["route_sha256"],route["created_at"]))
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -1379,7 +1463,75 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.10.0 stakeholder, incentive, and pressure intelligence
+    # v2.0.0 connected institutional platform
+
+    def ingest_platform_event(self, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        event = normalize_platform_event(payload)
+        if event["case_id"] is not None:
+            self.get_case(event["case_id"])
+        existing = self._connection.execute("SELECT event_json FROM platform_events WHERE idempotency_key=?", (event["idempotency_key"],)).fetchone()
+        if existing:
+            current = _json_load(existing["event_json"])
+            if current["event_sha256"] != event["event_sha256"]:
+                raise NarrativeRiskValidationError("idempotency_key already exists with different platform-event content")
+            return current
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO platform_events(event_id,case_id,source_module,event_type,idempotency_key,event_json,event_sha256,occurred_at) VALUES(?,?,?,?,?,?,?,?)", (event["event_id"],event["case_id"],event["source_module"],event["event_type"],event["idempotency_key"],_json_dump(event),event["event_sha256"],event["occurred_at"]))
+            if event["case_id"] is not None:
+                self._activity(connection,event["case_id"],"platform_event",entity_id=event["event_id"],payload={"source_module":event["source_module"],"event_type":event["event_type"]},created_at=event["occurred_at"])
+        return event
+
+    def list_platform_events(self, *, case_id: str | None = None, source_module: str | None = None) -> List[Dict[str, Any]]:
+        clauses=[]; params=[]
+        if case_id is not None: clauses.append("case_id=?"); params.append(case_id)
+        if source_module is not None: clauses.append("source_module=?"); params.append(source_module)
+        sql="SELECT event_json FROM platform_events"+(" WHERE "+" AND ".join(clauses) if clauses else "")+" ORDER BY occurred_at,event_id"
+        return [_json_load(row["event_json"]) for row in self._connection.execute(sql,params).fetchall()]
+
+    def create_integration_route(self, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        route = build_integration_route(payload)
+        self.get_case(route["case_id"])
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO integration_routes(route_id,case_id,source_module,target_module,artifact_type,artifact_id,status,route_json,route_sha256,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (route["route_id"],route["case_id"],route["source_module"],route["target_module"],route["artifact_type"],route["artifact_id"],route["status"],_json_dump(route),route["route_sha256"],route["created_at"]))
+            self._activity(connection,route["case_id"],"integration_route",entity_id=route["route_id"],payload={"source_module":route["source_module"],"target_module":route["target_module"],"status":route["status"]},created_at=route["created_at"])
+        return route
+
+    def list_integration_routes(self, *, case_id: str | None = None, source_module: str | None = None, target_module: str | None = None) -> List[Dict[str, Any]]:
+        clauses=[]; params=[]
+        for column,value in (("case_id",case_id),("source_module",source_module),("target_module",target_module)):
+            if value is not None: clauses.append(f"{column}=?"); params.append(value)
+        sql="SELECT route_json FROM integration_routes"+(" WHERE "+" AND ".join(clauses) if clauses else "")+" ORDER BY created_at,route_id"
+        return [_json_load(row["route_json"]) for row in self._connection.execute(sql,params).fetchall()]
+
+    def create_connected_dossier(self, case_id: str, *, generated_at: str | None = None, dossier_id: str | None = None) -> Dict[str, Any]:
+        case=self.get_case(case_id)
+        revisions=self.list_revisions(case_id)
+        latest=revisions[-1] if revisions else None
+        dossier=build_connected_dossier(case=case,latest_revision=latest,governance=self.get_case_governance_workflow(case_id),alerts=self.list_monitoring_alerts(case_id=case_id),stakeholder_intelligence=self.get_stakeholder_intelligence(case_id,generated_at=generated_at or case["updated_at"]),comparative_portfolio=self.get_comparative_portfolio(case_id,generated_at=generated_at or case["updated_at"]),publication_packages=self.list_publication_packages(case_id),platform_handoffs=self.list_platform_handoffs(case_id),retention_assessments=self.list_retention_assessments(case_id),platform_events=self.list_platform_events(case_id=case_id),integration_routes=self.list_integration_routes(case_id=case_id),generated_at=generated_at,dossier_id=dossier_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO connected_dossiers(dossier_id,case_id,dossier_json,dossier_sha256,generated_at) VALUES(?,?,?,?,?)", (dossier["dossier_id"],case_id,_json_dump(dossier),dossier["dossier_sha256"],dossier["generated_at"]))
+            self._activity(connection,case_id,"connected_dossier",entity_id=dossier["dossier_id"],payload={"dossier_sha256":dossier["dossier_sha256"]},created_at=dossier["generated_at"])
+        return dossier
+
+    def list_connected_dossiers(self, case_id: str) -> List[Dict[str, Any]]:
+        return [_json_load(row["dossier_json"]) for row in self._connection.execute("SELECT dossier_json FROM connected_dossiers WHERE case_id=? ORDER BY generated_at,dossier_id",(case_id,)).fetchall()]
+
+    def create_institutional_workspace(self, organization_id: str, *, generated_at: str | None = None, workspace_id: str | None = None) -> Dict[str, Any]:
+        cases=self.list_cases(organization_id=organization_id,archived=None,limit=1000)
+        case_ids={item["case_id"] for item in cases}
+        dossiers=[item for case_id in case_ids for item in self.list_connected_dossiers(case_id)]
+        events=[item for item in self.list_platform_events() if item.get("case_id") in case_ids]
+        routes=[item for item in self.list_integration_routes() if item.get("case_id") in case_ids]
+        workspace=build_institutional_workspace(organization_id=organization_id,cases=cases,dossiers=dossiers,platform_events=events,integration_routes=routes,generated_at=generated_at,workspace_id=workspace_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO institutional_workspaces(workspace_id,organization_id,workspace_json,workspace_sha256,generated_at) VALUES(?,?,?,?,?)", (workspace["workspace_id"],organization_id,_json_dump(workspace),workspace["workspace_sha256"],workspace["generated_at"]))
+        return workspace
+
+    def list_institutional_workspaces(self, organization_id: str) -> List[Dict[str, Any]]:
+        return [_json_load(row["workspace_json"]) for row in self._connection.execute("SELECT workspace_json FROM institutional_workspaces WHERE organization_id=? ORDER BY generated_at,workspace_id",(organization_id,)).fetchall()]
+
+    # ------------------------------------------------------------------
+    # v2.0.0 stakeholder, incentive, and pressure intelligence
 
     def _ensure_actor(self, actor_id: str, case_id: str) -> None:
         row = self._connection.execute("SELECT case_id FROM stakeholder_actors WHERE actor_id=?", (actor_id,)).fetchone()
@@ -1470,7 +1622,7 @@ class SQLiteCaseRepository:
         rows=self._connection.execute("SELECT * FROM catalyst_canvas_handoffs WHERE case_id=? ORDER BY imported_at,handoff_id",(case_id,)).fetchall(); return [{"handoff_id":r["handoff_id"],"case_id":r["case_id"],"canvas_id":r["canvas_id"],"handoff":_json_load(r["handoff_json"]),"handoff_sha256":r["handoff_sha256"],"imported_at":r["imported_at"]} for r in rows]
 
     # ------------------------------------------------------------------
-    # v1.10.0 comparative narratives and scenario analysis
+    # v2.0.0 comparative narratives and scenario analysis
 
     def _records_for_comparison(self, comparison: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
         records: Dict[str, Dict[str, Any]] = {}
@@ -1658,7 +1810,7 @@ class SQLiteCaseRepository:
 
 
     # ------------------------------------------------------------------
-    # v1.10.0 briefing, publication, API, embed, and platform integration
+    # v2.0.0 briefing, publication, API, embed, and platform integration
 
     def create_publication_briefing(
         self, case_id: str, *, revision_id: str | None = None, audience: str = "internal",
@@ -1867,7 +2019,7 @@ class SQLiteCaseRepository:
         return values
 
     # ------------------------------------------------------------------
-    # v1.10.0 narrative change, freshness, and monitoring
+    # v2.0.0 narrative change, freshness, and monitoring
 
     def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         snapshot = _json_load(row["snapshot_json"])
@@ -2229,7 +2381,7 @@ class SQLiteCaseRepository:
         return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
 
     # ------------------------------------------------------------------
-    # v1.10.0 governed review workflow
+    # v2.0.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {
@@ -2672,7 +2824,7 @@ class SQLiteCaseRepository:
 
 
     # ------------------------------------------------------------------
-    # v1.10.0 security, privacy, backup, and production hardening
+    # v2.0.0 security, privacy, backup, and production hardening
 
     def database_diagnostics(self) -> Dict[str, Any]:
         with self._lock:

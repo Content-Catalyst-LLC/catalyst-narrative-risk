@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/platform-handoff/1.10.0",
-  "title": "Narrative Risk Platform Publication Handoff 1.10.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/platform-handoff/2.0.0",
+  "title": "Narrative Risk Platform Publication Handoff 2.0.0",
   "type": "object",
   "additionalProperties": false,
   "required": [

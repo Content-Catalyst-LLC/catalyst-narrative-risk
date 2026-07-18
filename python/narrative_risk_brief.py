@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate validated Catalyst Narrative Risk v1.10.0 JSON, Markdown, and bibliography exports."""
+"""Generate validated Catalyst Narrative Risk v2.0.0 JSON, Markdown, and bibliography exports."""
 
 from __future__ import annotations
 

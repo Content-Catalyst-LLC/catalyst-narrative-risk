@@ -4,7 +4,7 @@
     "cnr": "https://sustainablecatalyst.com/ns/narrative-risk#"
   },
   "@type": "schema:Report",
-  "@id": "urn:uuid:58234d38-b283-401b-86a3-113108d01983",
+  "@id": "urn:uuid:6d335955-c09c-48ee-8e12-a02d68b1b01c",
   "schema:name": "Qualified Energy Performance Narrative",
   "schema:dateCreated": "2026-07-17T19:36:00+00:00",
   "schema:about": {
@@ -14,5 +14,5 @@
   "cnr:riskScore": 71,
   "cnr:riskLevel": "High",
   "cnr:publicationReadiness": "conditional",
-  "cnr:sourceRecord": "urn:uuid:bb022276-e8a1-41ce-8ca2-03aaa2800b56"
+  "cnr:sourceRecord": "urn:uuid:d58a7083-55b9-4ff1-805e-ed3bec8fa19a"
 }

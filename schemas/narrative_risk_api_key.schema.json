@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/api-key/1.10.0",
-  "title": "Narrative Risk API Key 1.10.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/api-key/2.0.0",
+  "title": "Narrative Risk API Key 2.0.0",
   "type": "object",
   "additionalProperties": false,
   "required": [

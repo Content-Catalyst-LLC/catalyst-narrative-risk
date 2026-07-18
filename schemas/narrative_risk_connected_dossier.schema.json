@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/connected-dossier/2.0.0",
+  "title": "Catalyst Narrative Risk Connected Case Dossier 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dossier_type",
+    "dossier_version",
+    "dossier_id",
+    "case_id",
+    "generated_at",
+    "case_summary",
+    "analytical_summary",
+    "governance_summary",
+    "monitoring_summary",
+    "stakeholder_summary",
+    "comparative_summary",
+    "publication_summary",
+    "privacy_summary",
+    "module_links",
+    "dossier_sha256"
+  ],
+  "properties": {
+    "dossier_type": {
+      "const": "catalyst-narrative-risk-connected-dossier"
+    },
+    "dossier_version": {
+      "const": "2.0.0"
+    },
+    "dossier_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "case_summary": {
+      "type": "object"
+    },
+    "analytical_summary": {
+      "type": "object"
+    },
+    "governance_summary": {
+      "type": "object"
+    },
+    "monitoring_summary": {
+      "type": "object"
+    },
+    "stakeholder_summary": {
+      "type": "object"
+    },
+    "comparative_summary": {
+      "type": "object"
+    },
+    "publication_summary": {
+      "type": "object"
+    },
+    "privacy_summary": {
+      "type": "object"
+    },
+    "module_links": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module",
+          "event_count",
+          "outbound_route_count",
+          "inbound_route_count"
+        ],
+        "properties": {
+          "module": {
+            "enum": [
+              "narrative_risk",
+              "knowledge_library",
+              "catalyst_data",
+              "site_intelligence",
+              "catalyst_canvas",
+              "decision_studio",
+              "research_librarian",
+              "workbench",
+              "catalyst_analytics",
+              "publication_api"
+            ]
+          },
+          "event_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "outbound_route_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "inbound_route_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "dossier_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

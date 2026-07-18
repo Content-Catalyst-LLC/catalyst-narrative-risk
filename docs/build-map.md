@@ -6,7 +6,7 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.10.0
+## Current implementation — v2.0.0
 
 The repository now provides:
 
@@ -20,8 +20,10 @@ The repository now provides:
 - Comparative evidence matrices, scenarios, sensitivity analysis, portfolios, and Decision Studio handoffs.
 - Governance-aware briefings and publication packages in JSON, Markdown, HTML, PDF, CSV, and JSON-LD.
 - Scoped API keys, rate limits, OpenAPI, public embeds, platform handoffs, and WordPress publication surfaces.
+- Secure deployment controls, privacy and retention policy, verified backup and restore, accessibility, performance, and production-readiness contracts.
+- Ten-module connected-platform registry, idempotent events, checksummed routes, unified case dossiers, and organization-scoped institutional rollups.
 
-The next roadmap release is v1.10.0 — Security, Privacy, Accessibility, and Production Hardening.
+The v2.0.0 roadmap is complete.
 
 ## Release roadmap
 
@@ -158,7 +160,7 @@ Expand stakeholder pressure from a single dropdown into an inspectable model.
 
 **Release gate:** all comparisons and scenarios are reproducible, checksummed, traceable to exact records, and advisory.
 
-### v1.10.0 — Briefing, Publication, API, and Platform Integration
+### v1.9.0 — Briefing, Publication, API, and Platform Integration
 
 Make reviewed records usable across the Sustainable Catalyst platform.
 
@@ -214,12 +216,10 @@ Deliver the complete institutional claims-governance system.
 7. Time-based monitoring: v1.6.0.
 8. Stakeholder and pressure intelligence: v1.7.0.
 9. Comparative and scenario analysis: v1.8.0.
-10. Publication and integration: v1.10.0.
+10. Publication and integration: v1.9.0.
 11. Production hardening: v1.10.0.
 12. Connected platform release: v2.0.0.
 
-## Immediate next build
+## Roadmap status
 
-**Build v1.10.0 — Security, Privacy, Accessibility, and Production Hardening.**
-
-The complete analytical, evidence, narrative, governance, monitoring, stakeholder, comparative, publication, API, and platform-integration foundation is now in place. The next release should harden organization isolation, permissions, private evidence, retention, accessibility, performance, deployment, backup, restore, and incident-recovery contracts before the v2.0.0 connected-platform release.
+**v2.0.0 is complete.** The canonical analytical method, structured evidence, narrative mapping, persistent cases, human governance, monitoring, stakeholder intelligence, comparative scenarios, publication, production hardening, and connected institutional orchestration are now represented in one versioned platform contract.

@@ -1,6 +1,6 @@
 # Security, Privacy, Accessibility, and Production Hardening
 
-Catalyst Narrative Risk v1.10.0 adds an auditable hardening layer without changing the canonical analytical score.
+Catalyst Narrative Risk v2.0.0 adds an auditable hardening layer without changing the canonical analytical score.
 
 ## Security readiness
 

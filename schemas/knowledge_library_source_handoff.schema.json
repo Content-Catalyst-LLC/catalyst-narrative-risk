@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/knowledge-library-source/1.10.0",
-  "title": "Knowledge Library Source Handoff 1.10.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/knowledge-library-source/2.0.0",
+  "title": "Knowledge Library Source Handoff 2.0.0",
   "type": "object",
   "additionalProperties": false,
   "required": [

@@ -1,6 +1,6 @@
 # Briefing, Publication, API, and Platform Integration
 
-Catalyst Narrative Risk v1.10.0 turns an immutable analytical revision and its human-governance state into a controlled publication workflow.
+Catalyst Narrative Risk v2.0.0 turns an immutable analytical revision and its human-governance state into a controlled publication workflow.
 
 ## Publication objects
 

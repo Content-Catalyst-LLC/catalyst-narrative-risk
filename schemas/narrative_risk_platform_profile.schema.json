@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/platform-profile/2.0.0",
+  "title": "Catalyst Narrative Risk Platform Profile 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "profile_type",
+    "profile_version",
+    "generated_at",
+    "platform_name",
+    "release_name",
+    "modules",
+    "capabilities",
+    "data_contracts",
+    "runtime_contracts",
+    "migration_sources",
+    "profile_sha256"
+  ],
+  "properties": {
+    "profile_type": {
+      "const": "catalyst-narrative-risk-platform-profile"
+    },
+    "profile_version": {
+      "const": "2.0.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "platform_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module",
+          "status",
+          "role"
+        ],
+        "properties": {
+          "module": {
+            "enum": [
+              "narrative_risk",
+              "knowledge_library",
+              "catalyst_data",
+              "site_intelligence",
+              "catalyst_canvas",
+              "decision_studio",
+              "research_librarian",
+              "workbench",
+              "catalyst_analytics",
+              "publication_api"
+            ]
+          },
+          "status": {
+            "const": "connected"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "data_contracts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "runtime_contracts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "migration_sources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "profile_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

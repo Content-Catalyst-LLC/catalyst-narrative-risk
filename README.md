@@ -1,20 +1,20 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.10.0 — Security, Privacy, Accessibility, and Production Hardening**
+**Current release: v2.0.0 — Connected Narrative Risk and Claims Governance Platform**
 
 Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, stakeholder intelligence, and comparative scenario analysis. It does not certify truth, infer intent, or select a preferred narrative automatically.
 
-## What v1.10.0 adds
+## What v2.0.0 adds
 
-- Secure Flask defaults, response headers, request-size limits, explicit CORS allowlists, and HTTPS enforcement options.
-- Tamper-evident security-readiness and aggregate production-readiness reports.
-- Versioned privacy and retention policies with case-level assessments and legal holds.
-- Verified SQLite backups, checksummed manifests, integrity checks, and guarded restore drills.
-- WordPress accessibility audits and a production-readiness shortcode.
-- Performance budgets and database diagnostics.
-- REST and CLI workflows for privacy, backup, accessibility, performance, and readiness.
+- A ten-module first-party Catalyst registry.
+- Persistent idempotent cross-module events.
+- Checksummed source-to-target integration routes.
+- Unified case dossiers spanning analysis, evidence, governance, monitoring, stakeholders, scenarios, publication, and privacy.
+- Exact organization-scoped institutional workspace rollups.
+- REST, CLI, SQLite, portable-bundle, and WordPress connected-platform interfaces.
+- Deterministic v1.10.0 migration.
 
-The v1.9.0 analytical, governance, monitoring, stakeholder, comparative, and publication behavior remains unchanged. A readiness report documents explicit controls; it does not certify the deployment as secure.
+The v1.10.0 analytical and governance behavior remains unchanged. Connected records coordinate explicit artifacts; they do not certify truth, create approval, or bypass module permissions.
 
 ## Repository layout
 
@@ -109,9 +109,24 @@ See `docs/narrative-change-freshness-monitoring.md` and `docs/site-intelligence-
 [catalyst_narrative_risk_publication_workspace]
 [catalyst_narrative_risk_public_brief]
 [catalyst_narrative_risk_readiness]
+[catalyst_narrative_risk_platform]
 ```
 
 Browser workspace storage is a local demonstration. Shared institutional persistence should use the SQLite-backed REST workspace API.
+
+
+## Connected platform workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" platform-profile
+python python/narrative_risk_workspace.py --database "$DB" ingest-platform-event --input platform-event.json
+python python/narrative_risk_workspace.py --database "$DB" create-integration-route --input integration-route.json
+python python/narrative_risk_workspace.py --database "$DB" connected-dossier CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" institutional-workspace ORGANIZATION_ID
+```
+
+See `docs/connected-narrative-risk-platform.md`.
 
 ## Boundary
 

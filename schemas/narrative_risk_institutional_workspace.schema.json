@@ -1,0 +1,333 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/institutional-workspace/2.0.0",
+  "title": "Catalyst Narrative Risk Institutional Workspace 2.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workspace_type",
+    "workspace_version",
+    "workspace_id",
+    "organization_id",
+    "generated_at",
+    "case_count",
+    "status_counts",
+    "priority_counts",
+    "open_monitoring_alerts",
+    "pending_reviews",
+    "publication_ready_cases",
+    "connected_dossier_ids",
+    "module_connections",
+    "workspace_sha256"
+  ],
+  "properties": {
+    "workspace_type": {
+      "const": "catalyst-narrative-risk-institutional-workspace"
+    },
+    "workspace_version": {
+      "const": "2.0.0"
+    },
+    "workspace_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "organization_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "priority_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "open_monitoring_alerts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "pending_reviews": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "publication_ready_cases": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "connected_dossier_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+      }
+    },
+    "module_connections": {
+      "type": "object",
+      "required": [
+        "narrative_risk",
+        "knowledge_library",
+        "catalyst_data",
+        "site_intelligence",
+        "catalyst_canvas",
+        "decision_studio",
+        "research_librarian",
+        "workbench",
+        "catalyst_analytics",
+        "publication_api"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "narrative_risk": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "knowledge_library": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "catalyst_data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "site_intelligence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "catalyst_canvas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "decision_studio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "research_librarian": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "workbench": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "catalyst_analytics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "publication_api": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events",
+            "outbound_routes",
+            "inbound_routes"
+          ],
+          "properties": {
+            "events": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "outbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inbound_routes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "workspace_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

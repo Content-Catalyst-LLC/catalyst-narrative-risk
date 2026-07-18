@@ -14,7 +14,7 @@ DATA = Path(__file__).resolve().parents[1] / "data" / "sample_narrative_risk_inp
 def test_default_map_is_created_from_evidence_ledger_claims():
     analysis = score_narrative_risk({"claim": "A bounded factual statement."})
     narrative_map = analysis["narrative_map"]
-    assert narrative_map["map_version"] == "1.10.0"
+    assert narrative_map["map_version"] == "2.0.0"
     assert len(narrative_map["nodes"]) == 1
     assert narrative_map["nodes"][0]["claim_id"] == analysis["evidence_ledger"]["primary_claim_id"]
     assert narrative_map["analysis"]["summary"]["map_status"] == "complete"

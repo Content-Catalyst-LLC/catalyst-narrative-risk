@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "methods" / "transparent-heuristic.v1.10.0.json"
+SOURCE = ROOT / "methods" / "transparent-heuristic.v2.0.0.json"
 TARGET = ROOT / "wordpress" / "catalyst-narrative-risk-demo" / "assets" / "narrative-risk-method.js"
 
 

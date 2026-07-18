@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-evidence-matrix/1.10.0",
-  "title": "Catalyst Narrative Risk Comparative Evidence Matrix 1.10.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/comparative-evidence-matrix/2.0.0",
+  "title": "Catalyst Narrative Risk Comparative Evidence Matrix 2.0.0",
   "type": "object",
   "additionalProperties": false,
   "required": [

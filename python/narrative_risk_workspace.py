@@ -14,6 +14,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from narrative_risk.workspaces import SQLiteCaseRepository
+from narrative_risk.connected import build_platform_profile
+from narrative_risk.contracts import ROOT as CONTRACT_ROOT, contract_definition, load_json
 from narrative_risk.hardening import (
     audit_wordpress_accessibility, build_production_readiness_report,
     build_security_readiness_report,
@@ -299,6 +301,20 @@ def parser() -> argparse.ArgumentParser:
     platform.add_argument("--generated-at")
     platform.add_argument("--external-reference")
 
+    commands.add_parser("platform-profile")
+    event = commands.add_parser("ingest-platform-event")
+    event.add_argument("--input", required=True)
+    events = commands.add_parser("list-platform-events")
+    events.add_argument("--case-id"); events.add_argument("--source-module")
+    route = commands.add_parser("create-integration-route")
+    route.add_argument("--input", required=True)
+    routes = commands.add_parser("list-integration-routes")
+    routes.add_argument("--case-id"); routes.add_argument("--source-module"); routes.add_argument("--target-module")
+    dossier = commands.add_parser("connected-dossier")
+    dossier.add_argument("case_id"); dossier.add_argument("--generated-at")
+    institution = commands.add_parser("institutional-workspace")
+    institution.add_argument("organization_id"); institution.add_argument("--generated-at")
+
     commands.add_parser("database-diagnostics")
     privacy = commands.add_parser("create-privacy-policy")
     privacy.add_argument("--input", required=True)
@@ -551,6 +567,25 @@ def main() -> int:
                 args.package_id, target=args.target, generated_at=args.generated_at,
                 external_reference=args.external_reference,
             ))
+        elif args.command == "platform-profile":
+            write_json(build_platform_profile(
+                manifest=load_json(CONTRACT_ROOT / "narrative_risk_manifest.json"),
+                contract=contract_definition(),
+            ))
+        elif args.command == "ingest-platform-event":
+            write_json(repository.ingest_platform_event(read_json(args.input)))
+        elif args.command == "list-platform-events":
+            values = repository.list_platform_events(case_id=args.case_id, source_module=args.source_module)
+            write_json({"platform_events": values, "count": len(values)})
+        elif args.command == "create-integration-route":
+            write_json(repository.create_integration_route(read_json(args.input)))
+        elif args.command == "list-integration-routes":
+            values = repository.list_integration_routes(case_id=args.case_id, source_module=args.source_module, target_module=args.target_module)
+            write_json({"integration_routes": values, "count": len(values)})
+        elif args.command == "connected-dossier":
+            write_json(repository.create_connected_dossier(args.case_id, generated_at=args.generated_at))
+        elif args.command == "institutional-workspace":
+            write_json(repository.create_institutional_workspace(args.organization_id, generated_at=args.generated_at))
         elif args.command == "database-diagnostics":
             write_json(repository.database_diagnostics())
         elif args.command == "create-privacy-policy":

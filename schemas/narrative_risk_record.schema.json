@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.10.0",
-  "title": "Catalyst Narrative Risk Record 1.10.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/record/2.0.0",
+  "title": "Catalyst Narrative Risk Record 2.0.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -35,7 +35,7 @@
           "const": "urn:catalyst:narrative-risk:contract:canonical"
         },
         "contract_version": {
-          "const": "1.10.0"
+          "const": "2.0.0"
         }
       }
     },
@@ -64,16 +64,16 @@
           "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
         },
         "schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/record/1.10.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/record/2.0.0"
         },
         "input_schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/input/1.10.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/input/2.0.0"
         },
         "ledger_schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.10.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/2.0.0"
         },
         "narrative_map_schema_id": {
-          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.10.0"
+          "const": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/2.0.0"
         }
       }
     },
@@ -177,10 +177,10 @@
       }
     },
     "evidence_ledger": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.10.0"
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/2.0.0"
     },
     "method_snapshot": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.10.0"
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/2.0.0"
     },
     "method_snapshot_sha256": {
       "type": "string",
@@ -622,7 +622,8 @@
             "1.6.0",
             "1.7.0",
             "1.8.0",
-            "1.9.0"
+            "1.9.0",
+            "1.10.0"
           ]
         },
         "from_method_version": {
@@ -636,7 +637,8 @@
             "1.6.0",
             "1.7.0",
             "1.8.0",
-            "1.9.0"
+            "1.9.0",
+            "1.10.0"
           ]
         },
         "migrated_at": {
@@ -652,7 +654,7 @@
       }
     },
     "narrative_map": {
-      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/1.10.0"
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/narrative-map/2.0.0"
     }
   }
 }

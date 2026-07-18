@@ -249,7 +249,7 @@ def test_publication_api_scopes_openapi_and_public_embed(tmp_path):
     assert public.get_json()["artifact"]["format"] == "html"
     openapi = client.get("/api/narrative-risk/openapi.json").get_json()
     assert openapi["openapi"] == "3.1.0"
-    assert openapi["info"]["version"] == "1.10.0"
+    assert openapi["info"]["version"] == "2.0.0"
 
 
 def test_api_migrates_v1_8_0_record():
@@ -258,5 +258,5 @@ def test_api_migrates_v1_8_0_record():
     response = client.post("/api/narrative-risk/migrate/v1.8.0", json=legacy)
     assert response.status_code == 200
     migrated = response.get_json()
-    assert migrated["contract"]["contract_version"] == "1.10.0"
+    assert migrated["contract"]["contract_version"] == "2.0.0"
     assert migrated["migration"]["from_schema_version"] == "1.8.0"

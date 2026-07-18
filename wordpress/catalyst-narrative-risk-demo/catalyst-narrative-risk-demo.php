@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk
  * Description: Narrative-risk scoring, evidence, mapping, governance, monitoring, comparative analysis, publication briefings, public embeds, and persistent review workspaces for Sustainable Catalyst.
- * Version: 1.10.0
+ * Version: 2.0.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,15 +13,15 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.10.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.10.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.10.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.10.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.10.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.10.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.10.0', true);
-    wp_register_style('cnrisk-publication-css', $base . 'assets/catalyst-narrative-risk-publication.css', array(), '1.10.0');
-    wp_register_script('cnrisk-publication-js', $base . 'assets/catalyst-narrative-risk-publication.js', array(), '1.10.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '2.0.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '2.0.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '2.0.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '2.0.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '2.0.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '2.0.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '2.0.0', true);
+    wp_register_style('cnrisk-publication-css', $base . 'assets/catalyst-narrative-risk-publication.css', array(), '2.0.0');
+    wp_register_script('cnrisk-publication-js', $base . 'assets/catalyst-narrative-risk-publication.js', array(), '2.0.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -275,7 +275,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.10.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v2.0.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -468,7 +468,7 @@ function cnrisk_publication_workspace_shortcode() {
         </form>
         <div class="cnrisk-publication__preview" data-cnrisk-publication-preview aria-live="polite"></div>
       </div>
-      <p class="cnrisk-publication__notice">Browser preview mode does not approve publication. Production publishing, PDF/CSV/JSON-LD exports, API scopes, embeds, and platform handoffs are governed by the v1.10.0 REST workspace.</p>
+      <p class="cnrisk-publication__notice">Browser preview mode does not approve publication. Production publishing, PDF/CSV/JSON-LD exports, API scopes, embeds, and platform handoffs are governed by the v2.0.0 REST workspace.</p>
     </section>
     <?php
     return ob_get_clean();
@@ -501,3 +501,39 @@ function cnrisk_readiness_shortcode() {
     return ob_get_clean();
 }
 add_shortcode('catalyst_narrative_risk_readiness', 'cnrisk_readiness_shortcode');
+
+/**
+ * Render the connected v2 platform map and institutional operating boundary.
+ */
+function cnrisk_platform_shortcode() {
+    wp_enqueue_style('cnrisk-workspace-css');
+    ob_start();
+    ?>
+    <section class="cnrisk-platform" data-cnrisk-platform aria-labelledby="cnrisk-platform-title">
+      <header class="cnrisk-platform__head">
+        <p class="cnrisk-demo__eyebrow">Connected institutional platform</p>
+        <h3 id="cnrisk-platform-title">Narrative Risk and Claims Governance Platform</h3>
+        <p>Coordinate claims, evidence, review, monitoring, scenarios, publication, and first-party Catalyst handoffs without bypassing each module’s governance controls.</p>
+      </header>
+      <div class="cnrisk-readiness__grid" role="list" aria-label="Connected Catalyst modules">
+        <article role="listitem"><h4>Narrative Risk</h4><p>Canonical claims, evidence, narrative maps, human decisions, and immutable revisions.</p></article>
+        <article role="listitem"><h4>Knowledge Library</h4><p>Structured source discovery, provenance, citations, and governed publication archives.</p></article>
+        <article role="listitem"><h4>Catalyst Data</h4><p>Dataset provenance, observations, indicators, and evidence-ready analytical inputs.</p></article>
+        <article role="listitem"><h4>Site Intelligence</h4><p>External signals, freshness changes, monitoring alerts, and reassessment triggers.</p></article>
+        <article role="listitem"><h4>Catalyst Canvas</h4><p>Stakeholders, relationships, incentives, journeys, consequences, and assumptions.</p></article>
+        <article role="listitem"><h4>Decision Studio</h4><p>Comparative narratives, explicit scenarios, sensitivity results, and decision handoffs.</p></article>
+        <article role="listitem"><h4>Research Librarian</h4><p>Guided research routing across claims, evidence gaps, records, and source collections.</p></article>
+        <article role="listitem"><h4>Workbench</h4><p>Governed calculation, modeling, graphing, and reproducible technical analysis handoffs.</p></article>
+        <article role="listitem"><h4>Catalyst Analytics</h4><p>Statistical analysis, validation, uncertainty, sensitivity, and publication-ready results.</p></article>
+        <article role="listitem"><h4>Publication API</h4><p>Public-safe briefings, embeds, scoped API access, and checksummed distribution packages.</p></article>
+      </div>
+      <div class="cnrisk-platform__contract">
+        <h4>Connected operating contract</h4>
+        <p>Idempotent platform events record material changes. Checksummed integration routes identify source, target, artifact, and delivery state. Connected dossiers summarize one governed case. Institutional workspaces aggregate only cases with an exact organization scope.</p>
+      </div>
+      <p class="cnrisk-readiness__boundary"><strong>Boundary:</strong> Connection metadata coordinates governed artifacts. It does not certify truth, create approval, infer authorization, or bypass module-specific access controls.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('catalyst_narrative_risk_platform', 'cnrisk_platform_shortcode');

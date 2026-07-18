@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export a v1.10.0 evidence ledger as JSON, Markdown, or CSV."""
+"""Export a v2.0.0 evidence ledger as JSON, Markdown, or CSV."""
 
 from __future__ import annotations
 
