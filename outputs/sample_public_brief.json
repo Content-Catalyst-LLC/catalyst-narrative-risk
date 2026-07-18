@@ -1,7 +1,7 @@
 {
   "audience": "public",
-  "briefing_id": "urn:uuid:3c55b8a2-c2b5-4445-8ba9-e27ac74257f0",
-  "briefing_sha256": "a98a2ea435d9cc762d4b66b7a54dd82fd9e860116f48e10da31c46b2d4312118",
+  "briefing_id": "urn:uuid:58234d38-b283-401b-86a3-113108d01983",
+  "briefing_sha256": "2a2030ceee603193794c8b6683ad4085636084f78a5931eab6261b63c4634118",
   "case_id": "urn:uuid:70000000-0000-4000-8000-000000000001",
   "classification": "public",
   "disclosures": [
@@ -16,7 +16,7 @@
     "disclosure_required"
   ],
   "reassessment_at": "2026-10-17T12:00:00+00:00",
-  "record_id": "urn:uuid:24209a8d-9a38-4ba1-b43c-8d8910eeed59",
+  "record_id": "urn:uuid:bb022276-e8a1-41ce-8ca2-03aaa2800b56",
   "redactions": [
     "reviewer_id",
     "reviewer_name",
@@ -29,7 +29,7 @@
     "notes",
     "method_notes"
   ],
-  "revision_id": "urn:uuid:ea7728f4-8bc0-48c1-baa5-70a9cef2c85b",
+  "revision_id": "urn:uuid:ba683595-0609-481f-9f68-deaf04fb136d",
   "sections": {
     "citations": [
       "Energy Audit Team (2026) Pilot meter audit. Independent Audit Group. Available at: https://example.org/pilot-audit (Accessed: 2026-07-17).",
@@ -94,7 +94,7 @@
       "score": 71
     }
   },
-  "source_record_sha256": "ac3297b05c63ee1e1ef714880e22ee76d8b7615007a8e5313d37977a622cd8bc",
+  "source_record_sha256": "f47abe31a98628762ae533f4e265e8ee7232598a14c680bfdeb067e4d611c394",
   "title": "Qualified Energy Performance Narrative",
   "valid_until": "2027-01-17T23:59:59+00:00"
 }

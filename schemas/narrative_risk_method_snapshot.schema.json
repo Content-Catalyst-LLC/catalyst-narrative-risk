@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.9.0",
-  "title": "Catalyst Narrative Risk Method Snapshot 1.9.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/method-snapshot/1.10.0",
+  "title": "Catalyst Narrative Risk Method Snapshot 1.10.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -25,14 +25,15 @@
     "monitoring_policy",
     "stakeholder_policy",
     "comparative_policy",
-    "publication_policy"
+    "publication_policy",
+    "hardening_policy"
   ],
   "properties": {
     "method_id": {
       "const": "urn:catalyst:narrative-risk:method:transparent-heuristic"
     },
     "method_version": {
-      "const": "1.9.0"
+      "const": "1.10.0"
     },
     "name": {
       "type": "string",
@@ -125,7 +126,7 @@
       "const": "urn:catalyst:narrative-risk:vocabularies:canonical"
     },
     "controlled_vocabulary_version": {
-      "const": "1.9.0"
+      "const": "1.10.0"
     },
     "defaults": {
       "type": "object",
@@ -544,7 +545,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "primary_claim_role": {
           "const": "primary"
@@ -734,7 +735,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "node_types": {
           "type": "array",
@@ -785,7 +786,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "boundary": {
           "type": "string",
@@ -877,7 +878,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "boundary": {
           "type": "string",
@@ -1030,7 +1031,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "boundary": {
           "type": "string",
@@ -1103,7 +1104,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "boundary": {
           "type": "string",
@@ -1156,7 +1157,7 @@
       ],
       "properties": {
         "policy_version": {
-          "const": "1.9.0"
+          "const": "1.10.0"
         },
         "public_classification_requires_approved_workflow": {
           "type": "boolean"
@@ -1215,6 +1216,105 @@
           },
           "uniqueItems": true,
           "minItems": 1
+        }
+      }
+    },
+    "hardening_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "boundary",
+        "maximum_request_bytes",
+        "minimum_admin_token_characters",
+        "production_requires",
+        "privacy_deletion_modes",
+        "backup_verification",
+        "accessibility_checks",
+        "performance_budgets"
+      ],
+      "properties": {
+        "policy_version": {
+          "const": "1.10.0"
+        },
+        "boundary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "maximum_request_bytes": {
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 2097152
+        },
+        "minimum_admin_token_characters": {
+          "type": "integer",
+          "minimum": 16
+        },
+        "production_requires": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "privacy_deletion_modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "archive_and_tombstone",
+              "anonymize_then_archive",
+              "legal_hold_only"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "backup_verification": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "accessibility_checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "performance_budgets": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "health_ms",
+            "list_cases_ms",
+            "bundle_ms",
+            "bundle_bytes",
+            "database_bytes"
+          ],
+          "properties": {
+            "health_ms": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "list_cases_ms": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "bundle_ms": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "bundle_bytes": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "database_bytes": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
         }
       }
     }

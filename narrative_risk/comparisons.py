@@ -1,4 +1,4 @@
-"""Comparative narratives, scenarios, and sensitivity analysis for v1.9.0.
+"""Comparative narratives, scenarios, and sensitivity analysis for v1.10.0.
 
 The comparative layer evaluates explicit records and assumptions. It does not
 select a preferred narrative, certify truth, or silently modify canonical scores.
@@ -20,7 +20,7 @@ from .contracts import (
 from .errors import NarrativeRiskValidationError
 from .service import score_narrative_risk
 
-VERSION = "1.9.0"
+VERSION = "1.10.0"
 COMPARISON_STATUSES = {"draft", "active", "complete", "archived"}
 COMPARISON_MODES = {"revision", "record", "scenario", "mixed"}
 SCENARIO_TYPES = {"best_case", "base_case", "worst_case", "counterfactual", "adversarial", "custom"}

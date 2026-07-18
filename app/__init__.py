@@ -10,7 +10,7 @@ from flask import Flask, jsonify, request
 from narrative_risk.contracts import contract_definition, controlled_vocabularies, current_method_snapshot, sha256_digest
 from narrative_risk.integrations import import_catalyst_data_source, import_knowledge_library_source
 from narrative_risk.migrations import (
-    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record, migrate_v1_8_0_record,
+    migrate_record, migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record, migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record, migrate_v1_7_0_record, migrate_v1_8_0_record, migrate_v1_9_0_record,
 )
 from narrative_risk.service import (
     VERSION,
@@ -21,6 +21,10 @@ from narrative_risk.service import (
     verify_record_reproducibility,
 )
 from narrative_risk.workspaces import SQLiteCaseRepository
+from narrative_risk.hardening import (
+    audit_wordpress_accessibility, build_production_readiness_report,
+    build_security_readiness_report,
+)
 
 
 def _json_object():
@@ -61,11 +65,91 @@ def create_app(config: dict | None = None):
         "CNRISK_DATABASE_PATH",
         str(Path(app.instance_path) / "catalyst-narrative-risk.sqlite3"),
     )
-    app.config.update(NARRATIVE_RISK_DATABASE=default_db, NARRATIVE_RISK_REQUIRE_API_KEY=False, NARRATIVE_RISK_ADMIN_TOKEN=None)
+    raw_origins = os.environ.get("NARRATIVE_RISK_ALLOWED_ORIGINS", "")
+    app.config.update(
+        NARRATIVE_RISK_DATABASE=default_db,
+        NARRATIVE_RISK_ENVIRONMENT=os.environ.get("NARRATIVE_RISK_ENVIRONMENT", "development"),
+        NARRATIVE_RISK_REQUIRE_API_KEY=os.environ.get("NARRATIVE_RISK_REQUIRE_API_KEY", "").lower() in {"1", "true", "yes"},
+        NARRATIVE_RISK_ADMIN_TOKEN=os.environ.get("NARRATIVE_RISK_ADMIN_TOKEN"),
+        NARRATIVE_RISK_ALLOWED_ORIGINS=[value.strip() for value in raw_origins.split(",") if value.strip()],
+        NARRATIVE_RISK_ENFORCE_HTTPS=os.environ.get("NARRATIVE_RISK_ENFORCE_HTTPS", "").lower() in {"1", "true", "yes"},
+        NARRATIVE_RISK_SECURE_HEADERS=True,
+        NARRATIVE_RISK_BACKUP_DIRECTORY=os.environ.get("NARRATIVE_RISK_BACKUP_DIRECTORY"),
+        NARRATIVE_RISK_RETENTION_POLICY_CONFIGURED=os.environ.get("NARRATIVE_RISK_RETENTION_POLICY_CONFIGURED", "").lower() in {"1", "true", "yes"},
+        NARRATIVE_RISK_ENCRYPTION_AT_REST_ATTESTED=os.environ.get("NARRATIVE_RISK_ENCRYPTION_AT_REST_ATTESTED", "").lower() in {"1", "true", "yes"},
+        MAX_CONTENT_LENGTH=int(os.environ.get("NARRATIVE_RISK_MAX_CONTENT_LENGTH", "1048576")),
+        SESSION_COOKIE_SECURE=os.environ.get("NARRATIVE_RISK_SESSION_COOKIE_SECURE", "").lower() in {"1", "true", "yes"},
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+    )
     if config:
         app.config.update(config)
     repository = SQLiteCaseRepository(app.config["NARRATIVE_RISK_DATABASE"])
     app.extensions["narrative_risk_repository"] = repository
+
+    def _security_config_snapshot():
+        token = app.config.get("NARRATIVE_RISK_ADMIN_TOKEN") or ""
+        try:
+            retention_configured = bool(repository.list_privacy_policies(status="active"))
+        except Exception:
+            retention_configured = bool(app.config.get("NARRATIVE_RISK_RETENTION_POLICY_CONFIGURED"))
+        return {
+            "environment": app.config.get("NARRATIVE_RISK_ENVIRONMENT", "development"),
+            "debug": bool(app.debug),
+            "require_api_key": bool(app.config.get("NARRATIVE_RISK_REQUIRE_API_KEY")),
+            "admin_token_length": len(token),
+            "enforce_https": bool(app.config.get("NARRATIVE_RISK_ENFORCE_HTTPS")),
+            "secure_headers": bool(app.config.get("NARRATIVE_RISK_SECURE_HEADERS", True)),
+            "allowed_origins": list(app.config.get("NARRATIVE_RISK_ALLOWED_ORIGINS") or []),
+            "max_content_length": int(app.config.get("MAX_CONTENT_LENGTH") or 0),
+            "database_path": app.config.get("NARRATIVE_RISK_DATABASE"),
+            "backup_directory": app.config.get("NARRATIVE_RISK_BACKUP_DIRECTORY"),
+            "retention_policy_configured": retention_configured,
+            "encryption_at_rest_attested": bool(app.config.get("NARRATIVE_RISK_ENCRYPTION_AT_REST_ATTESTED")),
+            "cookie_secure": bool(app.config.get("SESSION_COOKIE_SECURE")),
+        }
+
+    @app.before_request
+    def enforce_transport_and_content_type():
+        if app.config.get("NARRATIVE_RISK_ENFORCE_HTTPS"):
+            forwarded = request.headers.get("X-Forwarded-Proto", "").split(",", 1)[0].strip().lower()
+            if not request.is_secure and forwarded != "https":
+                return jsonify({"error": "https_required", "message": "HTTPS is required"}), 400
+        if request.method in {"POST", "PUT", "PATCH"} and request.path.startswith("/api/"):
+            if request.content_length and request.content_length > int(app.config.get("MAX_CONTENT_LENGTH") or 0):
+                return jsonify({"error": "request_too_large", "message": "Request body exceeds the configured limit"}), 413
+            if request.content_length and not request.is_json:
+                return jsonify({"error": "json_required", "message": "Content-Type: application/json is required"}), 415
+        origin = request.headers.get("Origin")
+        allowed = app.config.get("NARRATIVE_RISK_ALLOWED_ORIGINS") or []
+        if origin and request.path.startswith("/api/") and allowed and origin not in allowed:
+            return jsonify({"error": "origin_denied", "message": "Origin is not allowed"}), 403
+
+    @app.after_request
+    def harden_response(response):
+        if app.config.get("NARRATIVE_RISK_SECURE_HEADERS", True):
+            response.headers.setdefault("X-Content-Type-Options", "nosniff")
+            response.headers.setdefault("X-Frame-Options", "DENY")
+            response.headers.setdefault("Referrer-Policy", "no-referrer")
+            response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+            response.headers.setdefault("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'")
+            response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
+            if request.is_secure or app.config.get("NARRATIVE_RISK_ENFORCE_HTTPS"):
+                response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        if request.path.startswith("/api/"):
+            response.headers.setdefault("Cache-Control", "no-store")
+        origin = request.headers.get("Origin")
+        allowed = app.config.get("NARRATIVE_RISK_ALLOWED_ORIGINS") or []
+        if origin and origin in allowed:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Vary"] = "Origin"
+            response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-CNRISK-Admin-Token, Idempotency-Key"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, OPTIONS"
+        return response
+
+    @app.errorhandler(413)
+    def request_too_large(_error):
+        return jsonify({"error": "request_too_large", "message": "Request body exceeds the configured limit"}), 413
 
     def require_scope(scope: str):
         if not app.config.get("NARRATIVE_RISK_REQUIRE_API_KEY"):
@@ -100,6 +184,10 @@ def create_app(config: dict | None = None):
             "public_embeds": True,
             "scoped_api_keys": True,
             "platform_publication_handoffs": True,
+            "production_hardening": True,
+            "privacy_retention": True,
+            "verified_backups": True,
+            "accessibility_audits": True,
             "workspace": repository.health(),
         }, 200
 
@@ -227,6 +315,15 @@ def create_app(config: dict | None = None):
     def narrative_risk_migrate_v180():
         try:
             migrated = migrate_v1_8_0_record(_json_object())
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_legacy_narrative_risk_record", exc)
+        return jsonify(migrated), 200
+
+
+    @app.post("/api/narrative-risk/migrate/v1.9.0")
+    def narrative_risk_migrate_v190():
+        try:
+            migrated = migrate_v1_9_0_record(_json_object())
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_legacy_narrative_risk_record", exc)
         return jsonify(migrated), 200
@@ -789,5 +886,130 @@ def create_app(config: dict | None = None):
         except NarrativeRiskValidationError as exc:
             return _bad_request("invalid_saved_view_query", exc)
         return jsonify({"saved_views": views, "count": len(views)}), 200
+
+    @app.get("/api/narrative-risk/production/security")
+    def production_security_report():
+        denied = require_scope("admin")
+        if denied: return denied
+        return jsonify(build_security_readiness_report(_security_config_snapshot())), 200
+
+    @app.get("/api/narrative-risk/production/database")
+    def production_database_diagnostics():
+        denied = require_scope("admin")
+        if denied: return denied
+        return jsonify(repository.database_diagnostics()), 200
+
+    @app.get("/api/narrative-risk/production/accessibility")
+    def production_accessibility_report():
+        denied = require_scope("admin")
+        if denied: return denied
+        plugin_root = Path(__file__).resolve().parents[1] / "wordpress" / "catalyst-narrative-risk-demo"
+        return jsonify(audit_wordpress_accessibility(plugin_root)), 200
+
+    @app.get("/api/narrative-risk/production/performance")
+    def production_performance_report():
+        denied = require_scope("admin")
+        if denied: return denied
+        try:
+            report = repository.performance_report(case_id=request.args.get("case_id"))
+        except NarrativeRiskValidationError as exc:
+            return _bad_request("invalid_performance_audit", exc)
+        return jsonify(report), 200
+
+    @app.get("/api/narrative-risk/production/readiness")
+    def production_readiness_report():
+        denied = require_scope("admin")
+        if denied: return denied
+        security = build_security_readiness_report(_security_config_snapshot())
+        plugin_root = Path(__file__).resolve().parents[1] / "wordpress" / "catalyst-narrative-risk-demo"
+        accessibility = audit_wordpress_accessibility(plugin_root)
+        performance = repository.performance_report(case_id=request.args.get("case_id"))
+        backup_verification = None
+        manifests = repository.list_backup_manifests()
+        if manifests:
+            try: backup_verification = repository.verify_database_backup(manifests[0]["backup_id"])
+            except NarrativeRiskValidationError: backup_verification = {"verified": False}
+        report = build_production_readiness_report(
+            security_report=security, accessibility_report=accessibility, performance_report=performance,
+            database_diagnostics=repository.database_diagnostics(), backup_verification=backup_verification,
+        )
+        return jsonify(report), 200
+
+    @app.post("/api/narrative-risk/privacy/policies")
+    def create_privacy_policy():
+        denied = require_scope("admin")
+        if denied: return denied
+        try: policy = repository.save_privacy_policy(_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_privacy_policy", exc)
+        return jsonify(policy), 201
+
+    @app.get("/api/narrative-risk/privacy/policies")
+    def list_privacy_policies():
+        denied = require_scope("admin")
+        if denied: return denied
+        try: values = repository.list_privacy_policies(status=request.args.get("status"))
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_privacy_policy_query", exc)
+        return jsonify({"privacy_policies": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/cases/<case_id>/retention-assessments")
+    def create_retention_assessment(case_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try: assessment = repository.assess_case_retention(case_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_retention_assessment", exc)
+        return jsonify(assessment), 201
+
+    @app.get("/api/narrative-risk/cases/<case_id>/retention-assessments")
+    def list_retention_assessments(case_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try: values = repository.list_retention_assessments(case_id)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_retention_assessment_query", exc)
+        return jsonify({"retention_assessments": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/backups")
+    def create_database_backup():
+        denied = require_scope("admin")
+        if denied: return denied
+        try:
+            payload = _json_object()
+            destination = payload.pop("destination_path", None)
+            if not destination: raise NarrativeRiskValidationError("destination_path is required")
+            backup_dir = app.config.get("NARRATIVE_RISK_BACKUP_DIRECTORY")
+            if backup_dir:
+                requested = Path(destination).expanduser().resolve(); allowed_root = Path(backup_dir).expanduser().resolve()
+                if allowed_root not in requested.parents:
+                    raise NarrativeRiskValidationError("backup destination must be inside NARRATIVE_RISK_BACKUP_DIRECTORY")
+            manifest = repository.create_database_backup(destination, **payload)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_backup_request", exc)
+        return jsonify(manifest), 201
+
+    @app.get("/api/narrative-risk/backups")
+    def list_database_backups():
+        denied = require_scope("admin")
+        if denied: return denied
+        values = repository.list_backup_manifests()
+        return jsonify({"backups": values, "count": len(values)}), 200
+
+    @app.post("/api/narrative-risk/backups/<backup_id>/verify")
+    def verify_database_backup(backup_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try: report = repository.verify_database_backup(backup_id, **_json_object())
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_backup_verification", exc)
+        return jsonify(report), 200
+
+    @app.post("/api/narrative-risk/backups/<backup_id>/restore")
+    def restore_database_backup(backup_id: str):
+        denied = require_scope("admin")
+        if denied: return denied
+        try:
+            payload = _json_object(); target = payload.pop("target_path", None)
+            if not target: raise NarrativeRiskValidationError("target_path is required")
+            if Path(target).expanduser().resolve() == Path(repository.database_path).expanduser().resolve():
+                raise NarrativeRiskValidationError("in-place restore of the live database is not allowed")
+            report = repository.restore_database_backup(backup_id, target, **payload)
+        except NarrativeRiskValidationError as exc: return _bad_request("invalid_backup_restore", exc)
+        return jsonify(report), 200
 
     return app

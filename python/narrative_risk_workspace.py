@@ -14,6 +14,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from narrative_risk.workspaces import SQLiteCaseRepository
+from narrative_risk.hardening import (
+    audit_wordpress_accessibility, build_production_readiness_report,
+    build_security_readiness_report,
+)
 
 
 def read_json(path: str):
@@ -294,6 +298,47 @@ def parser() -> argparse.ArgumentParser:
     platform.add_argument("--target", required=True)
     platform.add_argument("--generated-at")
     platform.add_argument("--external-reference")
+
+    commands.add_parser("database-diagnostics")
+    privacy = commands.add_parser("create-privacy-policy")
+    privacy.add_argument("--input", required=True)
+    privacy_list = commands.add_parser("list-privacy-policies")
+    privacy_list.add_argument("--status")
+    retention = commands.add_parser("assess-retention")
+    retention.add_argument("case_id")
+    retention.add_argument("--policy-id")
+    retention.add_argument("--assessed-at")
+    retention.add_argument("--assessed-by")
+    retention_list = commands.add_parser("list-retention-assessments")
+    retention_list.add_argument("case_id")
+    backup = commands.add_parser("create-backup")
+    backup.add_argument("--output", required=True)
+    backup.add_argument("--created-at")
+    backup.add_argument("--created-by")
+    commands.add_parser("list-backups")
+    verify_backup = commands.add_parser("verify-backup")
+    verify_backup.add_argument("backup_id")
+    verify_backup.add_argument("--verified-at")
+    restore_backup = commands.add_parser("restore-backup")
+    restore_backup.add_argument("backup_id")
+    restore_backup.add_argument("--target", required=True)
+    restore_backup.add_argument("--overwrite", action="store_true")
+    accessibility = commands.add_parser("accessibility-audit")
+    accessibility.add_argument("--plugin-root", default="wordpress/catalyst-narrative-risk-demo")
+    accessibility.add_argument("--generated-at")
+    performance = commands.add_parser("performance-audit")
+    performance.add_argument("--case-id")
+    performance.add_argument("--generated-at")
+    security = commands.add_parser("security-audit")
+    security.add_argument("--config", required=True)
+    security.add_argument("--environment")
+    security.add_argument("--generated-at")
+    readiness = commands.add_parser("production-readiness")
+    readiness.add_argument("--config", required=True)
+    readiness.add_argument("--plugin-root", default="wordpress/catalyst-narrative-risk-demo")
+    readiness.add_argument("--case-id")
+    readiness.add_argument("--backup-id")
+    readiness.add_argument("--generated-at")
     return root
 
 
@@ -505,6 +550,62 @@ def main() -> int:
             write_json(repository.create_platform_handoff(
                 args.package_id, target=args.target, generated_at=args.generated_at,
                 external_reference=args.external_reference,
+            ))
+        elif args.command == "database-diagnostics":
+            write_json(repository.database_diagnostics())
+        elif args.command == "create-privacy-policy":
+            write_json(repository.save_privacy_policy(read_json(args.input)))
+        elif args.command == "list-privacy-policies":
+            values = repository.list_privacy_policies(status=args.status)
+            write_json({"privacy_policies": values, "count": len(values)})
+        elif args.command == "assess-retention":
+            write_json(repository.assess_case_retention(
+                args.case_id, policy_id=args.policy_id, assessed_at=args.assessed_at,
+                assessed_by=args.assessed_by,
+            ))
+        elif args.command == "list-retention-assessments":
+            values = repository.list_retention_assessments(args.case_id)
+            write_json({"retention_assessments": values, "count": len(values)})
+        elif args.command == "create-backup":
+            write_json(repository.create_database_backup(
+                args.output, created_at=args.created_at, created_by=args.created_by,
+            ))
+        elif args.command == "list-backups":
+            values = repository.list_backup_manifests()
+            write_json({"backup_manifests": values, "count": len(values)})
+        elif args.command == "verify-backup":
+            write_json(repository.verify_database_backup(args.backup_id, verified_at=args.verified_at))
+        elif args.command == "restore-backup":
+            write_json(repository.restore_database_backup(
+                args.backup_id, args.target, overwrite=args.overwrite,
+            ))
+        elif args.command == "accessibility-audit":
+            write_json(audit_wordpress_accessibility(
+                args.plugin_root, generated_at=args.generated_at,
+            ))
+        elif args.command == "performance-audit":
+            write_json(repository.performance_report(
+                case_id=args.case_id, generated_at=args.generated_at,
+            ))
+        elif args.command == "security-audit":
+            write_json(build_security_readiness_report(
+                read_json(args.config), environment=args.environment, generated_at=args.generated_at,
+            ))
+        elif args.command == "production-readiness":
+            security_report = build_security_readiness_report(
+                read_json(args.config), generated_at=args.generated_at,
+            )
+            accessibility_report = audit_wordpress_accessibility(
+                args.plugin_root, generated_at=args.generated_at,
+            )
+            performance_report = repository.performance_report(
+                case_id=args.case_id, generated_at=args.generated_at,
+            )
+            backup_verification = repository.verify_database_backup(args.backup_id) if args.backup_id else None
+            write_json(build_production_readiness_report(
+                security_report=security_report, accessibility_report=accessibility_report,
+                performance_report=performance_report, database_diagnostics=repository.database_diagnostics(),
+                backup_verification=backup_verification, generated_at=args.generated_at,
             ))
         else:  # pragma: no cover
             raise AssertionError(args.command)

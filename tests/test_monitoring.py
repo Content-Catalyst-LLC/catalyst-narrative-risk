@@ -43,7 +43,7 @@ def test_snapshot_is_schema_valid_and_hash_verifiable():
     )
     digest_payload = dict(snapshot)
     digest_payload.pop("snapshot_sha256")
-    assert snapshot["snapshot_version"] == "1.9.0"
+    assert snapshot["snapshot_version"] == "1.10.0"
     assert snapshot["snapshot_sha256"] == sha256_digest(digest_payload)
     assert snapshot["freshness_report"]["source_count"] == 2
 
@@ -123,7 +123,7 @@ def test_site_intelligence_handoff_creates_watch_alert(tmp_path):
     watch = repo.create_watchlist(case["case_id"], name="Site event watch", trigger_types=["site_intelligence_event"])
     handoff = {
         "handoff_type": "site_intelligence_monitoring_event",
-        "handoff_version": "1.9.0",
+        "handoff_version": "1.10.0",
         "event_id": urn(), "observed_at": "2026-07-20T12:00:00+00:00",
         "case_id": case["case_id"], "event_type": "material_change",
         "headline": "New official measurement published",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Require exact v1.9.0 record, evidence-ledger, and digest parity across runtimes."""
+"""Require exact v1.10.0 record, evidence-ledger, and digest parity across runtimes."""
 
 from __future__ import annotations
 

@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/privacy-policy/1.10.0",
+  "title": "Narrative Risk Privacy and Retention Policy 1.10.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_id",
+    "policy_version",
+    "name",
+    "status",
+    "default_retention_days",
+    "retention_days",
+    "deletion_mode",
+    "legal_hold",
+    "review_frequency_days",
+    "created_at",
+    "updated_at",
+    "created_by",
+    "notes",
+    "policy_sha256"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "policy_version": {
+      "const": "1.10.0"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "active",
+        "retired"
+      ]
+    },
+    "default_retention_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 36500
+    },
+    "retention_days": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_metadata",
+        "canonical_revisions",
+        "review_events",
+        "governance_records",
+        "monitoring_records",
+        "stakeholder_records",
+        "comparative_records",
+        "publication_records",
+        "api_usage",
+        "activity_log"
+      ],
+      "properties": {
+        "case_metadata": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "canonical_revisions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "review_events": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "governance_records": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "monitoring_records": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "stakeholder_records": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "comparative_records": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "publication_records": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "api_usage": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        },
+        "activity_log": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 36500
+        }
+      }
+    },
+    "deletion_mode": {
+      "enum": [
+        "archive_and_tombstone",
+        "anonymize_then_archive",
+        "legal_hold_only"
+      ]
+    },
+    "legal_hold": {
+      "type": "boolean"
+    },
+    "review_frequency_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3650
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

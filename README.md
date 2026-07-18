@@ -1,22 +1,20 @@
 # Catalyst Narrative Risk
 
-**Current release: v1.9.0 — Briefing, Publication, API, and Platform Integration**
+**Current release: v1.10.0 — Security, Privacy, Accessibility, and Production Hardening**
 
 Catalyst Narrative Risk is the Sustainable Catalyst layer for traceable claims, evidence, narrative structure, uncertainty, accountable review, monitoring, stakeholder intelligence, and comparative scenario analysis. It does not certify truth, infer intent, or select a preferred narrative automatically.
 
-## What v1.9.0 adds
+## What v1.10.0 adds
 
-- Governance-aware internal, executive, technical, regulatory, media, and public briefings.
-- Public-safety gates, required wording, restrictions, disclosures, redactions, validity, and reassessment metadata.
-- Checksummed JSON, Markdown, HTML, PDF, CSV, and JSON-LD publication packages.
-- Idempotent package creation, lifecycle status, public URLs, and artifact manifests.
-- Revocable public embeds.
-- Hashed and scoped API keys with expiry and per-minute rate limits.
-- OpenAPI 3.1 discovery and publication endpoints.
-- Checksummed handoffs to Sustainable Catalyst products and external systems.
-- WordPress publication workspace and governed public-brief shortcode.
+- Secure Flask defaults, response headers, request-size limits, explicit CORS allowlists, and HTTPS enforcement options.
+- Tamper-evident security-readiness and aggregate production-readiness reports.
+- Versioned privacy and retention policies with case-level assessments and legal holds.
+- Verified SQLite backups, checksummed manifests, integrity checks, and guarded restore drills.
+- WordPress accessibility audits and a production-readiness shortcode.
+- Performance budgets and database diagnostics.
+- REST and CLI workflows for privacy, backup, accessibility, performance, and readiness.
 
-The v1.8.0 analytical, governance, monitoring, stakeholder, and comparative behavior remains unchanged. Publication approval is never inferred from the heuristic score.
+The v1.9.0 analytical, governance, monitoring, stakeholder, comparative, and publication behavior remains unchanged. A readiness report documents explicit controls; it does not certify the deployment as secure.
 
 ## Repository layout
 
@@ -42,7 +40,7 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 PYTHON=.venv/bin/python bash scripts/release_check.sh
 ```
 
-The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all nine legacy migrations, JavaScript syntax, and WordPress PHP syntax.
+The suite validates Python tests, schema contracts, exact reproduction, Python–JavaScript parity, the valid/invalid fixture matrix, all exports, workspace bundle transfer, all ten legacy migrations, JavaScript syntax, and WordPress PHP syntax.
 
 ## Generate a canonical record
 
@@ -110,6 +108,7 @@ See `docs/narrative-change-freshness-monitoring.md` and `docs/site-intelligence-
 [catalyst_narrative_risk_workspace]
 [catalyst_narrative_risk_publication_workspace]
 [catalyst_narrative_risk_public_brief]
+[catalyst_narrative_risk_readiness]
 ```
 
 Browser workspace storage is a local demonstration. Shared institutional persistence should use the SQLite-backed REST workspace API.
@@ -158,3 +157,18 @@ python python/narrative_risk_workspace.py --database "$DB" platform-handoff PACK
 ```
 
 See `docs/briefing-publication-api-platform-integration.md`, `docs/openapi.md`, and `docs/wordpress-publication.md`.
+
+
+## Production hardening workflow
+
+```bash
+DB=instance/catalyst-narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" database-diagnostics
+python python/narrative_risk_workspace.py --database "$DB" create-privacy-policy --input privacy-policy.json
+python python/narrative_risk_workspace.py --database "$DB" assess-retention CASE_ID
+python python/narrative_risk_workspace.py --database "$DB" create-backup --output backups/narrative-risk.sqlite3
+python python/narrative_risk_workspace.py --database "$DB" verify-backup BACKUP_ID
+python python/narrative_risk_workspace.py --database "$DB" production-readiness --config production-config.json --case-id CASE_ID --backup-id BACKUP_ID
+```
+
+See `docs/security-privacy-accessibility-production-hardening.md` and `docs/migration-v1.9.0.md`.

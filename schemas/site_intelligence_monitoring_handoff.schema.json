@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/site-intelligence-monitoring/1.9.0",
-  "title": "Site Intelligence Monitoring Handoff 1.9.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/handoff/site-intelligence-monitoring/1.10.0",
+  "title": "Site Intelligence Monitoring Handoff 1.10.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -25,7 +25,7 @@
       "const": "site_intelligence_monitoring_event"
     },
     "handoff_version": {
-      "const": "1.9.0"
+      "const": "1.10.0"
     },
     "event_id": {
       "type": "string",

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/backup-manifest/1.10.0",
+  "title": "Narrative Risk SQLite Backup Manifest 1.10.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "backup_id",
+    "backup_version",
+    "source_database",
+    "backup_path",
+    "created_at",
+    "created_by",
+    "source_size_bytes",
+    "backup_size_bytes",
+    "database_sha256",
+    "integrity_check",
+    "foreign_key_violation_count",
+    "table_counts",
+    "schema_version",
+    "verified_at",
+    "manifest_sha256"
+  ],
+  "properties": {
+    "backup_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "backup_version": {
+      "const": "1.10.0"
+    },
+    "source_database": {
+      "type": "string",
+      "minLength": 1
+    },
+    "backup_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "backup_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "database_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "integrity_check": {
+      "type": "string"
+    },
+    "foreign_key_violation_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "table_counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "schema_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

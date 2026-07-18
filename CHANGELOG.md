@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.10.0 — Security, Privacy, Accessibility, and Production Hardening
+
+- Added secure Flask defaults, HTTPS and CORS controls, request limits, secure response headers, and deployment diagnostics.
+- Added tamper-evident security-readiness and aggregate production-readiness reports.
+- Added versioned privacy and retention policies, legal holds, and case-level retention assessments.
+- Added verified SQLite backups, integrity checks, foreign-key checks, checksummed manifests, and guarded restore drills.
+- Added WordPress accessibility audits, keyboard-focus and reduced-motion gates, and a readiness shortcode.
+- Added performance budgets, database diagnostics, REST endpoints, and CLI workflows.
+- Added deterministic v1.9.0 migration while preserving the v1.9.0 analytical and publication contracts.
+
 ## 1.9.0 — Briefing, Publication, API, and Platform Integration
 
 - Added governance-aware briefing records tied to immutable revisions.

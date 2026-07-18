@@ -6,7 +6,7 @@ Catalyst Narrative Risk should become the Sustainable Catalyst platform's struct
 
 Its purpose is not to determine truth automatically. It should help people make the review path visible: what is being claimed, what evidence supports or qualifies it, what assumptions remain, which stakeholders or incentives may shape interpretation, how the narrative is changing, what the consequences of overstatement are, and who approved the claim for a particular use.
 
-## Current implementation — v1.9.0
+## Current implementation — v1.10.0
 
 The repository now provides:
 
@@ -158,7 +158,7 @@ Expand stakeholder pressure from a single dropdown into an inspectable model.
 
 **Release gate:** all comparisons and scenarios are reproducible, checksummed, traceable to exact records, and advisory.
 
-### v1.9.0 — Briefing, Publication, API, and Platform Integration
+### v1.10.0 — Briefing, Publication, API, and Platform Integration
 
 Make reviewed records usable across the Sustainable Catalyst platform.
 
@@ -214,7 +214,7 @@ Deliver the complete institutional claims-governance system.
 7. Time-based monitoring: v1.6.0.
 8. Stakeholder and pressure intelligence: v1.7.0.
 9. Comparative and scenario analysis: v1.8.0.
-10. Publication and integration: v1.9.0.
+10. Publication and integration: v1.10.0.
 11. Production hardening: v1.10.0.
 12. Connected platform release: v2.0.0.
 

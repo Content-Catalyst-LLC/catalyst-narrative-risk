@@ -1,4 +1,4 @@
-"""Contract, schema, canonicalization, and hashing utilities for v1.9.0."""
+"""Contract, schema, canonicalization, and hashing utilities for v1.10.0."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.9.0"
-CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.9.0.json"
-VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.9.0.json"
-METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.9.0.json"
+VERSION = "1.10.0"
+CONTRACT_PATH = ROOT / "contracts" / "narrative-risk-contract.v1.10.0.json"
+VOCABULARIES_PATH = ROOT / "contracts" / "controlled-vocabularies.v1.10.0.json"
+METHOD_PATH = ROOT / "methods" / "transparent-heuristic.v1.10.0.json"
 INPUT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_input.schema.json"
 LEDGER_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_evidence_ledger.schema.json"
 NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_narrative_map.schema.json"
@@ -53,6 +53,14 @@ PUBLICATION_PACKAGE_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_publication
 PUBLIC_EMBED_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_public_embed.schema.json"
 API_KEY_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_api_key.schema.json"
 PLATFORM_HANDOFF_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_platform_handoff.schema.json"
+
+SECURITY_REPORT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_security_report.schema.json"
+PRIVACY_POLICY_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_privacy_policy.schema.json"
+RETENTION_ASSESSMENT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_retention_assessment.schema.json"
+BACKUP_MANIFEST_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_backup_manifest.schema.json"
+ACCESSIBILITY_REPORT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_accessibility_report.schema.json"
+PERFORMANCE_REPORT_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_performance_report.schema.json"
+PRODUCTION_READINESS_SCHEMA_PATH = ROOT / "schemas" / "narrative_risk_production_readiness.schema.json"
 LEGACY_V160_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.6.0.schema.json"
 LEGACY_V160_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.6.0.schema.json"
 LEGACY_V160_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.6.0.schema.json"
@@ -68,6 +76,11 @@ LEGACY_V180_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_
 LEGACY_V180_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.8.0.schema.json"
 LEGACY_V180_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.8.0.schema.json"
 LEGACY_V180_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.8.0.schema.json"
+LEGACY_V190_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.9.0.schema.json"
+LEGACY_V190_LEDGER_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_evidence_ledger.v1.9.0.schema.json"
+LEGACY_V190_NARRATIVE_MAP_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_narrative_map.v1.9.0.schema.json"
+LEGACY_V190_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.9.0.schema.json"
+LEGACY_V190_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.9.0.schema.json"
 LEGACY_V101_RECORD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_record.v1.0.1.schema.json"
 LEGACY_V110_INPUT_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_input.v1.1.0.schema.json"
 LEGACY_V110_METHOD_SCHEMA_PATH = ROOT / "schemas" / "archive" / "narrative_risk_method_snapshot.v1.1.0.schema.json"
@@ -169,6 +182,9 @@ def _registry():
         COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
         BRIEFING_SCHEMA_PATH, PUBLICATION_PACKAGE_SCHEMA_PATH, PUBLIC_EMBED_SCHEMA_PATH,
         API_KEY_SCHEMA_PATH, PLATFORM_HANDOFF_SCHEMA_PATH,
+        SECURITY_REPORT_SCHEMA_PATH, PRIVACY_POLICY_SCHEMA_PATH, RETENTION_ASSESSMENT_SCHEMA_PATH,
+        BACKUP_MANIFEST_SCHEMA_PATH, ACCESSIBILITY_REPORT_SCHEMA_PATH, PERFORMANCE_REPORT_SCHEMA_PATH,
+        PRODUCTION_READINESS_SCHEMA_PATH,
         LEGACY_V101_RECORD_SCHEMA_PATH,
         LEGACY_V110_INPUT_SCHEMA_PATH,
         LEGACY_V110_METHOD_SCHEMA_PATH,
@@ -196,6 +212,9 @@ def _registry():
         LEGACY_V180_INPUT_SCHEMA_PATH, LEGACY_V180_LEDGER_SCHEMA_PATH,
         LEGACY_V180_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V180_METHOD_SCHEMA_PATH,
         LEGACY_V180_RECORD_SCHEMA_PATH,
+        LEGACY_V190_INPUT_SCHEMA_PATH, LEGACY_V190_LEDGER_SCHEMA_PATH,
+        LEGACY_V190_NARRATIVE_MAP_SCHEMA_PATH, LEGACY_V190_METHOD_SCHEMA_PATH,
+        LEGACY_V190_RECORD_SCHEMA_PATH,
     ]
     registry = Registry()
     for path in schema_paths:

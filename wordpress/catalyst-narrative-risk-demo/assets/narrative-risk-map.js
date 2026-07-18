@@ -6,7 +6,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const MAP_VERSION = '1.9.0';
+  const MAP_VERSION = '1.10.0';
   const NODE_TYPES = ['factual_claim','causal_claim','predictive_claim','normative_claim','recommendation','assumption','context','unknown'];
   const NODE_ROLES = ['primary','supporting','context'];
   const CONFIDENCE_LANGUAGE = ['absolute','confident','qualified','tentative','unknown'];

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Catalyst Narrative Risk
  * Description: Narrative-risk scoring, evidence, mapping, governance, monitoring, comparative analysis, publication briefings, public embeds, and persistent review workspaces for Sustainable Catalyst.
- * Version: 1.9.0
+ * Version: 1.10.0
  * Author: Content Catalyst LLC
  * License: MIT
  */
@@ -13,15 +13,15 @@ if (!defined('ABSPATH')) {
 
 function cnrisk_demo_assets() {
     $base = plugin_dir_url(__FILE__);
-    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.9.0');
-    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.9.0', true);
-    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.9.0', true);
-    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.9.0', true);
-    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.9.0', true);
-    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.9.0');
-    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.9.0', true);
-    wp_register_style('cnrisk-publication-css', $base . 'assets/catalyst-narrative-risk-publication.css', array(), '1.9.0');
-    wp_register_script('cnrisk-publication-js', $base . 'assets/catalyst-narrative-risk-publication.js', array(), '1.9.0', true);
+    wp_register_style('cnrisk-demo-css', $base . 'assets/catalyst-narrative-risk-demo.css', array(), '1.10.0');
+    wp_register_script('cnrisk-method-js', $base . 'assets/narrative-risk-method.js', array(), '1.10.0', true);
+    wp_register_script('cnrisk-map-js', $base . 'assets/narrative-risk-map.js', array(), '1.10.0', true);
+    wp_register_script('cnrisk-engine-js', $base . 'assets/narrative-risk-engine.js', array('cnrisk-method-js', 'cnrisk-map-js'), '1.10.0', true);
+    wp_register_script('cnrisk-demo-js', $base . 'assets/catalyst-narrative-risk-demo.js', array('cnrisk-engine-js'), '1.10.0', true);
+    wp_register_style('cnrisk-workspace-css', $base . 'assets/catalyst-narrative-risk-workspace.css', array(), '1.10.0');
+    wp_register_script('cnrisk-workspace-js', $base . 'assets/catalyst-narrative-risk-workspace.js', array('cnrisk-engine-js'), '1.10.0', true);
+    wp_register_style('cnrisk-publication-css', $base . 'assets/catalyst-narrative-risk-publication.css', array(), '1.10.0');
+    wp_register_script('cnrisk-publication-js', $base . 'assets/catalyst-narrative-risk-publication.js', array(), '1.10.0', true);
 }
 add_action('wp_enqueue_scripts', 'cnrisk_demo_assets');
 
@@ -275,7 +275,7 @@ function cnrisk_workspace_shortcode() {
             </div>
           </form>
           <div class="cnrisk-workspace__notice">
-            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.9.0 SQLite-backed REST workspace API.
+            Browser mode stores cases locally on this device. Institutional deployments should connect the interface to the v1.10.0 SQLite-backed REST workspace API.
           </div>
           <p class="cnrisk-workspace__message" data-cnrisk-workspace-message aria-live="polite"></p>
           <div class="cnrisk-workspace__detail" data-cnrisk-workspace-detail><p>Start a new case or open an existing one.</p></div>
@@ -468,9 +468,36 @@ function cnrisk_publication_workspace_shortcode() {
         </form>
         <div class="cnrisk-publication__preview" data-cnrisk-publication-preview aria-live="polite"></div>
       </div>
-      <p class="cnrisk-publication__notice">Browser preview mode does not approve publication. Production publishing, PDF/CSV/JSON-LD exports, API scopes, embeds, and platform handoffs are governed by the v1.9.0 REST workspace.</p>
+      <p class="cnrisk-publication__notice">Browser preview mode does not approve publication. Production publishing, PDF/CSV/JSON-LD exports, API scopes, embeds, and platform handoffs are governed by the v1.10.0 REST workspace.</p>
     </section>
     <?php
     return ob_get_clean();
 }
 add_shortcode('catalyst_narrative_risk_publication_workspace', 'cnrisk_publication_workspace_shortcode');
+
+/**
+ * Render an accessible production-readiness checklist for administrators.
+ */
+function cnrisk_readiness_shortcode() {
+    wp_enqueue_style('cnrisk-workspace-css');
+    ob_start();
+    ?>
+    <section class="cnrisk-readiness" data-cnrisk-readiness aria-labelledby="cnrisk-readiness-title">
+      <header class="cnrisk-readiness__head">
+        <p class="cnrisk-demo__eyebrow">Production hardening</p>
+        <h3 id="cnrisk-readiness-title">Narrative Risk deployment readiness</h3>
+        <p>Use this operator checklist with the REST or command-line readiness report before enabling production access.</p>
+      </header>
+      <div class="cnrisk-readiness__grid" role="list" aria-label="Production readiness domains">
+        <article role="listitem"><h4>Security</h4><p>Require scoped API access, HTTPS, secure headers, an explicit origin allowlist, request limits, and strong administrator credentials.</p></article>
+        <article role="listitem"><h4>Privacy</h4><p>Activate a retention policy, document encryption at rest, review legal holds, and assess each case before disposition.</p></article>
+        <article role="listitem"><h4>Recovery</h4><p>Create a protected SQLite backup, verify its checksum and integrity, and complete a restore drill outside the live database.</p></article>
+        <article role="listitem"><h4>Accessibility</h4><p>Validate labels, keyboard focus, motion preferences, semantic headings, controls, contrast, and responsive behavior.</p></article>
+        <article role="listitem"><h4>Performance</h4><p>Keep health, case listing, bundle generation, bundle size, and database size within the declared release budgets.</p></article>
+      </div>
+      <p class="cnrisk-readiness__boundary"><strong>Boundary:</strong> A readiness report documents explicit controls; it does not certify that a deployment is secure.</p>
+    </section>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('catalyst_narrative_risk_readiness', 'cnrisk_readiness_shortcode');

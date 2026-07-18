@@ -7,7 +7,7 @@
   function payload(form){
     var data=new FormData(form);
     return {
-      contract_version:"1.9.0",title:text(data.get("title")),claim:text(data.get("claim")),risk_score:Number(data.get("risk_score")||0),risk_level:text(data.get("risk_level")),evidence_summary:text(data.get("evidence_summary")),governance_status:text(data.get("governance_status")),required_wording:lines(data.get("required_wording")),disclosures:lines(data.get("disclosures")),reassessment_at:text(data.get("reassessment_at")),classification:"public",public_safe:true,generated_at:new Date().toISOString()
+      contract_version:"1.10.0",title:text(data.get("title")),claim:text(data.get("claim")),risk_score:Number(data.get("risk_score")||0),risk_level:text(data.get("risk_level")),evidence_summary:text(data.get("evidence_summary")),governance_status:text(data.get("governance_status")),required_wording:lines(data.get("required_wording")),disclosures:lines(data.get("disclosures")),reassessment_at:text(data.get("reassessment_at")),classification:"public",public_safe:true,generated_at:new Date().toISOString()
     };
   }
   function markdown(value){

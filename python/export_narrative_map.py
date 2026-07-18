@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export a validated v1.9.0 narrative map as JSON, Markdown, or Mermaid."""
+"""Export a validated v1.10.0 narrative map as JSON, Markdown, or Mermaid."""
 
 from __future__ import annotations
 

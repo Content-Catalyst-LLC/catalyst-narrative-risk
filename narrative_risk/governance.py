@@ -1,4 +1,4 @@
-"""Review, approval, and governance policy primitives for v1.9.0.
+"""Review, approval, and governance policy primitives for v1.10.0.
 
 This module deliberately keeps human governance separate from analytical scoring.
 Scores, flags, and narrative diagnostics may inform reviewers, but only an
@@ -13,7 +13,7 @@ from typing import Any, Dict, Iterable, Mapping, Sequence
 from .contracts import current_method_snapshot
 from .errors import NarrativeRiskValidationError
 
-VERSION = "1.9.0"
+VERSION = "1.10.0"
 REVIEW_STAGES = ("intake", "domain", "editorial", "legal", "compliance", "final")
 WORKFLOW_STATUSES = {"draft", "active", "blocked", "changes_required", "approved", "rejected", "expired", "closed"}
 ASSIGNMENT_STATUSES = {"pending", "accepted", "completed", "waived", "overdue"}

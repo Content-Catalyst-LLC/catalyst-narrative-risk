@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.9.0",
-  "title": "Catalyst Narrative Risk Evidence Ledger 1.9.0",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/evidence-ledger/1.10.0",
+  "title": "Catalyst Narrative Risk Evidence Ledger 1.10.0",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,7 +17,7 @@
   ],
   "properties": {
     "ledger_version": {
-      "const": "1.9.0"
+      "const": "1.10.0"
     },
     "primary_claim_id": {
       "type": "string",

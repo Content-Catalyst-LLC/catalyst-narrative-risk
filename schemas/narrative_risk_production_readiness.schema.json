@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/production-readiness/1.10.0",
+  "title": "Narrative Risk Production Readiness Report 1.10.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "report_id",
+    "report_version",
+    "generated_at",
+    "status",
+    "blocking_domains",
+    "backup_verified",
+    "database_integrity_ok",
+    "security_report",
+    "accessibility_report",
+    "performance_report",
+    "database_diagnostics",
+    "report_sha256"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "report_version": {
+      "const": "1.10.0"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "enum": [
+        "ready",
+        "needs_attention",
+        "blocked"
+      ]
+    },
+    "blocking_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "backup_verified": {
+      "type": "boolean"
+    },
+    "database_integrity_ok": {
+      "type": "boolean"
+    },
+    "security_report": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/security-report/1.10.0"
+    },
+    "accessibility_report": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/accessibility-report/1.10.0"
+    },
+    "performance_report": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/performance-report/1.10.0"
+    },
+    "database_diagnostics": {
+      "type": "object"
+    },
+    "report_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

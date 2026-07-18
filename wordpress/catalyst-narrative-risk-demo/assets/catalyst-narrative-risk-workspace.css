@@ -26,3 +26,26 @@
 .cnrisk-workspace__governance select[multiple] { min-height:120px; }
 .cnrisk-workspace__governance-item { border-left:4px solid #000; padding:8px 10px; margin:8px 0; background:var(--cnr-soft); }
 .cnrisk-workspace__badge { display:inline-block; padding:2px 7px; border:1px solid #000; font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.03em; }
+
+/* v1.10.0 accessibility hardening */
+:where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) :where(a,button,input,select,textarea,summary,[tabindex="0"]):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *,
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *::before,
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.cnrisk-readiness { max-width: 1120px; margin: 0 auto; padding: clamp(1rem, 3vw, 2rem); border: 1px solid currentColor; border-radius: 1rem; }
+.cnrisk-readiness__head { max-width: 760px; }
+.cnrisk-readiness__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+.cnrisk-readiness__grid article { padding: 1rem; border: 1px solid currentColor; border-radius: .75rem; }
+.cnrisk-readiness__grid h4 { margin-top: 0; }
+.cnrisk-readiness__boundary { margin: 1.25rem 0 0; }

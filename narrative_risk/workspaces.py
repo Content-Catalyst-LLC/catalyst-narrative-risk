@@ -35,6 +35,7 @@ from .contracts import (
     COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
     BRIEFING_SCHEMA_PATH, PUBLICATION_PACKAGE_SCHEMA_PATH, PUBLIC_EMBED_SCHEMA_PATH,
     API_KEY_SCHEMA_PATH, PLATFORM_HANDOFF_SCHEMA_PATH,
+    PRIVACY_POLICY_SCHEMA_PATH, RETENTION_ASSESSMENT_SCHEMA_PATH, BACKUP_MANIFEST_SCHEMA_PATH,
     canonical_json,
     sha256_digest,
     validate_against_schema,
@@ -59,13 +60,17 @@ from .publication import (
     build_briefing, build_publication_package, build_public_embed, create_api_key_record,
     authorize_api_key, build_platform_handoff, urn as publication_urn,
 )
+from .hardening import (
+    normalize_privacy_policy, build_retention_assessment, create_sqlite_backup,
+    verify_sqlite_backup, restore_sqlite_backup, build_performance_report,
+)
 from .comparisons import (
     normalize_comparison_set, build_evidence_matrix, normalize_scenario, evaluate_scenario,
     run_sensitivity_analysis, build_comparative_portfolio, build_decision_studio_handoff,
     urn as comparison_urn,
 )
 
-VERSION = "1.9.0"
+VERSION = "1.10.0"
 BUNDLE_TYPE = "catalyst_narrative_risk_case_bundle"
 CASE_STATUSES = {"draft", "active", "in_review", "approved", "closed"}
 CASE_PRIORITIES = {"low", "normal", "high", "critical"}
@@ -525,6 +530,39 @@ class SQLiteCaseRepository:
         );
         CREATE INDEX IF NOT EXISTS idx_platform_handoffs_case ON platform_handoffs(case_id, target, generated_at);
 
+        CREATE TABLE IF NOT EXISTS privacy_policies (
+            policy_id TEXT PRIMARY KEY,
+            policy_json TEXT NOT NULL,
+            policy_sha256 TEXT NOT NULL,
+            status TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_privacy_policies_status ON privacy_policies(status, updated_at);
+
+        CREATE TABLE IF NOT EXISTS retention_assessments (
+            assessment_id TEXT PRIMARY KEY,
+            case_id TEXT NOT NULL REFERENCES cases(case_id) ON DELETE RESTRICT,
+            policy_id TEXT NOT NULL,
+            assessment_json TEXT NOT NULL,
+            assessment_sha256 TEXT NOT NULL,
+            status TEXT NOT NULL,
+            assessed_at TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_retention_assessments_case ON retention_assessments(case_id, assessed_at);
+        CREATE TRIGGER IF NOT EXISTS retention_assessments_no_update
+        BEFORE UPDATE ON retention_assessments BEGIN SELECT RAISE(ABORT, 'retention assessments are append-only'); END;
+        CREATE TRIGGER IF NOT EXISTS retention_assessments_no_delete
+        BEFORE DELETE ON retention_assessments BEGIN SELECT RAISE(ABORT, 'retention assessments are append-only'); END;
+
+        CREATE TABLE IF NOT EXISTS backup_manifests (
+            backup_id TEXT PRIMARY KEY,
+            manifest_json TEXT NOT NULL,
+            manifest_sha256 TEXT NOT NULL,
+            backup_path TEXT NOT NULL UNIQUE,
+            created_at TEXT NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS saved_views (
             view_id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
@@ -561,7 +599,7 @@ class SQLiteCaseRepository:
     def health(self) -> Dict[str, Any]:
         with self._lock:
             counts = {}
-            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "publication_briefings", "publication_packages", "public_embeds", "api_keys", "platform_handoffs", "saved_views", "activity"):
+            for table in ("cases", "revisions", "review_events", "review_templates", "governance_workflows", "review_assignments", "governance_decisions", "monitoring_snapshots", "monitoring_comparisons", "watchlists", "monitoring_alerts", "site_intelligence_events", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "catalyst_canvas_handoffs", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "decision_studio_handoffs", "publication_briefings", "publication_packages", "public_embeds", "api_keys", "platform_handoffs", "privacy_policies", "retention_assessments", "backup_manifests", "saved_views", "activity"):
                 counts[table] = int(self._connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
         return {"ok": True, "workspace_version": VERSION, "database_path": self.database_path, "counts": counts}
 
@@ -1099,6 +1137,7 @@ class SQLiteCaseRepository:
             "publication_packages": self.list_publication_packages(case["case_id"]),
             "public_embeds": self.list_public_embeds(case["case_id"]),
             "platform_handoffs": self.list_platform_handoffs(case["case_id"]),
+            "retention_assessments": self.list_retention_assessments(case["case_id"]),
             "activity": self.list_activity(case["case_id"]),
         }
         bundle["bundle_sha256"] = sha256_digest(bundle)
@@ -1171,6 +1210,8 @@ class SQLiteCaseRepository:
                 for item in list(bundle.get("publication_briefings", [])) + list(bundle.get("publication_packages", []))
                 + list(bundle.get("public_embeds", [])) + list(bundle.get("platform_handoffs", []))
             ),
+            "privacy_case_ids_match": all(item.get("case_id") == bundle["case"]["case_id"] for item in bundle.get("retention_assessments", [])),
+            "privacy_hashes_match": all(sha256_digest({k: v for k, v in item.items() if k != "assessment_sha256"}) == item["assessment_sha256"] for item in bundle.get("retention_assessments", [])),
             "publication_hashes_match": all(
                 sha256_digest({k: v for k, v in item.items() if k != hash_field}) == item[hash_field]
                 for values, hash_field in (
@@ -1210,6 +1251,10 @@ class SQLiteCaseRepository:
             raise NarrativeRiskValidationError("workspace bundle contains publication records for another case")
         if not report["publication_hashes_match"]:
             raise NarrativeRiskValidationError("workspace bundle contains a publication artifact hash mismatch")
+        if not report["privacy_case_ids_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains retention assessments for another case")
+        if not report["privacy_hashes_match"]:
+            raise NarrativeRiskValidationError("workspace bundle contains a retention assessment hash mismatch")
         case = bundle["case"]
         case_id = case["case_id"]
         with self._transaction() as connection:
@@ -1323,6 +1368,8 @@ class SQLiteCaseRepository:
                 connection.execute("INSERT INTO public_embeds(embed_id,case_id,package_id,embed_json,embed_sha256,slug,status,created_at) VALUES(?,?,?,?,?,?,?,?)", (embed["embed_id"],embed["case_id"],embed["package_id"],_json_dump(embed),embed["embed_sha256"],embed["slug"],embed["status"],embed["created_at"]))
             for handoff in bundle.get("platform_handoffs", []):
                 connection.execute("INSERT INTO platform_handoffs(handoff_id,case_id,package_id,target,handoff_json,handoff_sha256,generated_at) VALUES(?,?,?,?,?,?,?)", (handoff["handoff_id"],handoff["case_id"],handoff["package_id"],handoff["target"],_json_dump(handoff),handoff["handoff_sha256"],handoff["generated_at"]))
+            for assessment in bundle.get("retention_assessments", []):
+                connection.execute("INSERT INTO retention_assessments(assessment_id,case_id,policy_id,assessment_json,assessment_sha256,status,assessed_at) VALUES(?,?,?,?,?,?,?)", (assessment["assessment_id"],assessment["case_id"],assessment["policy_id"],_json_dump(assessment),assessment["assessment_sha256"],assessment["status"],assessment["assessed_at"]))
             for activity in bundle["activity"]:
                 self._activity(
                     connection, activity["case_id"], activity["event_type"], entity_id=activity["entity_id"],
@@ -1332,7 +1379,7 @@ class SQLiteCaseRepository:
         return {"case": imported, "verification": report}
 
     # ------------------------------------------------------------------
-    # v1.9.0 stakeholder, incentive, and pressure intelligence
+    # v1.10.0 stakeholder, incentive, and pressure intelligence
 
     def _ensure_actor(self, actor_id: str, case_id: str) -> None:
         row = self._connection.execute("SELECT case_id FROM stakeholder_actors WHERE actor_id=?", (actor_id,)).fetchone()
@@ -1423,7 +1470,7 @@ class SQLiteCaseRepository:
         rows=self._connection.execute("SELECT * FROM catalyst_canvas_handoffs WHERE case_id=? ORDER BY imported_at,handoff_id",(case_id,)).fetchall(); return [{"handoff_id":r["handoff_id"],"case_id":r["case_id"],"canvas_id":r["canvas_id"],"handoff":_json_load(r["handoff_json"]),"handoff_sha256":r["handoff_sha256"],"imported_at":r["imported_at"]} for r in rows]
 
     # ------------------------------------------------------------------
-    # v1.9.0 comparative narratives and scenario analysis
+    # v1.10.0 comparative narratives and scenario analysis
 
     def _records_for_comparison(self, comparison: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
         records: Dict[str, Dict[str, Any]] = {}
@@ -1611,7 +1658,7 @@ class SQLiteCaseRepository:
 
 
     # ------------------------------------------------------------------
-    # v1.9.0 briefing, publication, API, embed, and platform integration
+    # v1.10.0 briefing, publication, API, embed, and platform integration
 
     def create_publication_briefing(
         self, case_id: str, *, revision_id: str | None = None, audience: str = "internal",
@@ -1820,7 +1867,7 @@ class SQLiteCaseRepository:
         return values
 
     # ------------------------------------------------------------------
-    # v1.9.0 narrative change, freshness, and monitoring
+    # v1.10.0 narrative change, freshness, and monitoring
 
     def _snapshot_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         snapshot = _json_load(row["snapshot_json"])
@@ -2182,7 +2229,7 @@ class SQLiteCaseRepository:
         return {"case_id": case["case_id"], "timeline_version": VERSION, "events": events, "count": len(events)}
 
     # ------------------------------------------------------------------
-    # v1.9.0 governed review workflow
+    # v1.10.0 governed review workflow
 
     def _template_from_row(self, row: sqlite3.Row) -> Dict[str, Any]:
         template = {
@@ -2622,3 +2669,148 @@ class SQLiteCaseRepository:
             if "approval_expired" in workflow["governance_flags"] or "reassessment_due" in workflow["governance_flags"]:
                 output.append(workflow)
         return output
+
+
+    # ------------------------------------------------------------------
+    # v1.10.0 security, privacy, backup, and production hardening
+
+    def database_diagnostics(self) -> Dict[str, Any]:
+        with self._lock:
+            integrity = str(self._connection.execute("PRAGMA integrity_check").fetchone()[0])
+            foreign_key_rows = self._connection.execute("PRAGMA foreign_key_check").fetchall()
+            journal_mode = str(self._connection.execute("PRAGMA journal_mode").fetchone()[0])
+            page_count = int(self._connection.execute("PRAGMA page_count").fetchone()[0])
+            page_size = int(self._connection.execute("PRAGMA page_size").fetchone()[0])
+            index_count = int(self._connection.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'").fetchone()[0])
+            table_count = int(self._connection.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone()[0])
+        file_size = 0
+        if self.database_path != ":memory:" and Path(self.database_path).exists():
+            file_size = Path(self.database_path).stat().st_size
+        return {
+            "workspace_version": VERSION, "database_path": self.database_path,
+            "integrity_check": integrity, "foreign_key_violation_count": len(foreign_key_rows),
+            "journal_mode": journal_mode, "page_count": page_count, "page_size": page_size,
+            "estimated_database_bytes": page_count * page_size, "database_file_bytes": file_size,
+            "table_count": table_count, "index_count": index_count,
+        }
+
+    def save_privacy_policy(self, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        policy = normalize_privacy_policy(payload)
+        with self._transaction() as connection:
+            if policy["status"] == "active" and connection.execute("SELECT 1 FROM privacy_policies WHERE status='active' LIMIT 1").fetchone():
+                raise NarrativeRiskValidationError("an active privacy policy already exists; retire it explicitly before activating another")
+            try:
+                connection.execute(
+                    "INSERT INTO privacy_policies(policy_id,policy_json,policy_sha256,status,created_at,updated_at) VALUES(?,?,?,?,?,?)",
+                    (policy["policy_id"], _json_dump(policy), policy["policy_sha256"], policy["status"], policy["created_at"], policy["updated_at"]),
+                )
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"privacy policy already exists: {policy['policy_id']}") from exc
+        return policy
+
+    def list_privacy_policies(self, *, status: str | None = None) -> List[Dict[str, Any]]:
+        params: List[Any] = []
+        sql = "SELECT policy_json FROM privacy_policies"
+        if status is not None:
+            normalized = _choice(status, "status", {"draft", "active", "retired"}, "draft")
+            sql += " WHERE status=?"; params.append(normalized)
+        sql += " ORDER BY updated_at DESC, policy_id"
+        with self._lock:
+            rows = self._connection.execute(sql, params).fetchall()
+        values = [_json_load(row["policy_json"]) for row in rows]
+        for value in values:
+            _schema_error("privacy policy", value, PRIVACY_POLICY_SCHEMA_PATH)
+            if sha256_digest({k:v for k,v in value.items() if k!="policy_sha256"}) != value["policy_sha256"]:
+                raise NarrativeRiskValidationError("privacy policy hash mismatch")
+        return values
+
+    def get_privacy_policy(self, policy_id: str | None = None) -> Dict[str, Any]:
+        with self._lock:
+            if policy_id is None:
+                row = self._connection.execute("SELECT policy_json FROM privacy_policies WHERE status='active' ORDER BY updated_at DESC LIMIT 1").fetchone()
+            else:
+                row = self._connection.execute("SELECT policy_json FROM privacy_policies WHERE policy_id=?", (_urn_uuid(policy_id,"policy_id"),)).fetchone()
+        if row is None:
+            raise NarrativeRiskValidationError("privacy policy not found")
+        value = _json_load(row["policy_json"]); _schema_error("privacy policy",value,PRIVACY_POLICY_SCHEMA_PATH)
+        return value
+
+    def _retention_case_detail(self, case_id: str) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        case.update({
+            "revisions": self.list_revisions(case_id), "review_events": self.list_review_events(case_id),
+            "governance_workflow": self.get_case_governance_workflow(case_id),
+            "review_assignments": self.list_review_assignments(case_id=case_id),
+            "governance_decisions": self.list_governance_decisions(case_id=case_id),
+            "monitoring_snapshots": self.list_monitoring_snapshots(case_id),
+            "monitoring_comparisons": self.list_monitoring_comparisons(case_id),
+            "watchlists": self.list_watchlists(case_id=case_id),
+            "monitoring_alerts": self.list_monitoring_alerts(case_id=case_id),
+            "site_intelligence_events": self.list_site_intelligence_events(case_id),
+            "stakeholder_actors": self.list_stakeholder_actors(case_id),
+            "stakeholder_relationships": self.list_stakeholder_relationships(case_id),
+            "stakeholder_incentives": self.list_stakeholder_incentives(case_id),
+            "stakeholder_pressures": self.list_stakeholder_pressures(case_id),
+            "stakeholder_consequences": self.list_stakeholder_consequences(case_id),
+            "comparison_sets": self.list_comparison_sets(case_id=case_id),
+            "comparative_evidence_matrices": [m for c in self.list_comparison_sets(case_id=case_id) for m in self.list_comparative_evidence_matrices(c["comparison_id"])],
+            "scenarios": self.list_scenarios(case_id=case_id), "scenario_results": self.list_scenario_results(case_id=case_id),
+            "sensitivity_analyses": [a for c in self.list_comparison_sets(case_id=case_id) for a in self.list_sensitivity_analyses(c["comparison_id"])],
+            "decision_studio_handoffs": self.list_decision_studio_handoffs(case_id),
+            "publication_briefings": self.list_publication_briefings(case_id),
+            "publication_packages": self.list_publication_packages(case_id),
+            "public_embeds": self.list_public_embeds(case_id), "platform_handoffs": self.list_platform_handoffs(case_id),
+            "activity": self.list_activity(case_id),
+        })
+        return case
+
+    def assess_case_retention(self, case_id: str, *, policy_id: str | None = None, assessed_at: str | None = None, assessed_by: str | None = None, assessment_id: str | None = None) -> Dict[str, Any]:
+        case = self.get_case(case_id)
+        policy = self.get_privacy_policy(policy_id)
+        assessment = build_retention_assessment(self._retention_case_detail(case["case_id"]), policy, assessed_at=assessed_at, assessed_by=assessed_by, assessment_id=assessment_id)
+        with self._transaction() as connection:
+            try:
+                connection.execute("INSERT INTO retention_assessments(assessment_id,case_id,policy_id,assessment_json,assessment_sha256,status,assessed_at) VALUES(?,?,?,?,?,?,?)", (assessment["assessment_id"],assessment["case_id"],assessment["policy_id"],_json_dump(assessment),assessment["assessment_sha256"],assessment["status"],assessment["assessed_at"]))
+            except sqlite3.IntegrityError as exc:
+                raise NarrativeRiskValidationError(f"retention assessment already exists: {assessment['assessment_id']}") from exc
+            self._activity(connection,case["case_id"],"retention_assessed",entity_id=assessment["assessment_id"],payload={"status":assessment["status"],"due_categories":assessment["due_categories"]},created_at=assessment["assessed_at"])
+        return assessment
+
+    def list_retention_assessments(self, case_id: str) -> List[Dict[str, Any]]:
+        normalized = _urn_uuid(case_id,"case_id")
+        with self._lock:
+            rows=self._connection.execute("SELECT assessment_json FROM retention_assessments WHERE case_id=? ORDER BY assessed_at,assessment_id",(normalized,)).fetchall()
+        values=[_json_load(row["assessment_json"]) for row in rows]
+        for value in values:
+            _schema_error("retention assessment",value,RETENTION_ASSESSMENT_SCHEMA_PATH)
+        return values
+
+    def create_database_backup(self, destination_path: str | Path, *, created_at: str | None = None, created_by: str | None = None, backup_id: str | None = None) -> Dict[str, Any]:
+        manifest=create_sqlite_backup(self.database_path,destination_path,created_at=created_at,created_by=created_by,backup_id=backup_id)
+        with self._transaction() as connection:
+            connection.execute("INSERT INTO backup_manifests(backup_id,manifest_json,manifest_sha256,backup_path,created_at) VALUES(?,?,?,?,?)",(manifest["backup_id"],_json_dump(manifest),manifest["manifest_sha256"],manifest["backup_path"],manifest["created_at"]))
+        return manifest
+
+    def list_backup_manifests(self) -> List[Dict[str, Any]]:
+        with self._lock:
+            rows=self._connection.execute("SELECT manifest_json FROM backup_manifests ORDER BY created_at DESC,backup_id").fetchall()
+        values=[_json_load(row["manifest_json"]) for row in rows]
+        for value in values: _schema_error("backup manifest",value,BACKUP_MANIFEST_SCHEMA_PATH)
+        return values
+
+    def verify_database_backup(self, backup_id: str, *, verified_at: str | None = None) -> Dict[str, Any]:
+        normalized=_urn_uuid(backup_id,"backup_id")
+        with self._lock:
+            row=self._connection.execute("SELECT manifest_json FROM backup_manifests WHERE backup_id=?",(normalized,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError(f"backup manifest not found: {normalized}")
+        return verify_sqlite_backup(_json_load(row["manifest_json"]),verified_at=verified_at)
+
+    def restore_database_backup(self, backup_id: str, target_path: str | Path, *, overwrite: bool = False) -> Dict[str, Any]:
+        normalized=_urn_uuid(backup_id,"backup_id")
+        with self._lock:
+            row=self._connection.execute("SELECT manifest_json FROM backup_manifests WHERE backup_id=?",(normalized,)).fetchone()
+        if row is None: raise NarrativeRiskValidationError(f"backup manifest not found: {normalized}")
+        return restore_sqlite_backup(_json_load(row["manifest_json"]),target_path,overwrite=overwrite)
+
+    def performance_report(self, *, case_id: str | None = None, generated_at: str | None = None, report_id: str | None = None) -> Dict[str, Any]:
+        return build_performance_report(self,case_id=case_id,generated_at=generated_at,report_id=report_id)

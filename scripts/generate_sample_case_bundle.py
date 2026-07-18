@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the canonical v1.9.0 governed, monitored, stakeholder-aware comparative case bundle."""
+"""Generate the canonical v1.10.0 governed, monitored, stakeholder-aware comparative case bundle."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -227,6 +227,24 @@ def main() -> int:
                 publication["package_id"], target=target,
                 generated_at="2026-07-17T19:39:00+00:00",
             )
+
+        policy = repo.save_privacy_policy({
+            "name": "Canonical Narrative Risk Retention Policy",
+            "status": "active",
+            "default_retention_days": 2555,
+            "retention_days": {"api_usage": 365, "activity_log": 2555},
+            "deletion_mode": "archive_and_tombstone",
+            "legal_hold": False,
+            "review_frequency_days": 365,
+            "created_at": "2026-07-17T19:39:10+00:00",
+            "updated_at": "2026-07-17T19:39:10+00:00",
+            "created_by": "release-suite",
+            "notes": "Canonical release policy used to exercise case-level retention assessment.",
+        })
+        repo.assess_case_retention(
+            CASE_ID, policy_id=policy["policy_id"], assessed_at="2026-07-17T19:39:20+00:00",
+            assessed_by="release-suite",
+        )
         for artifact in publication["artifacts"]:
             import base64
             raw = base64.b64decode(artifact["content"]) if artifact["content_encoding"] == "base64" else artifact["content"].encode("utf-8")

@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sustainablecatalyst.com/schemas/narrative-risk/retention-assessment/1.10.0",
+  "title": "Narrative Risk Retention Assessment 1.10.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assessment_id",
+    "assessment_version",
+    "case_id",
+    "policy_id",
+    "policy_snapshot",
+    "assessed_at",
+    "assessed_by",
+    "status",
+    "record_counts",
+    "categories",
+    "due_categories",
+    "recommended_actions",
+    "assessment_sha256"
+  ],
+  "properties": {
+    "assessment_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "assessment_version": {
+      "const": "1.10.0"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "policy_id": {
+      "type": "string",
+      "pattern": "^urn:uuid:[0-9a-fA-F-]{36}$"
+    },
+    "policy_snapshot": {
+      "$ref": "https://sustainablecatalyst.com/schemas/narrative-risk/privacy-policy/1.10.0"
+    },
+    "assessed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assessed_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "current",
+        "action_required",
+        "legal_hold"
+      ]
+    },
+    "record_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_metadata",
+        "canonical_revisions",
+        "review_events",
+        "governance_records",
+        "monitoring_records",
+        "stakeholder_records",
+        "comparative_records",
+        "publication_records",
+        "api_usage",
+        "activity_log"
+      ],
+      "properties": {
+        "case_metadata": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "canonical_revisions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "review_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "governance_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "monitoring_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stakeholder_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "comparative_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "publication_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "api_usage": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "activity_log": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "record_count",
+          "retention_days",
+          "basis_at",
+          "due_at",
+          "due"
+        ],
+        "properties": {
+          "category": {
+            "enum": [
+              "case_metadata",
+              "canonical_revisions",
+              "review_events",
+              "governance_records",
+              "monitoring_records",
+              "stakeholder_records",
+              "comparative_records",
+              "publication_records",
+              "api_usage",
+              "activity_log"
+            ]
+          },
+          "record_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "retention_days": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "basis_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "due_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "due": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "due_categories": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "case_metadata",
+          "canonical_revisions",
+          "review_events",
+          "governance_records",
+          "monitoring_records",
+          "stakeholder_records",
+          "comparative_records",
+          "publication_records",
+          "api_usage",
+          "activity_log"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "recommended_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assessment_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

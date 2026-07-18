@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the complete Catalyst Narrative Risk v1.9.0 release contract."""
+"""Validate the complete Catalyst Narrative Risk v1.10.0 release contract."""
 
 from __future__ import annotations
 
@@ -30,6 +30,9 @@ from narrative_risk.contracts import (
     COMPARATIVE_PORTFOLIO_SCHEMA_PATH, DECISION_STUDIO_HANDOFF_SCHEMA_PATH,
     BRIEFING_SCHEMA_PATH, PUBLICATION_PACKAGE_SCHEMA_PATH, PUBLIC_EMBED_SCHEMA_PATH,
     API_KEY_SCHEMA_PATH, PLATFORM_HANDOFF_SCHEMA_PATH,
+    SECURITY_REPORT_SCHEMA_PATH, PRIVACY_POLICY_SCHEMA_PATH, RETENTION_ASSESSMENT_SCHEMA_PATH,
+    BACKUP_MANIFEST_SCHEMA_PATH, ACCESSIBILITY_REPORT_SCHEMA_PATH, PERFORMANCE_REPORT_SCHEMA_PATH,
+    PRODUCTION_READINESS_SCHEMA_PATH,
     contract_definition, controlled_vocabularies, current_method_snapshot, load_json,
     sha256_digest, validate_against_schema,
 )
@@ -41,7 +44,7 @@ from narrative_risk.comparisons import (
 from narrative_risk.migrations import (
     migrate_v1_0_1_record, migrate_v1_1_0_record, migrate_v1_2_0_record,
     migrate_v1_3_0_record, migrate_v1_4_0_record, migrate_v1_5_0_record, migrate_v1_6_0_record,
-    migrate_v1_7_0_record, migrate_v1_8_0_record,
+    migrate_v1_7_0_record, migrate_v1_8_0_record, migrate_v1_9_0_record,
 )
 from narrative_risk.governance import (
     ASSIGNMENT_STATUSES, GOVERNANCE_DISPOSITIONS, GOVERNANCE_ROLES,
@@ -62,9 +65,9 @@ from narrative_risk.workspaces import SQLiteCaseRepository
 
 REQUIRED_FILES = [
     "VERSION", "README.md", "CHANGELOG.md", "narrative_risk_manifest.json",
-    "contracts/narrative-risk-contract.v1.9.0.json",
-    "contracts/controlled-vocabularies.v1.9.0.json",
-    "methods/transparent-heuristic.v1.9.0.json",
+    "contracts/narrative-risk-contract.v1.10.0.json",
+    "contracts/controlled-vocabularies.v1.10.0.json",
+    "methods/transparent-heuristic.v1.10.0.json",
     "schemas/narrative_risk_input.schema.json", "schemas/narrative_risk_evidence_ledger.schema.json",
     "schemas/narrative_risk_narrative_map.schema.json", "schemas/narrative_risk_method_snapshot.schema.json",
     "schemas/narrative_risk_record.schema.json", "schemas/narrative_risk_case.schema.json",
@@ -93,6 +96,10 @@ REQUIRED_FILES = [
     "schemas/narrative_risk_briefing.schema.json", "schemas/narrative_risk_publication_package.schema.json",
     "schemas/narrative_risk_public_embed.schema.json", "schemas/narrative_risk_api_key.schema.json",
     "schemas/narrative_risk_platform_handoff.schema.json",
+    "schemas/narrative_risk_security_report.schema.json", "schemas/narrative_risk_privacy_policy.schema.json",
+    "schemas/narrative_risk_retention_assessment.schema.json", "schemas/narrative_risk_backup_manifest.schema.json",
+    "schemas/narrative_risk_accessibility_report.schema.json", "schemas/narrative_risk_performance_report.schema.json",
+    "schemas/narrative_risk_production_readiness.schema.json",
     "schemas/archive/narrative_risk_record.v1.3.0.schema.json",
     "schemas/archive/narrative_risk_input.v1.3.0.schema.json",
     "schemas/archive/narrative_risk_evidence_ledger.v1.3.0.schema.json",
@@ -122,9 +129,14 @@ REQUIRED_FILES = [
     "schemas/archive/narrative_risk_evidence_ledger.v1.8.0.schema.json",
     "schemas/archive/narrative_risk_narrative_map.v1.8.0.schema.json",
     "schemas/archive/narrative_risk_method_snapshot.v1.8.0.schema.json",
+    "schemas/archive/narrative_risk_record.v1.9.0.schema.json",
+    "schemas/archive/narrative_risk_input.v1.9.0.schema.json",
+    "schemas/archive/narrative_risk_evidence_ledger.v1.9.0.schema.json",
+    "schemas/archive/narrative_risk_narrative_map.v1.9.0.schema.json",
+    "schemas/archive/narrative_risk_method_snapshot.v1.9.0.schema.json",
     "narrative_risk/contracts.py", "narrative_risk/service.py", "narrative_risk/ledger.py",
     "narrative_risk/narrative_map.py", "narrative_risk/integrations.py",
-    "narrative_risk/governance.py", "narrative_risk/monitoring.py", "narrative_risk/stakeholders.py", "narrative_risk/comparisons.py", "narrative_risk/publication.py", "narrative_risk/migrations.py", "narrative_risk/workspaces.py",
+    "narrative_risk/governance.py", "narrative_risk/monitoring.py", "narrative_risk/stakeholders.py", "narrative_risk/comparisons.py", "narrative_risk/publication.py", "narrative_risk/hardening.py", "narrative_risk/migrations.py", "narrative_risk/workspaces.py",
     "python/narrative_risk_brief.py", "python/export_evidence_ledger.py",
     "python/export_narrative_map.py", "python/migrate_narrative_risk_record.py",
     "python/verify_narrative_risk_record.py", "python/narrative_risk_workspace.py",
@@ -137,8 +149,8 @@ REQUIRED_FILES = [
     "tests/fixtures/scoring-parity.json", "tests/fixtures/legacy-v1.0.1-record.json",
     "tests/fixtures/legacy-v1.1.0-record.json", "tests/fixtures/legacy-v1.2.0-record.json",
     "tests/fixtures/legacy-v1.3.0-record.json", "tests/fixtures/legacy-v1.4.0-record.json",
-    "tests/fixtures/legacy-v1.5.0-record.json", "tests/fixtures/legacy-v1.6.0-record.json", "tests/fixtures/legacy-v1.7.0-record.json", "tests/fixtures/legacy-v1.8.0-record.json",
-    "tests/test_narrative_map.py", "tests/test_workspaces.py", "tests/test_governance.py", "tests/test_monitoring.py", "tests/test_stakeholders.py", "tests/test_comparisons.py", "tests/test_publication.py",
+    "tests/fixtures/legacy-v1.5.0-record.json", "tests/fixtures/legacy-v1.6.0-record.json", "tests/fixtures/legacy-v1.7.0-record.json", "tests/fixtures/legacy-v1.8.0-record.json", "tests/fixtures/legacy-v1.9.0-record.json",
+    "tests/test_narrative_map.py", "tests/test_workspaces.py", "tests/test_governance.py", "tests/test_monitoring.py", "tests/test_stakeholders.py", "tests/test_comparisons.py", "tests/test_publication.py", "tests/test_hardening.py",
     "scripts/generate_browser_method_asset.py", "scripts/cross_runtime_record_parity.py",
     "scripts/cross_runtime_parity.py", "scripts/test_browser_engine.js",
     "wordpress/catalyst-narrative-risk-demo/assets/narrative-risk-method.js",
@@ -149,7 +161,7 @@ REQUIRED_FILES = [
     "wordpress/catalyst-narrative-risk-demo/assets/catalyst-narrative-risk-publication.js",
     "wordpress/catalyst-narrative-risk-demo/assets/catalyst-narrative-risk-publication.css",
     "wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php",
-    "release/v1.9.0.md", "docs/review-approval-governance-workflow.md",
+    "release/v1.10.0.md", "docs/review-approval-governance-workflow.md",
     "docs/migration-v1.4.0.md", "docs/migration-v1.5.0.md", "docs/canonical-contract.md", "docs/reproducibility.md",
     "docs/narrative-change-freshness-monitoring.md", "docs/site-intelligence-monitoring-handoff.md",
     "docs/stakeholder-incentive-pressure-intelligence.md", "docs/catalyst-canvas-stakeholder-handoff.md", "docs/migration-v1.6.0.md",
@@ -173,7 +185,7 @@ def main() -> int:
     contract = contract_definition()
     vocabs = controlled_vocabularies()
     method = current_method_snapshot()
-    previous_method = load_json(ROOT / "methods/transparent-heuristic.v1.8.0.json")
+    previous_method = load_json(ROOT / "methods/transparent-heuristic.v1.9.0.json")
     schemas = {
         "input": load_json(INPUT_SCHEMA_PATH), "ledger": load_json(LEDGER_SCHEMA_PATH),
         "narrative_map": load_json(NARRATIVE_MAP_SCHEMA_PATH), "method": load_json(METHOD_SCHEMA_PATH),
@@ -210,6 +222,13 @@ def main() -> int:
         "public_embed": load_json(PUBLIC_EMBED_SCHEMA_PATH),
         "api_key": load_json(API_KEY_SCHEMA_PATH),
         "platform_handoff": load_json(PLATFORM_HANDOFF_SCHEMA_PATH),
+        "security_report": load_json(SECURITY_REPORT_SCHEMA_PATH),
+        "privacy_policy": load_json(PRIVACY_POLICY_SCHEMA_PATH),
+        "retention_assessment": load_json(RETENTION_ASSESSMENT_SCHEMA_PATH),
+        "backup_manifest": load_json(BACKUP_MANIFEST_SCHEMA_PATH),
+        "accessibility_report": load_json(ACCESSIBILITY_REPORT_SCHEMA_PATH),
+        "performance_report": load_json(PERFORMANCE_REPORT_SCHEMA_PATH),
+        "production_readiness": load_json(PRODUCTION_READINESS_SCHEMA_PATH),
     }
     fixtures = load_json(ROOT / "tests/fixtures/scoring-parity.json")
     sample_input = load_json(ROOT / "data/sample_narrative_risk_input.json")
@@ -225,6 +244,7 @@ def main() -> int:
         "1.6.0": load_json(ROOT / "tests/fixtures/legacy-v1.6.0-record.json"),
         "1.7.0": load_json(ROOT / "tests/fixtures/legacy-v1.7.0-record.json"),
         "1.8.0": load_json(ROOT / "tests/fixtures/legacy-v1.8.0-record.json"),
+        "1.9.0": load_json(ROOT / "tests/fixtures/legacy-v1.9.0-record.json"),
     }
     plugin = (ROOT / "wordpress/catalyst-narrative-risk-demo/catalyst-narrative-risk-demo.php").read_text(encoding="utf-8")
     workspace_js = (ROOT / "wordpress/catalyst-narrative-risk-demo/assets/catalyst-narrative-risk-workspace.js").read_text(encoding="utf-8")
@@ -244,6 +264,7 @@ def main() -> int:
         "stakeholder policy": method.get("stakeholder_policy", {}).get("policy_version"),
         "comparative policy": method.get("comparative_policy", {}).get("policy_version"),
         "publication policy": method.get("publication_policy", {}).get("policy_version"),
+        "hardening policy": method.get("hardening_policy", {}).get("policy_version"),
         "vocabulary": vocabs.get("vocabulary_version"), "fixture": fixtures.get("contract_version"),
         "sample contract": sample.get("contract", {}).get("contract_version"),
         "sample method": sample.get("method_snapshot", {}).get("method_version"),
@@ -290,6 +311,13 @@ def main() -> int:
         "public_embed": f"https://sustainablecatalyst.com/schemas/narrative-risk/public-embed/{VERSION}",
         "api_key": f"https://sustainablecatalyst.com/schemas/narrative-risk/api-key/{VERSION}",
         "platform_handoff": f"https://sustainablecatalyst.com/schemas/narrative-risk/platform-handoff/{VERSION}",
+        "security_report": f"https://sustainablecatalyst.com/schemas/narrative-risk/security-report/{VERSION}",
+        "privacy_policy": f"https://sustainablecatalyst.com/schemas/narrative-risk/privacy-policy/{VERSION}",
+        "retention_assessment": f"https://sustainablecatalyst.com/schemas/narrative-risk/retention-assessment/{VERSION}",
+        "backup_manifest": f"https://sustainablecatalyst.com/schemas/narrative-risk/backup-manifest/{VERSION}",
+        "accessibility_report": f"https://sustainablecatalyst.com/schemas/narrative-risk/accessibility-report/{VERSION}",
+        "performance_report": f"https://sustainablecatalyst.com/schemas/narrative-risk/performance-report/{VERSION}",
+        "production_readiness": f"https://sustainablecatalyst.com/schemas/narrative-risk/production-readiness/{VERSION}",
     }
     identifiers = {"contract": CONTRACT_ID, "method": METHOD_ID}
     if contract.get("contract_id") != CONTRACT_ID or manifest.get("contract_id") != CONTRACT_ID:
@@ -308,15 +336,15 @@ def main() -> int:
         fail("method schema identifier mismatch")
     if contract.get("layers") != ["normalized_input", "evidence_ledger", "narrative_map", "calculations", "interpretation", "human_decision"]:
         fail("canonical six-layer order mismatch")
-    migration_sources = ["1.0.1", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0", "1.6.0", "1.7.0", "1.8.0"]
+    migration_sources = ["1.0.1", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0", "1.6.0", "1.7.0", "1.8.0", "1.9.0"]
     if contract.get("compatibility", {}).get("migrates_from") != migration_sources or manifest.get("migration_sources") != migration_sources:
         fail("legacy migration declarations are incomplete")
     if manifest.get("database") != "sqlite3" or "sqlite3" not in manifest.get("runtime_contracts", []):
         fail("SQLite runtime contract missing")
-    if manifest.get("workspace_shortcodes") != ["[catalyst_narrative_risk_demo]", "[catalyst_narrative_risk_workspace]", "[catalyst_narrative_risk_publication_workspace]", "[catalyst_narrative_risk_public_brief]"]:
+    if manifest.get("workspace_shortcodes") != ["[catalyst_narrative_risk_demo]", "[catalyst_narrative_risk_workspace]", "[catalyst_narrative_risk_publication_workspace]", "[catalyst_narrative_risk_public_brief]", "[catalyst_narrative_risk_readiness]"]:
         fail("workspace shortcode manifest is incomplete")
 
-    # Publication remains separate and must not silently change the v1.8 analytical, governance, monitoring, stakeholder, or comparative engine.
+    # Hardening remains separate and must not silently change the v1.9 analytical, governance, monitoring, stakeholder, comparative, or publication engine.
     for key in ("algorithm", "weights", "components", "interpretation", "ledger_policy", "narrative_map_policy", "governance_policy", "monitoring_policy", "stakeholder_policy", "comparative_policy"):
         previous = json.loads(json.dumps(previous_method[key]))
         current = json.loads(json.dumps(method[key]))
@@ -324,7 +352,7 @@ def main() -> int:
             previous["policy_version"] = VERSION
             current["policy_version"] = VERSION
         if previous != current:
-            fail(f"v1.9.0 unexpectedly changed inherited analytical or governance section: {key}")
+            fail(f"v1.10.0 unexpectedly changed inherited analytical or governance section: {key}")
     policy = method.get("narrative_map_policy", {})
     if tuple(policy.get("node_types", [])) != NODE_TYPES:
         fail("narrative node vocabulary and method policy differ")
@@ -396,6 +424,16 @@ def main() -> int:
     if set(schemas["platform_handoff"]["properties"]["target"]["enum"]) != PLATFORM_TARGETS:
         fail("platform handoff target schema mismatch")
 
+    hardening_policy = method.get("hardening_policy", {})
+    if hardening_policy.get("boundary") != "Production-readiness reports evaluate declared controls and local artifacts. They do not certify security, privacy compliance, accessibility conformance, disaster recovery, or legal sufficiency.":
+        fail("production-hardening methodological boundary mismatch")
+    if hardening_policy.get("minimum_admin_token_characters") != 32:
+        fail("administrator token policy mismatch")
+    if hardening_policy.get("maximum_request_bytes") != 2097152:
+        fail("request-size policy mismatch")
+    if set(hardening_policy.get("privacy_deletion_modes", [])) != {"archive_and_tombstone", "anonymize_then_archive", "legal_hold_only"}:
+        fail("privacy deletion-mode policy mismatch")
+
     validate_method_snapshot(method)
     validate_narrative_risk_record(sample)
     if sample["normalized_input"]["claim"] != sample_input["claim"]:
@@ -417,6 +455,10 @@ def main() -> int:
     bundle_report = SQLiteCaseRepository.verify_bundle(sample_bundle)
     if not all(bundle_report[key] for key in ("bundle_sha256_match", "all_revision_hashes_match", "all_case_ids_match", "governance_case_ids_match", "monitoring_case_ids_match", "all_snapshot_hashes_match", "all_comparison_hashes_match", "stakeholder_case_ids_match", "stakeholder_intelligence_hash_match", "comparative_case_ids_match", "comparative_hashes_match", "publication_case_ids_match", "publication_hashes_match")):
         fail(f"sample workspace bundle verification failed: {bundle_report}")
+    if not sample_bundle.get("retention_assessments"):
+        fail("sample workspace bundle must exercise privacy-retention assessment records")
+    if sample_bundle["retention_assessments"][0].get("assessment_version") != VERSION:
+        fail("sample retention assessment version mismatch")
     if sample_bundle["governance_workflow"] is None or not sample_bundle["review_assignments"] or not sample_bundle["governance_decisions"]:
         fail("sample workspace bundle must exercise governed review records")
     if sample_bundle["governance_workflow"]["status"] != "approved":
@@ -461,7 +503,7 @@ def main() -> int:
         "1.0.1": migrate_v1_0_1_record, "1.1.0": migrate_v1_1_0_record,
         "1.2.0": migrate_v1_2_0_record, "1.3.0": migrate_v1_3_0_record,
         "1.4.0": migrate_v1_4_0_record, "1.5.0": migrate_v1_5_0_record, "1.6.0": migrate_v1_6_0_record,
-        "1.7.0": migrate_v1_7_0_record, "1.8.0": migrate_v1_8_0_record,
+        "1.7.0": migrate_v1_7_0_record, "1.8.0": migrate_v1_8_0_record, "1.9.0": migrate_v1_9_0_record,
     }
     for index, version in enumerate(migration_sources, start=1):
         source = legacy[version]
@@ -498,13 +540,13 @@ def main() -> int:
     plugin_version = re.search(r"^ \* Version:\s*(\S+)", plugin, re.MULTILINE)
     if not plugin_version or plugin_version.group(1) != VERSION:
         fail("WordPress plugin header version mismatch")
-    for token in ["catalyst_narrative_risk_demo", "catalyst_narrative_risk_workspace", "catalyst_narrative_risk_publication_workspace", "catalyst_narrative_risk_public_brief", "cnrisk-map-js", "cnrisk-publication-js", "narrative-risk-map.js", "array('cnrisk-method-js', 'cnrisk-map-js')"]:
+    for token in ["catalyst_narrative_risk_demo", "catalyst_narrative_risk_workspace", "catalyst_narrative_risk_publication_workspace", "catalyst_narrative_risk_public_brief", "catalyst_narrative_risk_readiness", "cnrisk-map-js", "cnrisk-publication-js", "narrative-risk-map.js", "array('cnrisk-method-js', 'cnrisk-map-js')"]:
         if token not in plugin:
             fail(f"WordPress narrative-map token missing: {token}")
     for token in ["narrative_map_json", "data-cnrisk-map-summary", "narrative_map"]:
         if token not in plugin + demo_js:
             fail(f"WordPress map-interface token missing: {token}")
-    for token in ["catalyst_narrative_risk_case_bundle", "localStorage", "revision_added", "bundle_sha256", "governance_workflow", "review_assignments", "governance_decisions", "publication_allowed", "monitoring_snapshots", "watchlists", "monitoring_alerts", "material_change", "data-cnrisk-run-watch", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "stakeholder_intelligence", "data-cnrisk-add-actor", "data-cnrisk-add-pressure", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "comparative_portfolio", "decision_studio_handoffs", "data-cnrisk-create-comparison", "data-cnrisk-add-scenario", "data-cnrisk-run-sensitivity", "data-cnrisk-decision-studio-handoff", "publication_briefings", "publication_packages", "public_embeds", "platform_handoffs", "v1.9.0"]:
+    for token in ["catalyst_narrative_risk_case_bundle", "localStorage", "revision_added", "bundle_sha256", "governance_workflow", "review_assignments", "governance_decisions", "publication_allowed", "monitoring_snapshots", "watchlists", "monitoring_alerts", "material_change", "data-cnrisk-run-watch", "stakeholder_actors", "stakeholder_relationships", "stakeholder_incentives", "stakeholder_pressures", "stakeholder_consequences", "stakeholder_intelligence", "data-cnrisk-add-actor", "data-cnrisk-add-pressure", "comparison_sets", "comparative_evidence_matrices", "scenarios", "scenario_results", "sensitivity_analyses", "comparative_portfolio", "decision_studio_handoffs", "data-cnrisk-create-comparison", "data-cnrisk-add-scenario", "data-cnrisk-run-sensitivity", "data-cnrisk-decision-studio-handoff", "publication_briefings", "publication_packages", "public_embeds", "platform_handoffs", "retention_assessments", "v1.10.0"]:
         if token not in workspace_js:
             fail(f"WordPress workspace behavior token missing: {token}")
 
@@ -532,7 +574,7 @@ def main() -> int:
         if output.stat().st_size == 0:
             fail(f"empty sample output: {output.relative_to(ROOT)}")
 
-    print("Catalyst Narrative Risk v1.9.0 release contract passed.")
+    print("Catalyst Narrative Risk v1.10.0 release contract passed.")
     print(
         f"Version checks: {len(versions)}; identifier checks: {len(identifiers)}; "
         f"parity fixtures: {len(fixtures['valid'])} valid, {len(fixtures['invalid'])} invalid; "

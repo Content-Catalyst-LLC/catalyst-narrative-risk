@@ -67,3 +67,19 @@
 .cnrisk-demo small { display: block; color: var(--cnr-muted); font-weight: 500; line-height: 1.5; }
 .cnrisk-demo__block p { margin: 0 0 8px; }
 .cnrisk-demo__block p:last-child { margin-bottom: 0; }
+
+/* v1.10.0 accessibility hardening */
+:where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) :where(a,button,input,select,textarea,summary,[tabindex="0"]):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *,
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *::before,
+  :where(.cnrisk-demo,.cnrisk-workspace,.cnrisk-publication,.cnrisk-public-brief) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
