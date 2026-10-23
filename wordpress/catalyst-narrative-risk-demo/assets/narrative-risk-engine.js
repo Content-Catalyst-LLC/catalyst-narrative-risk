@@ -60,6 +60,9 @@
     }
     return value;
   }
+  // Sorting object keys makes equivalent ledger material hash consistently
+  // across browser sessions; a matching hash establishes byte-level identity
+  // of the normalized data, not independent evidence quality or truth.
   function canonicalJson(value) { return JSON.stringify(canonicalValue(value)); }
 
   function sha256(text) {
