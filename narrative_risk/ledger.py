@@ -94,6 +94,10 @@ def _year_or_none(value: Any, field: str) -> int | None:
     return value
 
 
+# Hash canonical claim/source/evidence/relationship material into a stable
+# ledger URN. A repeatable identifier supports lineage and deduplication;
+# it does not prove that a claim is true, a citation is licensed, or a source
+# has been independently reviewed. Unsupported kinds raise validation error.
 def stable_ledger_id(kind: str, material: Mapping[str, Any]) -> str:
     if kind not in {"claim", "source", "evidence", "relationship"}:
         raise NarrativeRiskValidationError(f"unsupported ledger identifier kind: {kind}")
@@ -316,6 +320,9 @@ def _citation_author(creators: Sequence[str]) -> str:
     return f"{creators[0]} et al."
 
 
+# Format supplied creator/year/title/publisher/URL fields for display.
+# This rendering does not verify DOI resolution, peer review, author identity
+# or rights to reproduce the underlying publication.
 def harvard_citation(source: Mapping[str, Any]) -> str:
     author = _citation_author(source["creators"])
     year = str(source["published_year"]) if source["published_year"] is not None else "n.d."
